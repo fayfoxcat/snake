@@ -48,5 +48,4 @@ def draw_Star(size):
     t.hideturtle()
     t.done()
 
-
 draw_Star(400)

@@ -22,5 +22,5 @@ headers = {'Host': 'http://127.0.0.1:5000',
 for i in range(10):
     # 休眠0.5s
     time.sleep(0.5)
-    result = requests.get(get_url, params=keyword, headers=headers, timeout=2)
+    result = requests.get(get_url, params=keyword, timeout=2)
     print(result)

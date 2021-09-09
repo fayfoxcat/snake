@@ -1,9 +1,9 @@
 from typing import List
-import pymysql
+import pymysql as db
 import pandas as pd
 
 # 连接数据库
-conn = pymysql.connect(host='localhost', port=3306, user='root', password='123456', database='api', charset='utf8')
+conn = db.connect(host='localhost', port=3306, user='root', password='123456', database='api', charset='utf8')
 cursor = conn.cursor()
 
 # 查询数据

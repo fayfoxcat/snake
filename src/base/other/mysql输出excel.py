@@ -13,8 +13,7 @@ array: List[str] = [line for line in cursor.fetchall()]
 
 # 数据载入到 DataFrame 对象
 df = pd.DataFrame(array, columns=['序号', '省编码', '省份', '市编码', '城市', '县编码', '县'], dtype=str)
-# 返回第一行和第二行
-# print(df.loc[[0]])
+
 
 # 文件路径
 file: str = 'C:/Users/fayfo/Desktop/数据.xlsx'

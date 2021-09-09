@@ -63,6 +63,10 @@ import pandas as pd
 
 # 数据载入到 DataFrame 对象,设置列名
 # df = pd.DataFrame(db, columns=['name', 'age'], dtype=str)
+
+# 返回第一行和第二行
+# print(df.loc[[0]])
+
 '''
 - excel_writer :目标路径
 - sheet_name :填充excel的第几页

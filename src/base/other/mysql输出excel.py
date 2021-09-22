@@ -15,7 +15,7 @@ array: List[str] = [line for line in cursor.fetchall()]
 df = pd.DataFrame(array, columns=['序号', '省编码', '省份', '市编码', '城市', '县编码', '县'], dtype=str)
 
 # 文件路径
-file: str = 'C:/Users/fayfo/Desktop/数据.xlsx'
+file: str = 'C:/Users/cat/Desktop/数据.xlsx'
 
 df.to_excel(excel_writer=file, sheet_name='数据', na_rep='', index=False)
 

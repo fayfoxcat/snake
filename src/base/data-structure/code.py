@@ -6,6 +6,7 @@ def anagramSolution1(s1, s2):
     while pos1 < len(s1) and stillOK:
         pos2 = 0
     found = False
+
     while pos2 < len(alist) and not found:
         if s1[pos1] == alist[pos2]:
             found = True

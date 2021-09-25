@@ -20,3 +20,8 @@ def anagramSolution1(s1, s2):
         pos1 = pos1 + 1
 
     return stillOK
+
+
+solution_ = anagramSolution1("abc efg dda ccp", "adc efg bda cgp")
+
+print(solution_)

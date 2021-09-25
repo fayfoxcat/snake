@@ -5,19 +5,18 @@ def anagramSolution1(s1, s2):
 
     while pos1 < len(s1) and stillOK:
         pos2 = 0
-    found = False
+        found = False
+        while pos2 < len(alist) and not found:
+            if s1[pos1] == alist[pos2]:
+                found = True
+            else:
+                pos2 = pos2 + 1
 
-    while pos2 < len(alist) and not found:
-        if s1[pos1] == alist[pos2]:
-            found = True
-    else:
-        pos2 = pos2 + 1
+        if found:
+            alist[pos2] = None
+        else:
+            stillOK = False
 
-    if found:
-        alist[pos2] = None
-    else:
-        stillOK = False
-
-    pos1 = pos1 + 1
+        pos1 = pos1 + 1
 
     return stillOK

@@ -22,6 +22,6 @@ def anagramSolution1(s1, s2):
     return stillOK
 
 
-solution_ = anagramSolution1("abc efg dda ccp", "adc efg bda cgp")
+solution_ = anagramSolution1("aabbcc", "abcabc")
 
 print(solution_)

@@ -1,5 +1,8 @@
 # 清点法
+import random
+import timeit
 from timeit import Timer
+from typing import List
 
 
 def anagram_by_list(s1, s2):
@@ -99,13 +102,21 @@ def anagram_by_count(s1, s2):
 # t4 = Timer("generate_list_4()", "from __main__ import generate_list_4")
 # print("列表构造器 ", round(t4.timeit(number=1000), 5), " 秒")
 
+# 测试列表pop()和pop(i)性能
+# popzero = Timer("x.pop(0)", "from __main__ import x")
+# popend = Timer("x.pop()", "from __main__ import x")
+# print("pop(0) pop()")
+# for i in range(1000000, 100000001, 1000000):
+#     x = list(range(i))
+#     pt = popend.timeit(number=1000)
+#     x = list(range(i))
+#     pz = popzero.timeit(number=1000)
+#     print("%15.5f, %15.5f" % (pz, pt))
 
-popzero = Timer("x.pop(0)", "from __main__ import x")
-popend = Timer("x.pop()", "from __main__ import x")
-print("pop(0) pop()")
-for i in range(1000000, 100000001, 1000000):
+for i in range(10000, 1000001, 20000):
+    t = timeit.Timer("random.randrange(%d) in x" % i, "from __main__ import random, x")
     x = list(range(i))
-    pt = popend.timeit(number=1000)
-    x = list(range(i))
-    pz = popzero.timeit(number=1000)
-    print("%15.5f, %15.5f" % (pz, pt))
+    lst_time = t.timeit(number=1000)
+    x = {j: None for j in range(i)}
+    d_time = t.timeit(number=1000)
+    print("%d, %10.3f, %10.3f" % (i, lst_time, d_time))

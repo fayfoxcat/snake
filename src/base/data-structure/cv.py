@@ -67,34 +67,45 @@ def anagram_by_count(s1, s2):
 # print(anagram_by_count(a, b))
 
 
-def generate_list_1():
-    lists = []
-    for i in range(1000):
-        lists = lists + [i]
+# def generate_list_1():
+#     lists = []
+#     for i in range(1000):
+#         lists = lists + [i]
+#
+#
+# def generate_list_2():
+#     lists = []
+#     for i in range(1000):
+#         lists.append(i)
+#
+#
+# def generate_list_3():
+#     lists = [i for i in range(1000)]
+#
+#
+# def generate_list_4():
+#     lists = list(range(1000))
+#
+#
+# t1 = Timer("generate_list_1()", "from __main__ import generate_list_1")
+# print("连接 ", round(t1.timeit(number=1000), 5), " 秒")
+#
+# t2 = Timer("generate_list_2()", "from __main__ import generate_list_2")
+# print("追加 ", round(t2.timeit(number=1000), 5), " 秒")
+#
+# t3 = Timer("generate_list_3()", "from __main__ import generate_list_3")
+# print("列表解析 ", round(t3.timeit(number=1000), 5), " 秒")
+#
+# t4 = Timer("generate_list_4()", "from __main__ import generate_list_4")
+# print("列表构造器 ", round(t4.timeit(number=1000), 5), " 秒")
 
 
-def generate_list_2():
-    lists = []
-    for i in range(1000):
-        lists.append(i)
-
-
-def generate_list_3():
-    lists = [i for i in range(1000)]
-
-
-def generate_list_4():
-    lists = list(range(1000))
-
-
-t1 = Timer("generate_list_1()", "from __main__ import generate_list_1")
-print("连接 ", round(t1.timeit(number=1000), 5), " 秒")
-
-t2 = Timer("generate_list_2()", "from __main__ import generate_list_2")
-print("追加 ", round(t2.timeit(number=1000), 5), " 秒")
-
-t3 = Timer("generate_list_3()", "from __main__ import generate_list_3")
-print("列表解析 ", round(t3.timeit(number=1000), 5), " 秒")
-
-t4 = Timer("generate_list_4()", "from __main__ import generate_list_4")
-print("列表构造器 ", round(t4.timeit(number=1000), 5), " 秒")
+popzero = Timer("x.pop(0)", "from __main__ import x")
+popend = Timer("x.pop()", "from __main__ import x")
+print("pop(0) pop()")
+for i in range(1000000, 100000001, 1000000):
+    x = list(range(i))
+    pt = popend.timeit(number=1000)
+    x = list(range(i))
+    pz = popzero.timeit(number=1000)
+    print("%15.5f, %15.5f" % (pz, pt))

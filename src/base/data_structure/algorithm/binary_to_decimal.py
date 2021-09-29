@@ -1,4 +1,4 @@
-from Stack import Stack
+from src.base.data_structure.Stack import Stack
 
 """
 十进制转其他进制进制

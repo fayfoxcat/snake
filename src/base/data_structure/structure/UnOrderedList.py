@@ -5,7 +5,7 @@ from src.base.data_structure.structure.Node import Node
 """
 
 
-class UnorderedList:
+class UnOrderedList:
     def __init__(self):
         self.head = None
 

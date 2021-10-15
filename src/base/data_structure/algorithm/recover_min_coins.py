@@ -54,7 +54,7 @@ def dp_make_change_detail(coin_list: List[int], change: int) -> dict:
         for j in [c for c in coin_list if c <= cents]:
             if sum(min_coins[cents - j].values()) + 1 < sum(coin_count.values()):
                 tmp = min_coins[cents - j].copy()
-                tmp[j] = 1 if tmp.get(j) is None else (tmp.get(j) + 1)
+                tmp[j] = (tmp.get(j) + 1) if j in tmp else 1
                 coin_count = tmp
         min_coins[cents] = coin_count
     return min_coins[change]

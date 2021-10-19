@@ -1,4 +1,4 @@
-from src.base.data_structure.structure.HashTable import HashTable
+from src.structure_algorithm.structure import HashTable
 
 H = HashTable()
 H[54] = "cat"

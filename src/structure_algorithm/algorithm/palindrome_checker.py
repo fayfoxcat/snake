@@ -1,4 +1,4 @@
-from src.base.data_structure.structure.Deque import Deque
+from src.structure_algorithm.structure import Deque
 
 
 def palindrome_checker(s: str) -> bool:

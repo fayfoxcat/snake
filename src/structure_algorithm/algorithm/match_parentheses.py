@@ -1,4 +1,4 @@
-from src.base.data_structure.structure.Stack import Stack
+from src.structure_algorithm.structure import Stack
 
 '''
 匹配符号

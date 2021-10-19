@@ -1,7 +1,7 @@
 import random
 
 # 模拟打印机
-from src.structure_algorithm.structure import Queue
+from src.data_structure.structure import Queue
 
 
 class Printer:

@@ -1,4 +1,4 @@
-from src.structure_algorithm.structure.Node import Node
+from src.data_structure.structure.Node import Node
 
 """
 有序链表实现

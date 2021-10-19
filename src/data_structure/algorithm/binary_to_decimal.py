@@ -1,4 +1,4 @@
-from src.structure_algorithm.structure import Stack
+from src.data_structure.structure import Stack
 
 """
 十进制转其他进制进制

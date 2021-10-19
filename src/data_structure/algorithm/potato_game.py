@@ -1,6 +1,6 @@
 from typing import List
 
-from src.structure_algorithm.structure import Queue
+from src.data_structure.structure import Queue
 
 '''
 在模拟传土豆的过程中，程序将这个孩子的名字移出队列，然后立刻将其插入队列的尾部。随后，

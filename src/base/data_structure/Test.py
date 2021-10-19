@@ -1,14 +1,14 @@
-from src.base.data_structure.structure.UnOrderedList import UnorderedList
+from src.base.data_structure.structure.HashTable import HashTable
 
-unordered_list = UnorderedList()
-
-unordered_list.append(1)
-unordered_list.append(2)
-unordered_list.append(3)
-unordered_list.append(4)
-
-unordered_list.print()
-
-unordered_list.pop(-1)
-
-unordered_list.print()
+H = HashTable()
+H[54] = "cat"
+H[26] = "dog"
+H[93] = "lion"
+H[17] = "tiger"
+H[77] = "bird"
+H[31] = "cow"
+H[44] = "goat"
+H[55] = "pig"
+H[20] = "chicken"
+H[77] = 'fox'
+print(H.get(77))

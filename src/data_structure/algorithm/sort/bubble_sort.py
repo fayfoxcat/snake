@@ -1,8 +1,6 @@
 def bubble_sort(array):
     n = len(array)
-    # 遍历所有数组元素
     for item in range(n):
-        # 最后的i元素已经就绪
         for j in range(0, n - item - 1):
             if array[j] > array[j + 1]:
                 array[j], array[j + 1] = array[j + 1], array[j]

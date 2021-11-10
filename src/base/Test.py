@@ -1,14 +1,17 @@
-from src.data_structure.structure import HashTable
+from src.data_structure.structure.BinaryTree import BinaryTree
 
-H = HashTable()
-H[54] = "cat"
-H[26] = "dog"
-H[93] = "lion"
-H[17] = "tiger"
-H[77] = "bird"
-H[31] = "cow"
-H[44] = "goat"
-H[55] = "pig"
-H[20] = "chicken"
-H[77] = 'fox'
-print(H.get(77))
+tree = BinaryTree('a')
+print(tree.get_root_value())
+
+print(tree.get_left_child())
+
+tree.insert_left('b')
+
+print(tree.get_left_child())
+print(tree.get_left_child().get_root_value())
+
+tree.insert_right('c')
+print(tree.get_right_child().get_root_value())
+
+tree.get_right_child().set_root_value('hello')
+print(tree.get_right_child().get_root_value())

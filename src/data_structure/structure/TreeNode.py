@@ -1,7 +1,7 @@
 class TreeNode:
-    def __init__(self, key, value, left=None, right=None, parent=None):
+    def __init__(self, key, payload, left=None, right=None, parent=None):
         self.key = key
-        self.value = value
+        self.payload = payload
         self.left_child = left
         self.right_child = right
         self.parent = parent
@@ -30,12 +30,12 @@ class TreeNode:
     def has_both_children(self):
         return self.left_child and self.right_child
 
-    def replace_node_date(self, key, value, left_child, right_child):
+    def replace_node_date(self, key, payload, left_child, right_child):
         self.key = key
-        self.value = value
+        self.payload = payload
         self.left_child = left_child
         self.right_child = right_child
         if self.has_left_child():
-            self.parent.left_child = self
+            self.left_child.parent = self
         if self.has_left_child():
             self.parent.right_child = self

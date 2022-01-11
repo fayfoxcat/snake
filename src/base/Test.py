@@ -1,17 +1,10 @@
-from src.data_structure.structure.BinaryTree import BinaryTree
+def brute_force(S, P):
+    for i in range(len(S) - len(P) + 1):
+        if S[i:i + len(P)] == P:
+            print(f'pos = {i}')
 
-tree = BinaryTree('a')
-print(tree.get_root_value())
 
-print(tree.get_left_child())
+s_S = 'AAAAAABC'
+s_P = 'AAAB'
 
-tree.insert_left('b')
-
-print(tree.get_left_child())
-print(tree.get_left_child().get_root_value())
-
-tree.insert_right('c')
-print(tree.get_right_child().get_root_value())
-
-tree.get_right_child().set_root_value('hello')
-print(tree.get_right_child().get_root_value())
+brute_force(s_S, s_P)

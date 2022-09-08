@@ -33,7 +33,7 @@ def get_company_message(company):
         return BeautifulSoup(details.text, features="html.parser")
     except:
         errorInfo['errorCount'] = errorInfo.get('errorCount') + 1
-        errorInfo['list'].append(company)
+        errorInfo.get('errorList').append(company)
 
 
 # 解析数据
@@ -66,7 +66,12 @@ def message_to_df(message, company):
             record['关联产品/机构'] = td_list[4].text
         except:
             record['关联产品/机构'] = ""
-        data_list.append(record)
+
+        # 查询信息不完全补偿
+        if "登录查看全部信息" in str(record):
+            companys.append(company)
+        else:
+            data_list.append(record)
     return pd.DataFrame(data_list)
 
 
@@ -74,7 +79,7 @@ def message_to_df(message, company):
 df_companys = pd.read_excel('C:/Users/cat/Desktop/qcc/原始数据.xlsx')
 companys = df_companys['发行人全称'].tolist()
 
-errorInfo = {'total': len(companys), 'errorCount': 0, list: []}
+errorInfo = {'total': len(companys), 'errorCount': 0, 'errorList': []}
 
 for item in companys:
     try:
@@ -93,6 +98,6 @@ print("执行总数：" + str(errorInfo.get('total')))
 print("未完成数：" + str(errorInfo.get('errorCount')))
 try:
     print("失败占比：" + str('{:.2%}'.format(errorInfo.get('errorCount') / errorInfo.get('total'))))
-    print("未完成详细信息：" + str(errorInfo.get('list')))
+    print("未完成详细信息：" + str(errorInfo.get('errorList')))
 except:
     pass

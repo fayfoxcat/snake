@@ -10,12 +10,14 @@ import pandas as pd
 from requests import HTTPError
 
 sess = requests.session()
+sess.get('https://www.qcc.com')
 
 # 添加headers（header为自己登录的企查查网址，输入账号密码登录之后所显示的header，此代码的上方介绍了获取方法）
 afterLogin_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                                     'Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27',
-                      'cookie': 'QCCSESSID=764bf33914a82be15712f79610; qcc_did=8ea235a1-33a1-4982-93fb-ee4dc3be4702; '
-                                'acw_tc=0884322b16626849078076761e6f349d37c9d92bb28f63dc5d081a209d'
+                      'cookie': 'QCCSESSID=c74979e6b554f6dbe3a491389e; qcc_did=c0f91a41-a744-4a5e-a9d7-83851531c1e7;'
+                                ' MQCCSESSID=89be88ca8489b67e6388b77ce9; '
+                                'acw_tc=0884323d16627073383671275e85ac88ab9e782f6a96bc567610e21c8f'
                       }
 
 

@@ -7,6 +7,8 @@ import time
 import pandas as pd
 
 # 保持会话
+from requests import HTTPError
+
 sess = requests.session()
 
 # 添加headers（header为自己登录的企查查网址，输入账号密码登录之后所显示的header，此代码的上方介绍了获取方法）
@@ -73,10 +75,9 @@ def message_to_df(message, company):
 
 
 # 导入企业信息记录
+errors = []
 df_companys = pd.read_excel('C:/Users/cat/Desktop/原始数据.xlsx')
 companys = df_companys['发行人全称'].tolist()
-
-errorInfo = {'total': len(companys), 'errorCount': 0, 'errorList': []}
 
 for index, item in enumerate(companys):
     try:
@@ -86,17 +87,26 @@ for index, item in enumerate(companys):
             df.to_csv('C:/Users/cat/Desktop/股东数据.csv', index=False, header=True)
         else:
             df.to_csv('C:/Users/cat/Desktop/股东数据.csv', mode='a+', index=False, header=False)
+    except HTTPError:
+        print("\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m")
+        print("执行总数：" + str(len(set(companys))))
+        print("未完成数：" + str(len(set(errors))))
+        try:
+            print("失败占比：" + str('{:.2%}'.format(len(set(errors)) / len(set(companys)))))
+            print("未完成详细信息：" + str(set(errors)))
+        except:
+            pass
+        sys.exit(0)
     except:
-        errorInfo['errorCount'] = errorInfo.get('errorCount') + 1
-        errorInfo.get('errorList').append(item)
+        errors.append(item)
     sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))))
     sys.stdout.flush()
     time.sleep(1)
 
-print("执行总数：" + str(errorInfo.get('total')))
-print("未完成数：" + str(errorInfo.get('errorCount')))
+print("\n执行总数：" + str(len(set(companys))))
+print("未完成数：" + str(len(set(errors))))
 try:
-    print("失败占比：" + str('{:.2%}'.format(errorInfo.get('errorCount') / errorInfo.get('total'))))
-    print("未完成详细信息：" + str(errorInfo.get('errorList')))
+    print("失败占比：" + str('{:.2%}'.format(len(set(errors)) / len(set(companys)))))
+    print("未完成详细信息：" + str(set(errors)))
 except:
     pass

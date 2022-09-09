@@ -65,6 +65,7 @@ def message_to_df(message, company):
             record['关联产品/机构'] = td_list[4].text
         except:
             record['关联产品/机构'] = ""
+        data_list.append(record)
 
     # 查询信息不完全补偿
     if "登录查看全部信息" in str(data_list):

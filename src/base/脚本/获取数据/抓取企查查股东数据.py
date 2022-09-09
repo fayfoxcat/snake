@@ -105,7 +105,7 @@ for index, item in enumerate(companys):
         sys.exit(0)
     except:
         pass
-    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))) + '\n')
+    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))))
     sys.stdout.flush()
     time.sleep(1)
 

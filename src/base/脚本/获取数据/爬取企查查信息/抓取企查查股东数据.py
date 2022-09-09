@@ -14,7 +14,7 @@ with open("ini.json", 'r', encoding='utf8') as ini:
 
 # 保持会话
 sess = requests.session()
-sess.get('https://www.qcc.com')
+default = sess.get('https://www.qcc.com', headers=configuration.get("headers"))
 # 添加headers
 afterLogin_headers = configuration.get("headers")
 

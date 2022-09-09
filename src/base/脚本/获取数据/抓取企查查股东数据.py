@@ -74,8 +74,19 @@ def message_to_df(message, company):
         return pd.DataFrame(data_list)
 
 
+# 打印执行信息
+def result(total, fail):
+    print("执行总数：" + str(len(set(total))))
+    print("未完成数：" + str(len(set(fail))))
+    try:
+        print("失败占比：" + str('{:.2%}'.format(len(set(fail)) / len(set(total)))))
+        print("未完成详细信息：" + str(set(fail)))
+    except:
+        pass
+
+
 # 导入企业信息记录
-errors = []
+complete = []
 df_companys = pd.read_excel('C:/Users/cat/Desktop/原始数据.xlsx')
 companys = df_companys['发行人全称'].tolist()
 
@@ -87,26 +98,15 @@ for index, item in enumerate(companys):
             df.to_csv('C:/Users/cat/Desktop/股东数据.csv', index=False, header=True)
         else:
             df.to_csv('C:/Users/cat/Desktop/股东数据.csv', mode='a+', index=False, header=False)
+        complete.append(item)
     except HTTPError:
-        print("\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m")
-        print("执行总数：" + str(len(set(companys))))
-        print("未完成数：" + str(len(set(errors))))
-        try:
-            print("失败占比：" + str('{:.2%}'.format(len(set(errors)) / len(set(companys)))))
-            print("未完成详细信息：" + str(set(errors)))
-        except:
-            pass
+        print("\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m\n")
+        result(companys, list(set(companys) ^ set(complete)))
         sys.exit(0)
     except:
-        errors.append(item)
-    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))))
+        pass
+    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))) + '\n')
     sys.stdout.flush()
     time.sleep(1)
 
-print("\n执行总数：" + str(len(set(companys))))
-print("未完成数：" + str(len(set(errors))))
-try:
-    print("失败占比：" + str('{:.2%}'.format(len(set(errors)) / len(set(companys)))))
-    print("未完成详细信息：" + str(set(errors)))
-except:
-    pass
+result(companys, list(set(companys) ^ set(complete)))

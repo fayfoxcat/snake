@@ -1,26 +1,24 @@
+import json
 import random
 import sys
-
-from bs4 import BeautifulSoup
 import requests
 import time
 import pandas as pd
-
-# 保持会话
+from bs4 import BeautifulSoup
 from requests import HTTPError
 
+# 读取配置文件
+with open("ini.json", 'r', encoding='utf8') as ini:
+    configuration = json.load(ini)
+
+# 保持会话
 sess = requests.session()
 sess.get('https://www.qcc.com')
-
-# 添加headers（header为自己登录的企查查网址，输入账号密码登录之后所显示的header，此代码的上方介绍了获取方法）
-afterLogin_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                    'Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27',
-                      'cookie': 'QCCSESSID=c74979e6b554f6dbe3a491389e; qcc_did=c0f91a41-a744-4a5e-a9d7-83851531c1e7;'
-                                ' MQCCSESSID=89be88ca8489b67e6388b77ce9; '
-                                'acw_tc=0884323d16627073383671275e85ac88ab9e782f6a96bc567610e21c8f'
-                      }
+# 添加headers
+afterLogin_headers = configuration.get("headers")
 
 
+# 获取网页信息
 def get_company_message(company):
     # 获取查询到的网页内容（全部）
     search = sess.get('https://www.qcc.com/search?key={}'.format(company), headers=afterLogin_headers, timeout=10)
@@ -41,9 +39,9 @@ def get_company_message(company):
 def message_to_df(message, company):
     shareholders = message.find("div", class_="app-tree-table").find_all(name="tr")[1:]
     data_list = []
-    for item in shareholders:
+    for shareholder in shareholders:
         record = {'公司名称': company}
-        td_list = item.find_all(name="td")
+        td_list = shareholder.find_all(name="td")
         try:
             record['股东名称'] = td_list[1].find(name="span", class_="name").text
         except:
@@ -71,7 +69,7 @@ def message_to_df(message, company):
 
     # 查询信息不完全补偿
     if "登录查看全部信息" in str(data_list):
-        companys.append(company)
+        enterprise.append(company)
     else:
         return pd.DataFrame(data_list)
 
@@ -82,34 +80,36 @@ def result(total, fail):
     print("未完成数：" + str(len(set(fail))))
     try:
         print("失败占比：" + str('{:.2%}'.format(len(set(fail)) / len(set(total)))))
-        print("未完成详细信息：" + str(set(fail)))
+        print("未完成详情：" + configuration.get("path").get("error"))
+        out = pd.DataFrame(set(fail))
+        out.to_csv(configuration.get("path").get("error"), index=False, header=False)
     except:
         pass
 
 
 # 导入企业信息记录
 complete = []
-df_companys = pd.read_excel('C:/Users/cat/Desktop/原始数据.xlsx')
-companys = df_companys['发行人全称'].tolist()
+original = pd.read_excel(configuration.get("path").get("import"))
+enterprise = original['发行人全称'].tolist()
 
-for index, item in enumerate(companys):
+for index, item in enumerate(enterprise):
     try:
         messages = get_company_message(item)
         df = message_to_df(messages, item)
-        if item == companys[0]:
-            df.to_csv('C:/Users/cat/Desktop/股东数据.csv', index=False, header=True)
+        if item == enterprise[0]:
+            df.to_csv(configuration.get("path").get("output"), index=False, header=True)
         else:
-            df.to_csv('C:/Users/cat/Desktop/股东数据.csv', mode='a+', index=False, header=False)
+            df.to_csv(configuration.get("path").get("output"), mode='a+', index=False, header=False)
         complete.append(item)
     except HTTPError:
         print("\n\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m\n")
-        result(companys, list(set(companys) ^ set(complete)))
+        result(enterprise, list(set(enterprise) ^ set(complete)))
         sys.exit(0)
     except:
         pass
-    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(companys))))
+    sys.stdout.write('\r' + str('进度：{:.2%}'.format((index + 1) / len(enterprise))))
     sys.stdout.flush()
     time.sleep(1)
 
 print('\n')
-result(companys, list(set(companys) ^ set(complete)))
+result(enterprise, list(set(enterprise) ^ set(complete)))

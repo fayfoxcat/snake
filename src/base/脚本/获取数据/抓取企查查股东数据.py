@@ -102,7 +102,7 @@ for index, item in enumerate(companys):
             df.to_csv('C:/Users/cat/Desktop/股东数据.csv', mode='a+', index=False, header=False)
         complete.append(item)
     except HTTPError:
-        print("\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m\n")
+        print("\n\033[1;31m 登录信息已失效或访问受限，请检查账号状态！\033[0m\n")
         result(companys, list(set(companys) ^ set(complete)))
         sys.exit(0)
     except:
@@ -111,4 +111,5 @@ for index, item in enumerate(companys):
     sys.stdout.flush()
     time.sleep(1)
 
+print('\n')
 result(companys, list(set(companys) ^ set(complete)))

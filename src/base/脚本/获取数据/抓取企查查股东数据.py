@@ -12,10 +12,8 @@ sess = requests.session()
 # 添加headers（header为自己登录的企查查网址，输入账号密码登录之后所显示的header，此代码的上方介绍了获取方法）
 afterLogin_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                                     'Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27',
-                      'cookie': 'qcc_did=ecfb8840-777e-432b-80e4-1dd1b5fef9b6; QCCSESSID=45957e8c5cbd2b350d61f21d1d; '
-                                'zg_did=%7B%22did%22%3A%20%22183188e2ebff15-0c702e7023d0e8-72422e2e-384000-183188e2ec01052%22%7D; '
-                                'zg_d609f98c92d24be8b23d93a3e4b117bc=%7B%22sid%22%3A%201662564314819%2C%22updated%22%3A%201662564423169%2C%22info%22%3A%201662564314821%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22api.qichacha.com%22%7D; '
-                                'acw_tc=df6d4a3a16626414829031919eefefbdfdee7f5737f53053997916931f'
+                      'cookie': 'QCCSESSID=764bf33914a82be15712f79610; qcc_did=8ea235a1-33a1-4982-93fb-ee4dc3be4702; '
+                                'acw_tc=0884322b16626849078076761e6f349d37c9d92bb28f63dc5d081a209d'
                       }
 
 

@@ -4,8 +4,8 @@
     "cookie": "QCCSESSID=c74979e6b554f6dbe3a491389e; qcc_did=c0f91a41-a744-4a5e-a9d7-83851531c1e7; MQCCSESSID=89be88ca8489b67e6388b77ce9; acw_tc=0884324816627162685886220e244c67b1addc6b730c21726360827d8b"
   },
   "path": {
-    "import": "data/原始数据.xlsx",
-    "outport": "data/股东数据.csv",
+    "input": "data/原始数据.xlsx",
+    "output": "data/股东数据.csv",
     "error": "data/未完成数据.csv"
   }
 }

@@ -90,7 +90,7 @@ def result(total, fail):
 
 # 导入企业信息记录
 complete = []
-original = pd.read_excel(configuration.get("path").get("import"))
+original = pd.read_excel(configuration.get("path").get("input"))
 enterprise = original['发行人全称'].tolist()
 
 for index, item in enumerate(enterprise):

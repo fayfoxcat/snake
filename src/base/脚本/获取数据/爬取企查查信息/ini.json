@@ -5,7 +5,7 @@
   },
   "path": {
     "import": "data/原始数据.xlsx",
-    "outport": "data/股东数据.csv",
+    "output": "data/股东数据.csv",
     "error": "data/未完成数据.csv"
   }
 }

@@ -81,7 +81,7 @@ def result(total, fail):
     print("未完成数：" + str(len(set(fail))))
     try:
         print("失败占比：" + str('{:.2%}'.format(len(set(fail)) / len(set(total)))))
-        print("未完成详情：" + (os.path.abspath('.') + "/" + configuration.get("path").get("error")).replace("\\", "/"))
+        print("未完成详情：" + (os.path.abspath('') + "/" + configuration.get("path").get("error")).replace("\\", "/"))
         out = pd.DataFrame(set(fail))
         out.to_csv(configuration.get("path").get("error"), index=False, header=False)
     except:

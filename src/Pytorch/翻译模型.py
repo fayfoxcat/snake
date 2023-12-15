@@ -47,8 +47,8 @@ args = Seq2SeqTrainingArguments(
     "test-translation",  # 输出目录，模型和训 练日志将保存到这里
     evaluation_strategy="epoch",  # 评估模型的策略，这里是每一轮结束后进行评估
     learning_rate=2e-5,  # 学习率
-    per_device_train_batch_size=64,  # 每个设备的训练批次大小，提高了批次大小
-    per_device_eval_batch_size=64,  # 每个设备的评估批次大小，提高了批次大小
+    per_device_train_batch_size=1024,  # 每个设备的训练批次大小，提高了批次大小
+    per_device_eval_batch_size=1024,  # 每个设备的评估批次大小，提高了批次大小
     weight_decay=0.01,  # 权重衰减率
     save_total_limit=3,  # 最多保存的模型数量
 )
@@ -69,8 +69,8 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 
 # 保存模型和分词器
-model_path = "../resources/translation/model"
-tokenizer_path = "../resources/translation/tokenizer"
+model_path = "/resources/translation/model"
+tokenizer_path = "/resources/translation/tokenizer"
 
 model.save_pretrained(model_path)
 tokenizer.save_pretrained(tokenizer_path)

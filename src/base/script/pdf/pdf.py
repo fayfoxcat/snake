@@ -1,5 +1,5 @@
 from  reportlab.lib.styles import ParagraphStyle as PS
-from reportlab.lib.units import cm
+from reportlab.lib.units import mm
 from reportlab.platypus import PageBreak
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus.frames import Frame
@@ -11,7 +11,7 @@ class MyDocTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):
         super().__init__(filename, **kw)
         self.allowSplitting = 0
-        template = PageTemplate('normal', [Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F1')])
+        template = PageTemplate('normal', [Frame(25*mm, 2.5*mm, 200*mm, 280*mm, id='F1')])
         self.addPageTemplates(template)
 
     def afterFlowable(self, flowable):

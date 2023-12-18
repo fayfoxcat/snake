@@ -9,6 +9,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 
+from src.base.script.pdf.pdf import MyDocTemplate
+
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont', 'font/SimSun.ttf'))
 pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))
@@ -61,7 +63,7 @@ class number_page_canvas(Canvas):
 
 # 函数接受数据参数并生成PDF
 def create_pdf(filename, title, header, data, style=None):
-    pdf = SimpleDocTemplate(filename, pagesize=pagesizes.A4)
+    pdf = MyDocTemplate(filename, pagesize=pagesizes.A4)
     elements = [create_title(item) for item in title] + [set_table(header, data, style)]
     pdf.build(elements, canvasmaker=number_page_canvas)
 

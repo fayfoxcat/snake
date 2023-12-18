@@ -6,8 +6,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.platypus.tableofcontents import TableOfContents
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont', 'font/SimSun.ttf'))
@@ -31,30 +30,17 @@ global_table_style = TableStyle([
     ('LINEAFTER', (-1, 0), (-1, -1), 0, '#FFFFFF'),  # 设置最后一列右边框为白色
 ])
 
-# 当前页码
-current_page = 1
 
-# 页面回调函数，用于更新当前页码
-def myLaterPages(canvas, doc):
-    global current_page
-    current_page = canvas.getPageNumber()
+# 函数接受数据参数并生成PDF
+def create_pdf(filename, title, header, data, style=None):
+    pdf = SimpleDocTemplate(filename, pagesize=pagesizes.A4)
+    elements = [create_title(item) for item in title] + [set_table(header, data, style)]
+    pdf.build(elements)
 
-# 创建目录样式
-def create_toc_style():
-    toc_style = TableOfContents()
-    toc_style.levelStyles = [
-        ParagraphStyle(fontSize=16, name='Heading1', leftIndent=20),
-        ParagraphStyle(fontSize=14, name='Heading2', leftIndent=40),
-        ParagraphStyle(fontSize=12, name='Heading3', leftIndent=60),
-        ParagraphStyle(fontSize=10, name='Heading4', leftIndent=80)
-    ]
-    return toc_style
 
-# 创建标题
-def create_title(title, toc):
+def create_title(title):
     level = title.get('level')
     content = title.get('content')
-
     # 设置样式
     font_name = 'ChineseFont-Bold' if level in (1, 2, 3) else 'ChineseFont'
     font_size = 16 if level == 1 else 14 if level == 2 else 12 if level == 3 else 12
@@ -74,19 +60,14 @@ def create_title(title, toc):
         spaceAfter=space_after,
         spaceBefore=space_before
     )
-
-    # 将标题添加到目录
-    toc_level = level - 1  # 调整目录级别
-    toc.addEntry(toc_level, current_page, content)
-
-    # 返回创建的段落
     return Paragraph(content, custom_style)
+
 
 # 插入表格内容
 def set_table(header, data, style=None):
     if style is None:
         style = []
-        # 次行表头、表头
+    # 次行表头、表头
     sub_row = list(data[0].keys())
     header_row = [header] + [""] * (len(sub_row) - 1)
     # 表格宽度
@@ -105,6 +86,7 @@ def set_table(header, data, style=None):
         set_local_style(table, item, sub_row, items)
     return table
 
+
 # 定义局部表格样式
 def set_local_style(table, element, sub_row, items):
     for i, item in enumerate(items):
@@ -112,25 +94,6 @@ def set_local_style(table, element, sub_row, items):
             if sub_row[j] == element.get('column') and element.get('expression')(cell):
                 table.setStyle(TableStyle([('BACKGROUND', (j, i + 2), (j, i + 2), element.get('color'))]))
 
-# 创建PDF文档
-def create_pdf(filename, titles, header, data, style=None):
-    global current_page
-    pdf = SimpleDocTemplate(filename, pagesize=pagesizes.A4)
-    elements = []
-
-    # 创建目录
-    toc = create_toc_style()
-    elements.append(toc)
-    elements.append(Spacer(1, 12))
-
-    # 添加标题和表格
-    for title in titles:
-        elements.append(create_title(title, toc))
-        elements.append(Spacer(1, 12))
-    elements.append(set_table(header, data, style))
-
-    # 构建PDF
-    pdf.build(elements, onLaterPages=myLaterPages)
 
 # 表格的表头
 title = [{'level': 1, 'content': "2 网络设备"},

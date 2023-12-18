@@ -1,11 +1,15 @@
 import json
+
 import pandas as pd
 from reportlab.lib import pagesizes
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import inch
+from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+
+from src.base.script.pdf.页码 import NumberedCanvas
 
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont', 'font/SimSun.ttf'))
@@ -30,11 +34,38 @@ global_table_style = TableStyle([
 ])
 
 
+# 设置页码
+class number_page_canvas(Canvas):
+    def __init__(self, *args, **kwargs):
+        Canvas.__init__(self, *args, **kwargs)
+        self.pages = 0  # 初始化页面计数器
+
+    def showPage(self):
+        self.pages += 1  # 页面计数器加一
+        self.draw_page_number(self.pages)  # 为当前页面添加页码
+        Canvas.showPage(self)
+
+    def draw_page_number(self, page):
+        # 绘制阴影矩形
+        self.setFillColor("#808080")
+        self.rect(180 * mm, 10 * mm, 12 * mm, 6 * mm, fill=True, stroke=False)
+        # 绘制间隙矩形
+        self.setFillColor("#FFFFFF")
+        self.rect(180 * mm, 10.5 * mm, 12 * mm, 6 * mm, fill=True, stroke=False)
+        # 绘制主矩形
+        self.setFillColor("#2AB4E9")
+        self.rect(180 * mm, 11.5 * mm, 12 * mm, 6 * mm, fill=True, stroke=False)
+        # 设置页码文字样式
+        self.setFillColor("#FFFFFF")
+        self.setFont("Helvetica-Bold", 14)
+        self.drawString(184 * mm, 13 * mm, str(page))
+
+
 # 函数接受数据参数并生成PDF
 def create_pdf(filename, title, header, data, style=None):
     pdf = SimpleDocTemplate(filename, pagesize=pagesizes.A4)
     elements = [create_title(item) for item in title] + [set_table(header, data, style)]
-    pdf.build(elements + elements)
+    pdf.build(elements, canvasmaker=number_page_canvas)
 
 
 def create_title(title):
@@ -70,7 +101,7 @@ def set_table(header, data, style=None):
     sub_row = list(data[0].keys())
     header_row = [header] + [""] * (len(sub_row) - 1)
     # 表格宽度
-    table_width = 6.66 * inch
+    table_width = 170 * mm
     column_num = len(sub_row)
 
     # 读取json数据转换为列表

@@ -1,58 +1,88 @@
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, TableOfContents, PageBreak
-from reportlab.platypus import Paragraph, Spacer, Table, PageTemplate
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
+from  reportlab.lib.styles import ParagraphStyle as PS
+from reportlab.lib.units import cm
+from reportlab.platypus import PageBreak
+from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
+from reportlab.platypus.frames import Frame
+from reportlab.platypus.paragraph import Paragraph
+from reportlab.platypus.tableofcontents import TableOfContents
 
-# 创建一个PDF文档
-doc = SimpleDocTemplate("document_with_table_of_contents.pdf", pagesize=landscape(letter))
 
-# 创建样式
-styles = getSampleStyleSheet()
-toc_style = styles["Normal"]
-toc_style.alignment = 1  # 居中对齐
+class MyDocTemplate(BaseDocTemplate):
+    def __init__(self, filename, **kw):
+        super().__init__(filename, **kw)
+        self.allowSplitting = 0
+        template = PageTemplate('normal', [Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F1')])
+        self.addPageTemplates(template)
 
-# 创建目录
+    def afterFlowable(self, flowable):
+        "Registers TOC entries."
+        if flowable.__class__.__name__ == 'Paragraph':
+            text = flowable.getPlainText()
+            style = flowable.style.name
+            if style == 'Heading1':
+                level = 0
+            elif style == 'Heading2':
+                level = 1
+            else:
+                return
+            E = [level, text, self.page]
+            #if we have a bookmark name append that to our notify data
+            bn = getattr(flowable,'_bookmarkName',None)
+            if bn is not None: E.append(bn)
+            self.notify('TOCEntry', tuple(E))
+
+centered = PS(name = 'centered',
+              fontSize = 30,
+              leading = 16,
+              alignment = 1,
+              spaceAfter = 20)
+
+h1 = PS(
+    name = 'Heading1',
+    fontSize = 14,
+    leading = 16)
+
+
+h2 = PS(name = 'Heading2',
+        fontSize = 12,
+        leading = 14)
+
+
+# Build story.
+story = []
+
+# Create an instance of TableOfContents. Override the level styles (optional)
+# and add the object to the story
+
 toc = TableOfContents()
-toc.setStyle(toc_style)
-toc.addEntry(0, "Cover Page", 1)
-toc.addEntry(1, "Chapter 1", 2)
-toc.addEntry(1, "Chapter 2", 3)
+toc.levelStyles = [
+    PS(fontName='Times-Bold', fontSize=20, name='TOCHeading1', leftIndent=20, firstLineIndent=-20, spaceBefore=10, leading=16),
+    PS(fontSize=18, name='TOCHeading2', leftIndent=40, firstLineIndent=-20, spaceBefore=5, leading=12),
+]
+story.append(toc)
 
-# 创建页面模板
-def landscape_page_template(canvas, doc, content_frame):
-    width, height = landscape(letter)
-    canvas.saveState()
-    canvas.setFont("Helvetica", 10)
-    canvas.drawString(inch, height - inch, "Page %d" % doc.page)
-    canvas.restoreState()
+#this function makes our headings
+def doHeading(text,sty):
+    from hashlib import sha1
+    #create bookmarkname
+    bn = sha1((text + sty.name).encode()).hexdigest()
+    #modify paragraph text to include an anchor point with name bn
+    h=Paragraph(text+'<a name="%s"/>' % bn,sty)
+    #store the bookmark name on the flowable so afterFlowable can see this
+    h._bookmarkName=bn
+    story.append(h)
 
-landscape_template = PageTemplate(id="landscape", frames=[content_frame], onPage=landscape_page_template)
-
-# 创建内容
-content = []
-
-# 封面页
-cover_page = Paragraph("Cover Page", styles["Title"])
-content.append(cover_page)
-content.append(PageBreak())
-
-# 第一章
-chapter1 = Paragraph("Chapter 1", styles["Heading1"])
-content.append(chapter1)
-content.append(Spacer(1, inch))
-
-# 在此添加第一章内容
-
-# 第二章
-chapter2 = Paragraph("Chapter 2", styles["Heading1"])
-content.append(chapter2)
-content.append(Spacer(1, inch))
-
-# 在此添加第二章内容
-
-# 添加目录到文档
-content.insert(0, toc)
-doc.addPageTemplates([landscape_template])
-doc.build(content)
+story.append(Paragraph('<b>Table of contents</b>', centered))
+story.append(PageBreak())
+doHeading('First heading', h1)
+story.append(Paragraph('Text in first heading', PS('body')))
+doHeading('First sub heading', h2)
+story.append(Paragraph('Text in first sub heading', PS('body')))
+story.append(PageBreak())
+doHeading('Second sub heading', h2)
+story.append(Paragraph('Text in second sub heading', PS('body')))
+story.append(PageBreak())
+doHeading('Last heading', h1)
+story.append(Paragraph('Text in last heading', PS('body')))
+doc = MyDocTemplate('mintoc.pdf')
+doc.multiBuild(story)

@@ -9,8 +9,6 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 
-from src.base.script.pdf.页码 import NumberedCanvas
-
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont', 'font/SimSun.ttf'))
 pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))

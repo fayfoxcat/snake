@@ -34,7 +34,7 @@ class AtomicInteger:
             self._value = int(v)
 
 
-data = open('src/base/single/data.json')
+data = open('src/base/single/单板运行状态.json')
 # 将json格式的数据映射成list的形式
 users = json.load(data)
 index = AtomicInteger()

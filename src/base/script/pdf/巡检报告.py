@@ -69,10 +69,10 @@ class CustomTemplate(BaseDocTemplate):
                 level = 2
             else:
                 return
-            E = [level, text, self.page]
+            e = [level, text, self.page]
             bn = getattr(flowable, '_bookmarkName', None)
-            if bn is not None: E.append(bn)
-            self.notify('TOCEntry', tuple(E))
+            if bn is not None: e.append(bn)
+            self.notify('TOCEntry', tuple(e))
 
 
 # 定义页面页码样式
@@ -86,7 +86,7 @@ class NumberPageCanvas(Canvas):
         self.draw_page_number(self.pages)  # 为当前页面添加页码
         Canvas.showPage(self)
 
-    def draw_page_number(self, page):
+    def draw_page_number(self, page_number):
         # 绘制阴影矩形
         self.setFillColor("#808080")
         self.rect(180 * mm, 10 * mm, 12 * mm, 6 * mm, fill=True, stroke=False)
@@ -99,7 +99,7 @@ class NumberPageCanvas(Canvas):
         # 设置页码文字样式（占两位字符）
         self.setFillColor("#FFFFFF")
         self.setFont("Helvetica-Bold", 14)
-        self.drawString(183.5 * mm, 13 * mm, "{:02d}".format(page))
+        self.drawString(183.5 * mm, 13 * mm, "{:02d}".format(page_number))
 
 
 # pdf页面

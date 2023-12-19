@@ -155,6 +155,8 @@ def insert_table(header, data, conditions=None, merge=None):
 
     # 读取json数据转换为列表
     items = pd.DataFrame(data).values.tolist()
+    # 保存一份原始数据，用于cell_style、merge_cells
+    original_items = [list(row) for row in items]
     # 使用Paragraph自动换行，并仅处理字符串类型的数据
     styles = getSampleStyleSheet()
     for row in items:
@@ -168,8 +170,8 @@ def insert_table(header, data, conditions=None, merge=None):
     # 设置全局表格样式
     table.setStyle(tableStyle)
 
-    cell_style(table, conditions, sub_row, items)
-    merge_cells(table, merge, sub_row, items)
+    cell_style(table, conditions, sub_row, original_items)
+    merge_cells(table, merge, sub_row, original_items)
     return table
 
 
@@ -188,19 +190,22 @@ def cell_style(table, conditions, sub_row, items):
 def merge_cells(table, merge, sub_row, items):
     if merge is None:
         return
-    # 处理合并单元格
     for merge_column in merge:
         if merge_column in sub_row:
             column_index = sub_row.index(merge_column)
             start_row = None
-            prev_value = None
+            prev_value = 'unique_nonexistent_value'  # 初始值设为一个唯一的值
             for row_index, row_data in enumerate(items):
                 current_value = row_data[column_index]
+                # 如果当前值是 None，将其视为一个特殊标记
+                if current_value is None:
+                    current_value = 'special_null_value'
                 if current_value != prev_value:
                     if start_row is not None and row_index - start_row > 1:
-                        table.setStyle(
-                            TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
+                        table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
                     start_row = row_index
                 prev_value = current_value
+            # 检查并处理最后一个合并区域
             if start_row is not None and len(items) - start_row > 1:
                 table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, len(items) + 1))]))
+

@@ -1,4 +1,3 @@
-# 表格的表头
 import json
 
 from src.base.script.pdf.巡检报告 import addText, addTable, build

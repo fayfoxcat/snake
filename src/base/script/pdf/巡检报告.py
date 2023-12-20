@@ -131,16 +131,16 @@ def addText(body: List[dict[str, str]]) -> None:
     Pages.extend(contents(body))
 
 
-def addTable(header: str, table: List[dict], ignore_sub_row: bool = False,
+def addTable(header: str, table: List[dict], ignoreSubRow: bool = False,
              conditions: List[dict] = None, merge: List[str] = None) -> None:
     """ 添加表格
     :param header: 表格表头
     :param table: 表格数据
-    :param ignore_sub_row: 是否忽略次级表头
+    :param ignoreSubRow: 是否忽略次级表头
     :param conditions: 指定列数据条件判断
     :param merge: 指定列合并单元格
     """
-    Pages.append(insert_table(header, table, ignore_sub_row=ignore_sub_row, conditions=conditions, merge=merge))
+    Pages.append(insertTable(header, table, ignoreSubRow=ignoreSubRow, conditions=conditions, merge=merge))
 
 
 # 生成标题和目录
@@ -162,19 +162,16 @@ def heading(text, style):
 
 
 # 插入表格内容
-def insert_table(header, data, ignore_sub_row=False, conditions=None, merge=None):
+def insertTable(header, data, ignoreSubRow=False, conditions=None, merge=None):
     rows = []
     # 次行表头、表头
-    sub_row = list(data[0].keys())
-    header_row = [header] + [""] * (len(sub_row) - 1)
+    subRow = list(data[0].keys())
+    headerRow = [header] + [""] * (len(subRow) - 1)
 
-    # 表格宽度
-    table_width = 170 * mm
-    column_num = len(sub_row)
     # 读取json数据转换为列表
     items = pd.DataFrame(data).values.tolist()
     # 保存一份原始数据，用于cell_style、merge_cells
-    original_items = [list(row) for row in items]
+    originalItems = [list(row) for row in items]
     # 使用Paragraph自动换行，并仅处理字符串类型的数据
     styles = getSampleStyleSheet()
     for row in items:
@@ -185,22 +182,22 @@ def insert_table(header, data, ignore_sub_row=False, conditions=None, merge=None
                 row[i] = Paragraph(item, paragraph_style)
 
     # 组装表格
-    rows.append(header_row)
-    if not ignore_sub_row:
-        rows.append(sub_row)
+    rows.append(headerRow)
+    if not ignoreSubRow:
+        rows.append(subRow)
     rows.extend(items)
     # 创建表格, 固定首行行高，其余行行高自适应
-    table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=table_width / column_num)
+    table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=170 * mm / len(subRow))
 
     # 设置全局表格样式
     table.setStyle(tableStyle)
-    cell_style(table, conditions, sub_row, original_items)
-    merge_cells(table, merge, sub_row, original_items)
+    cellStyle(table, conditions, subRow, originalItems)
+    mergeCells(table, merge, subRow, originalItems)
     return table
 
 
 # 定义单元格样式
-def cell_style(table, conditions, sub_row, items):
+def cellStyle(table, conditions, sub_row, items):
     if conditions is None:
         return
     for element in conditions:
@@ -211,25 +208,25 @@ def cell_style(table, conditions, sub_row, items):
 
 
 # 处理合并单元格
-def merge_cells(table, merge, sub_row, items):
+def mergeCells(table, merge, sub_row, items):
     if merge is None:
         return
-    for merge_column in merge:
-        if merge_column in sub_row:
-            column_index = sub_row.index(merge_column)
-            start_row = None
+    for mergeColumn in merge:
+        if mergeColumn in sub_row:
+            columnIndex = sub_row.index(mergeColumn)
+            startRow = None
             prev_value = 'unique_nonexistent_value'  # 初始值设为一个唯一的值
-            for row_index, row_data in enumerate(items):
-                current_value = row_data[column_index]
+            for rowIndex, row_data in enumerate(items):
+                currentValue = row_data[columnIndex]
                 # 如果当前值是 None，将其视为一个特殊标记
-                if current_value is None:
-                    current_value = 'special_null_value'
-                if current_value != prev_value:
-                    if start_row is not None and row_index - start_row > 1:
+                if currentValue is None:
+                    currentValue = 'special_null_value'
+                if currentValue != prev_value:
+                    if startRow is not None and rowIndex - startRow > 1:
                         table.setStyle(
-                            TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
-                    start_row = row_index
-                prev_value = current_value
+                            TableStyle([('SPAN', (columnIndex, startRow + 2), (columnIndex, rowIndex + 1))]))
+                    startRow = rowIndex
+                prev_value = currentValue
             # 检查并处理最后一个合并区域
-            if start_row is not None and len(items) - start_row > 1:
-                table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, len(items) + 1))]))
+            if startRow is not None and len(items) - startRow > 1:
+                table.setStyle(TableStyle([('SPAN', (columnIndex, startRow + 2), (columnIndex, len(items) + 1))]))

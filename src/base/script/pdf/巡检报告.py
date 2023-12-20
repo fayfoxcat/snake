@@ -1,4 +1,5 @@
 from hashlib import sha1
+from typing import List
 
 import pandas as pd
 from reportlab.lib import pagesizes
@@ -107,7 +108,11 @@ Pages = []
 
 
 # 函数接受数据参数并生成PDF
-def build(filename):
+def build(filename: str) -> None:
+    """
+    生成pdf
+    :param filename: 指定文件路径文件名
+    """
     toc = TableOfContents()
     toc.levelStyles = ContentsStyle
     toc.dotsMinLevel = 0
@@ -119,9 +124,18 @@ def build(filename):
 
 
 # 设置页面内容
-def page(body, header, table, conditions=None, merge=None):
+def page(body: List[dict], header: str, table: List[int], ignore_sub_row: bool = False,
+         conditions: List[dict] = None, merge: List[str] = None) -> None:
+    """ 添加页面内容
+    :param body: 文本内容
+    :param header: 表格表头
+    :param table: 表格数据
+    :param ignore_sub_row: 是否忽略次级表头
+    :param conditions: 指定列数据条件判断
+    :param merge: 指定列合并单元格
+    """
     Pages.extend(contents(body))
-    Pages.append(insert_table(header, table, conditions, merge))
+    Pages.append(insert_table(header, table, ignore_sub_row=ignore_sub_row, conditions=conditions, merge=merge))
 
 
 # 生成标题和目录
@@ -143,16 +157,15 @@ def heading(text, style):
 
 
 # 插入表格内容
-def insert_table(header, data, conditions=None, merge=None):
+def insert_table(header, data, ignore_sub_row=False, conditions=None, merge=None):
+    rows = []
     # 次行表头、表头
     sub_row = list(data[0].keys())
     header_row = [header] + [""] * (len(sub_row) - 1)
-    # 行高
-    row_heights = [27] + [None] * (len(data) + 1)
+
     # 表格宽度
     table_width = 170 * mm
     column_num = len(sub_row)
-
     # 读取json数据转换为列表
     items = pd.DataFrame(data).values.tolist()
     # 保存一份原始数据，用于cell_style、merge_cells
@@ -162,14 +175,20 @@ def insert_table(header, data, conditions=None, merge=None):
     for row in items:
         for i, item in enumerate(row):
             if isinstance(item, str):
-                row[i] = Paragraph(item, styles['Normal'])
+                # 使用自定义中文字体和样式
+                paragraph_style = styles['Normal'].clone(name='a', fontName='ChineseFont', fontSize=10)
+                row[i] = Paragraph(item, paragraph_style)
 
-    # 创建表格
-    table = Table([header_row] + [sub_row] + items, rowHeights=row_heights,
-                  colWidths=table_width / column_num)
+    # 组装表格
+    rows.append(header_row)
+    if not ignore_sub_row:
+        rows.append(sub_row)
+    rows.extend(items)
+    # 创建表格, 固定首行行高，其余行行高自适应
+    table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=table_width / column_num)
+
     # 设置全局表格样式
     table.setStyle(tableStyle)
-
     cell_style(table, conditions, sub_row, original_items)
     merge_cells(table, merge, sub_row, original_items)
     return table
@@ -202,10 +221,10 @@ def merge_cells(table, merge, sub_row, items):
                     current_value = 'special_null_value'
                 if current_value != prev_value:
                     if start_row is not None and row_index - start_row > 1:
-                        table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
+                        table.setStyle(
+                            TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
                     start_row = row_index
                 prev_value = current_value
             # 检查并处理最后一个合并区域
             if start_row is not None and len(items) - start_row > 1:
                 table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, len(items) + 1))]))
-

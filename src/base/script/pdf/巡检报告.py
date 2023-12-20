@@ -1,3 +1,8 @@
+#!/bin/env python
+# -*- coding: UTF-8 -*-
+"""
+方法用于生成pdf，依次需求反复调用 addText addTable构建pdf页面，调用build生成pdf文档
+"""
 import logging
 from hashlib import sha1
 from typing import List

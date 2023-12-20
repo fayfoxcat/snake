@@ -1,3 +1,4 @@
+import logging
 from hashlib import sha1
 from typing import List
 
@@ -41,9 +42,7 @@ tableStyle = TableStyle([
     ('ALIGN', (0, 0), (-1, 0), 'CENTER'),  # 首行居中对齐
     ('ALIGN', (0, 1), (-1, -1), 'LEFT'),  # 除首行外，其余行向左对齐
     ('FONTNAME', (0, 0), (-1, 0), 'ChineseFont-Bold'),  # 首行字体加粗
-    ('FONTNAME', (0, 1), (-1, 1), 'ChineseFont-Bold'),  # 第二行字体加粗
-    ('FONTNAME', (0, 2), (-1, -1), 'ChineseFont'),  # 其他行使用注册的中文字体
-    ('FONTSIZE', (-1, 0), (-1, -1), 10),  # 字体大小
+    ('FONTSIZE', (0, 0), (-1, -1), 10),  # 字体大小
     ('LINEABOVE', (0, 0), (-1, 0), 1.5, '#49A8D8'),  # 首行上方线条加粗
     ('LINEBELOW', (0, -1), (-1, -1), 1.5, '#49A8D8'),  # 尾行下方线条加粗
     ('LINEBEFORE', (0, 0), (0, -1), 0, '#FFFFFF'),  # 设置第一列左边框为白色
@@ -131,16 +130,18 @@ def addText(body: List[dict[str, str]]) -> None:
     Pages.extend(contents(body))
 
 
-def addTable(header: str, table: List[dict], ignoreSubRow: bool = False,
+def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold: List[str] = None,
              conditions: List[dict] = None, merge: List[str] = None) -> None:
     """ 添加表格
     :param header: 表格表头
     :param table: 表格数据
-    :param ignoreSubRow: 是否忽略次级表头
+    :param addSubRow: 是否自动添加次表头
+    :param columnBold: 指定列加粗
     :param conditions: 指定列数据条件判断
     :param merge: 指定列合并单元格
     """
-    Pages.append(insertTable(header, table, ignoreSubRow=ignoreSubRow, conditions=conditions, merge=merge))
+    Pages.append(
+        insertTable(header, table, addSubRow=addSubRow, columnBold=columnBold, conditions=conditions, merge=merge))
 
 
 # 生成标题和目录
@@ -162,49 +163,83 @@ def heading(text, style):
 
 
 # 插入表格内容
-def insertTable(header, data, ignoreSubRow=False, conditions=None, merge=None):
+def insertTable(header, data, addSubRow=False, columnBold: List[str] = None, conditions=None, merge=None):
     rows = []
-    # 次行表头、表头
+    # 次行表头、表头、列表数据
     subRow = list(data[0].keys())
     headerRow = [header] + [""] * (len(subRow) - 1)
-
-    # 读取json数据转换为列表
     items = pd.DataFrame(data).values.tolist()
-    # 保存一份原始数据，用于cell_style、merge_cells
+    # 保存一份原始数据，用于cellStyle、mergeCells
+    originalSub = [row for row in subRow]
     originalItems = [list(row) for row in items]
-    # 使用Paragraph自动换行，并仅处理字符串类型的数据
-    styles = getSampleStyleSheet()
-    for row in items:
-        for i, item in enumerate(row):
-            if isinstance(item, str):
-                # 使用自定义中文字体和样式
-                paragraph_style = styles['Normal'].clone(name='a', fontName='ChineseFont', fontSize=10)
-                row[i] = Paragraph(item, paragraph_style)
 
-    # 组装表格
-    rows.append(headerRow)
-    if not ignoreSubRow:
+    # 组装次行表头、列表数据
+    if addSubRow:
         rows.append(subRow)
     rows.extend(items)
-    # 创建表格, 固定首行行高，其余行行高自适应
-    table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=170 * mm / len(subRow))
 
+    # 定义次表头样式，指定列加粗
+    columns = None
+    if columnBold is not None:
+        columns = [originalSub.index(i) for i in columnBold if i in originalSub]
+    # 处理数据自动换行
+    autoWrap(rows, isSubBold=addSubRow, columnBold=columns)
+
+    # 创建表格, 固定首行行高，其余行行高自适应
+    table = Table([headerRow] + rows, rowHeights=([27] + [None] * (len(rows))), colWidths=170 * mm / len(subRow))
     # 设置全局表格样式
     table.setStyle(tableStyle)
-    cellStyle(table, conditions, subRow, originalItems)
-    mergeCells(table, merge, subRow, originalItems)
+    cellStyle(table, conditions, originalSub, originalItems, hasSubheader=addSubRow)
+    mergeCells(table, merge, originalSub, originalItems)
     return table
 
 
+specifyColumns = PS(name='specifyColumns', fontName='ChineseFont-Bold', fontSize=10)
+
+
+def autoWrap(rows, isSubBold=False, columnBold=None):
+    """
+    自动换行并为指定列应用固定样式，首行有固定样式。
+
+    :param rows: 表格的行数据，每行是一个列表。
+    :param styled_columns: 应用特定样式的列索引列表。
+    """
+    styles = getSampleStyleSheet()
+    subRowStyle = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
+    columnStyles = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
+    cellStyle = styles['Normal'].clone(name='cellStyle', fontName='ChineseFont', fontSize=10)
+
+    for row_index, row in enumerate(rows):
+        for column_index, item in enumerate(row):
+            # 为首行和指定列应用特定样式
+            if isSubBold and row_index == 0:
+                style = subRowStyle
+            elif columnBold and column_index in columnBold:
+                style = columnStyles
+            else:
+                style = cellStyle
+            if item is not None:
+                row[column_index] = Paragraph(str(item), style)
+
+
 # 定义单元格样式
-def cellStyle(table, conditions, sub_row, items):
+def cellStyle(table, conditions, sub_row, items, hasSubheader=True):
     if conditions is None:
         return
+    offset = 2 if hasSubheader else 1
     for element in conditions:
+        errorColumn: bool = True
         for i, item in enumerate(items):
             for j, cell in enumerate(item):
-                if sub_row[j] == element.get('column') and element.get('expression')(cell):
-                    table.setStyle(TableStyle([('BACKGROUND', (j, i + 2), (j, i + 2), element.get('color'))]))
+                if errorColumn and sub_row[j] == element.get('column'):
+                    try:
+                        if element.get('expression')(cell):
+                            table.setStyle(
+                                TableStyle([('BACKGROUND', (j, i + offset), (j, i + offset), element.get('color'))]))
+                    except Exception as e:
+                        # 设置判断列表达式False，跳出该表达式的所有循环
+                        errorColumn = False
+                        logging.error(f"conditions中的表达式有误: {e}")
 
 
 # 处理合并单元格

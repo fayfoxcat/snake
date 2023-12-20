@@ -124,17 +124,22 @@ def build(filename: str) -> None:
 
 
 # 设置页面内容
-def page(body: List[dict], header: str, table: List[int], ignore_sub_row: bool = False,
-         conditions: List[dict] = None, merge: List[str] = None) -> None:
-    """ 添加页面内容
+def addText(body: List[dict]) -> None:
+    """ 添加文本内容
     :param body: 文本内容
+    """
+    Pages.extend(contents(body))
+
+
+def addTable(header: str, table: List[int], ignore_sub_row: bool = False,
+             conditions: List[dict] = None, merge: List[str] = None) -> None:
+    """ 添加表格
     :param header: 表格表头
     :param table: 表格数据
     :param ignore_sub_row: 是否忽略次级表头
     :param conditions: 指定列数据条件判断
     :param merge: 指定列合并单元格
     """
-    Pages.extend(contents(body))
     Pages.append(insert_table(header, table, ignore_sub_row=ignore_sub_row, conditions=conditions, merge=merge))
 
 

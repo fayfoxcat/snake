@@ -124,14 +124,14 @@ def build(filename: str) -> None:
 
 
 # 设置页面内容
-def addText(body: List[dict]) -> None:
+def addText(body: List[dict[str, str]]) -> None:
     """ 添加文本内容
     :param body: 文本内容
     """
     Pages.extend(contents(body))
 
 
-def addTable(header: str, table: List[int], ignore_sub_row: bool = False,
+def addTable(header: str, table: List[dict], ignore_sub_row: bool = False,
              conditions: List[dict] = None, merge: List[str] = None) -> None:
     """ 添加表格
     :param header: 表格表头

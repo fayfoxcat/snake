@@ -89,7 +89,7 @@ class CanvasDrawing(Flowable):
         self.draw_custom_text(header, 0, 570, "center", "ChineseFont-Bold", 30, "#244B98")
         self.draw_custom_text(sub, 0, 600, "center", "ChineseFont-Bold", 14, "#969897")
         for i, item in enumerate(self.info):
-            self.draw_custom_text(item + "：" + self.info.get(item), 180, (650 + i * 30), "left",
+            self.draw_custom_text(item + "：" + self.info.get(item), 170, (650 + i * 30), "left",
                                   "ChineseFont-Bold", 16, "#000000")
 
     def draw_custom_text(self, text, x, y, align, font, size, color):
@@ -169,6 +169,12 @@ class NumberPageCanvas(Canvas):
         Canvas.__init__(self, *args, **kwargs)
         self.pages = 0  # 初始化页面计数器
         self.has_cover = Cover  # 假设第一页是封面
+        self.x = 510
+        self.y = 30
+        self.width = 35
+        self.height = 17
+        self.fontName = "ChineseFont-Bold"
+        self.fontSize = 14
 
     def showPage(self):
         # 仅当不是封面时，增加页面计数器
@@ -182,17 +188,19 @@ class NumberPageCanvas(Canvas):
     def draw_page_number(self, page_number):
         # 绘制阴影矩形
         self.setFillColor("#808080")
-        self.rect(510, 28, 35, 17, fill=True, stroke=False)
+        self.rect(self.x, self.y, self.width, self.height, fill=True, stroke=False)
         # 绘制间隙矩形
         self.setFillColor("#FFFFFF")
-        self.rect(510, 30, 35, 17, fill=True, stroke=False)
+        self.rect(self.x, self.y + 2, self.width, self.height, fill=True, stroke=False)
         # 绘制主矩形
         self.setFillColor("#2AB4E9")
-        self.rect(510, 32, 35, 17, fill=True, stroke=False)
+        self.rect(self.x, self.y + 4, self.width, self.height, fill=True, stroke=False)
         # 设置页码文字样式（占两位字符）
         self.setFillColor("#FFFFFF")
-        self.setFont("ChineseFont-Bold", 14)
-        self.drawString(520, 36, "{:02d}".format(page_number))
+        self.setFont(self.fontName, self.fontSize)
+        # 计算文本宽度
+        text_width = self.stringWidth(str(page_number), self.fontName, self.fontSize)
+        self.drawString(self.x + (self.width - text_width) / 2, self.y + 7.5, str(page_number))
 
 
 # 函数接受数据参数并生成PDF
@@ -266,7 +274,7 @@ def heading(text, style) -> Paragraph:
     生成目录和标题关联链接
     :param text: 标题内容
     :param style: 样式
-    :return:
+    :return: 样式
     """
     bn = sha1((text + style.name).encode()).hexdigest()
     h = Paragraph(text + '<a name="%s"/>' % bn, style)

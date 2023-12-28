@@ -3,26 +3,24 @@
 """
 方法用于生成pdf，依次需求调用cover反复调用 addText addTable构建pdf页面，调用build生成pdf文档
 """
-import logging
 import math
 from hashlib import sha1
-from math import cos, pi, sin
 from typing import List
 
-import pandas as pd
 from reportlab.graphics.charts.barcharts import VerticalBarChart, BarChartProperties, HorizontalBarChart
 from reportlab.graphics.charts.legends import Legend
 from reportlab.graphics.charts.piecharts import Pie
+from reportlab.graphics.renderSVG import cos, pi, sin
 from reportlab.graphics.shapes import Drawing, String, Line, Circle
 from reportlab.graphics.widgetbase import TypedPropertyCollection
 from reportlab.lib import pagesizes, colors
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, SimpleDocTemplate, Flowable
+from reportlab.platypus import Paragraph, PageBreak, PageTemplate, SimpleDocTemplate, Flowable
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.tableofcontents import TableOfContents
 
@@ -48,29 +46,6 @@ h3 = ParagraphStyle(name='Heading3', fontName='ChineseFont-Bold', fontSize=12, l
                     leading=20)
 h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, leftIndent=-20, spaceBefore=10,
                     leading=20)
-
-# 定义全局表格样式
-tableStyle = TableStyle([
-    ('SPAN', (0, 0), (-1, 0)),  # 首行合并单元格
-    ('BACKGROUND', (0, 0), (-1, 0), "#A1C4E7"),  # 设置第一行的背景色为浅蓝色
-    ('GRID', (0, 1), (-1, -1), 1, '#49A8D8'),  # 定义网格线，从第二行开始
-    ('BOX', (0, 0), (-1, -1), 1, '#49A8D8'),  # 整体边框
-    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # 文本垂直居中
-    ('ALIGN', (0, 0), (-1, 0), 'CENTER'),  # 首行居中对齐
-    ('ALIGN', (0, 1), (-1, -1), 'LEFT'),  # 除首行外，其余行向左对齐
-    ('FONTNAME', (0, 0), (-1, 0), 'ChineseFont-Bold'),  # 首行字体加粗
-    ('FONTSIZE', (0, 0), (-1, -1), 10),  # 字体大小
-    ('LINEABOVE', (0, 0), (-1, 0), 1.5, '#49A8D8'),  # 首行上方线条加粗
-    ('LINEBELOW', (0, -1), (-1, -1), 1.5, '#49A8D8'),  # 尾行下方线条加粗
-    ('LINEBEFORE', (0, 0), (0, -1), 0, '#FFFFFF'),  # 设置第一列左边框为白色
-    ('LINEAFTER', (-1, 0), (-1, -1), 0, '#FFFFFF'),  # 设置最后一列右边框为白色
-])
-
-# 表格条件样式：次表头样式、指定列样式、单元格样式
-styles = getSampleStyleSheet()
-subRowStyle = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
-columnStyles = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
-cellStyle = styles['Normal'].clone(name='cellStyle', fontName='ChineseFont-Slim', fontSize=10)
 
 # pdf页面：封面、正文
 Cover = []
@@ -543,7 +518,6 @@ class RingChart(PieChart):
         draw.drawOn(self.canv, self.x, self.y)
 
 
-# 函数接受数据参数并生成PDF
 def build(filename: str) -> None:
     """
     生成pdf
@@ -579,19 +553,6 @@ def addText(body: List[dict[str, str]]) -> None:
     """
     Pages.extend(contents(body))
 
-
-def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold: List[str] = None,
-             conditions: List[dict] = None, merge: List[str] = None) -> None:
-    """ 添加表格
-    :param header: 表格表头
-    :param table: 表格数据
-    :param addSubRow: 是否自动添加次表头
-    :param columnBold: 指定列加粗
-    :param conditions: 指定列数据条件判断
-    :param merge: 指定列合并单元格
-    """
-    Pages.append(insert_table(header, table, add_sub_row=addSubRow,
-                              column_bold=columnBold, conditions=conditions, merge=merge))
 
 def addVerticalChart(data: List[dict[str, str]], label: str, bars: List[str], colors: List[str], legend: List[str]):
     """
@@ -654,123 +615,3 @@ def heading(text, style) -> Paragraph:
     h = Paragraph(text + '<a name="%s"/>' % bn, style)
     h._bookmarkName = bn
     return h
-
-
-def insert_table(header, data, add_sub_row=False, column_bold: List[str] = None, conditions=None, merge=None) -> Table:
-    """
-    插入表格内容
-    :param header: 表格表头
-    :param data: 表格数据
-    :param add_sub_row: 是否自动添加次表头
-    :param column_bold: 指定列加粗
-    :param conditions: 指定列数据条件判断
-    :param merge: 指定列合并单元格
-    :return: 表格
-    """
-    rows = []
-    # 次行表头、表头、列表数据
-    sub_row = list(data[0].keys())
-    header_row = [header] + [""] * (len(sub_row) - 1)
-    items = pd.DataFrame(data).values.tolist()
-    # 保存一份原始数据，用于cellStyle、mergeCells
-    original_sub = [row for row in sub_row]
-    original_items = [list(row) for row in items]
-
-    # 组装次行表头、列表数据
-    if add_sub_row:
-        rows.append(sub_row)
-    rows.extend(items)
-
-    # 定义次表头样式，指定列加粗
-    columns = None
-    if column_bold is not None:
-        columns = [original_sub.index(i) for i in column_bold if i in original_sub]
-    # 处理数据自动换行
-    auto_wrap(rows, is_sub_bold=add_sub_row, column_bold=columns)
-
-    # 创建表格, 固定首行行高，其余行行高自适应
-    table = Table([header_row] + rows, rowHeights=([27] + [None] * (len(rows))), colWidths=480 / len(sub_row))
-    # 设置全局表格样式
-    table.setStyle(tableStyle)
-    cell_style(table, conditions, original_sub, original_items, has_sub_header=add_sub_row)
-    merge_cells(table, merge, original_sub, original_items)
-    return table
-
-
-def auto_wrap(rows, is_sub_bold=False, column_bold=None) -> None:
-    """
-    自动换行并为指定列应用固定样式，首行有固定样式。
-    :param rows: 表格的行数据，每行是一个列表
-    :param is_sub_bold: 次行表头是否加粗
-    :param column_bold: 指定列加粗
-    """
-    for row_index, row in enumerate(rows):
-        for column_index, item in enumerate(row):
-            # 为首行和指定列应用特定样式
-            if is_sub_bold and row_index == 0:
-                style = subRowStyle
-            elif column_bold and column_index in column_bold:
-                style = columnStyles
-            else:
-                style = cellStyle
-            if item is not None:
-                row[column_index] = Paragraph(str(item), style)
-
-
-#
-def cell_style(table, conditions, sub_row, items, has_sub_header=True) -> None:
-    """
-    定义单元格样式
-    :param table: 表格
-    :param conditions: 条件列表
-    :param sub_row: 次级表头
-    :param items: 数据
-    :param has_sub_header: 是否包含表头
-    """
-    if conditions is None:
-        return
-    offset = 2 if has_sub_header else 1
-    for element in conditions:
-        error_column: bool = True
-        for i, item in enumerate(items):
-            for j, cell in enumerate(item):
-                if error_column and sub_row[j] == element.get('column'):
-                    try:
-                        if element.get('expression')(cell):
-                            table.setStyle(
-                                TableStyle([('BACKGROUND', (j, i + offset), (j, i + offset), element.get('color'))]))
-                    except Exception as e:
-                        # 设置判断列表达式False，跳出该表达式的所有循环
-                        error_column = False
-                        logging.error(f"conditions中的表达式有误: {e}")
-
-
-def merge_cells(table, merge, sub_row, items) -> None:
-    """
-    处理合并单元格
-    :param table: 表格
-    :param merge: 指定列合并单元格
-    :param sub_row: 次行表头
-    :param items: 数据
-    """
-    if merge is None:
-        return
-    for merge_column in merge:
-        if merge_column in sub_row:
-            column_index = sub_row.index(merge_column)
-            start_row = None
-            prev_value = 'unique_nonexistent_value'  # 初始值设为一个唯一的值
-            for row_index, row_data in enumerate(items):
-                current_value = row_data[column_index]
-                # 如果当前值是 None，将其视为一个特殊标记
-                if current_value is None:
-                    current_value = 'special_null_value'
-                if current_value != prev_value:
-                    if start_row is not None and row_index - start_row > 1:
-                        table.setStyle(
-                            TableStyle([('SPAN', (column_index, start_row + 2), (column_index, row_index + 1))]))
-                    start_row = row_index
-                prev_value = current_value
-            # 检查并处理最后一个合并区域
-            if start_row is not None and len(items) - start_row > 1:
-                table.setStyle(TableStyle([('SPAN', (column_index, start_row + 2), (column_index, len(items) + 1))]))

@@ -22,7 +22,8 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, SimpleDocTemplate, Flowable
+from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, SimpleDocTemplate, Flowable, \
+    Spacer
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.tableofcontents import TableOfContents
 
@@ -40,14 +41,14 @@ ContentsStyle = [
 ]
 
 # 定义1-4级标题样式
-h1 = ParagraphStyle(name='Heading1', fontName='ChineseFont-Bold', fontSize=16, leftIndent=-20, spaceBefore=10,
-                    leading=20)
-h2 = ParagraphStyle(name='Heading2', fontName='ChineseFont-Bold', fontSize=14, leftIndent=-20, spaceBefore=10,
-                    leading=20)
-h3 = ParagraphStyle(name='Heading3', fontName='ChineseFont-Bold', fontSize=12, leftIndent=-20, spaceBefore=10,
-                    leading=20)
-h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, leftIndent=-20, spaceBefore=10,
-                    leading=20)
+h1 = ParagraphStyle(name='Heading1', fontName='ChineseFont-Bold', fontSize=16, leftIndent=-20, spaceAfter=10,
+                    spaceBefore=10, leading=20)
+h2 = ParagraphStyle(name='Heading2', fontName='ChineseFont-Bold', fontSize=14, leftIndent=-20, spaceAfter=10,
+                    spaceBefore=10, leading=20)
+h3 = ParagraphStyle(name='Heading3', fontName='ChineseFont-Bold', fontSize=12, leftIndent=-20, spaceAfter=10,
+                    spaceBefore=10, leading=20)
+h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, leftIndent=-20, spaceAfter=10,
+                    spaceBefore=10, leading=20)
 
 # 定义全局表格样式
 tableStyle = TableStyle([
@@ -80,15 +81,16 @@ Pages = []
 class CanvasDrawing(Flowable):
     """ 绘制首页：一个自定义Flowable，用于在文档中绘制Canvas内容 """
 
-    def __init__(self, img_path, info):
+    def __init__(self, img_path, info, type=None):
         Flowable.__init__(self)
         self.img_path = img_path
+        self.type = "a" if type is None else type
         self.info = info
         self.width = A4[0] - 11
         self.height = A4[1] - 12
 
-    def draw(self):
-        # 绘制图片
+    def cover_a(self):
+        """ 绘制封面 """
         self.canv.drawImage(self.img_path, -6, 14, width=A4[0], height=A4[1])
 
         # 绘制标题
@@ -99,6 +101,18 @@ class CanvasDrawing(Flowable):
         for i, item in enumerate(self.info):
             self.draw_custom_text(item + "：" + self.info.get(item), 170, (650 + i * 30), "left",
                                   "ChineseFont-Bold", 16, "#000000")
+
+    def cover_b(self):
+        """ 绘制封面 """
+        self.canv.drawImage(self.img_path, -6, 14, width=A4[0], height=A4[1])
+        self.draw_custom_text(self.info[0], 100, 550, "left", "ChineseFont-Bold", 40, "#DF8528")
+        self.draw_custom_text(self.info[1], 100, 600, "left", "ChineseFont-Bold", 40, "#23548A")
+
+    def draw(self):
+        if self.type == "a":
+            self.cover_a()
+        else:
+            self.cover_b()
 
     def draw_custom_text(self, text, x, y, align, font, size, color):
         """
@@ -162,7 +176,7 @@ class CustomTemplate(SimpleDocTemplate):
                     level = 2
 
                 # 调整页码，如果有封面则减1
-                adjusted_page_num = self.page - 1 if Cover else self.page
+                adjusted_page_num = self.page - len(Cover)
 
                 e = [level, text, adjusted_page_num]
                 bn = getattr(flowable, '_bookmarkName', None)
@@ -189,9 +203,32 @@ class NumberPageCanvas(Canvas):
         if not self.has_cover:
             self.pages += 1
             self.draw_page_number(self.pages)
+            self.draw_header("巡检总结报告")
         else:
             self.has_cover = False  # 第一页之后，取消封面标记
         Canvas.showPage(self)
+
+    def draw_header(self, header_text):
+        # 设置页眉的位置和样式
+        header_x = 50  # 页眉的横向位置，可以根据需要调整
+        header_y = A4[1]-30  # 页眉的纵向位置，可以根据需要调整
+        header_font = "ChineseFont-Slim"  # 页眉的字体，可以根据需要调整
+        header_font_size = 10  # 页眉的字号，可以根据需要调整
+        header_color = "#2F5496"  # 浅蓝色
+
+        # 设置字体和颜色
+        self.setFont(header_font, header_font_size)
+        self.setFillColor(header_color)
+
+        # 绘制页眉文本
+        self.drawString(header_x, header_y, header_text)
+
+        # 绘制同色横线
+        line_width = 480  # 横线的长度，可以根据需要调整
+        line_height = header_y - 5  # 横线的位置，略低于文字
+        self.setLineWidth(1)  # 横线的宽度，可以根据需要调整
+        self.setStrokeColor(header_color)
+        self.line(header_x, line_height, header_x + line_width, line_height)
 
     def draw_page_number(self, page_number):
         # 绘制阴影矩形
@@ -416,8 +453,9 @@ class HorizontalChart(Flowable):
 
 
 class PieChart(Flowable):
-    def __init__(self, data, x=0, y=0, radius=80, font_name=None, font_size=10, label_distance=None):
+    def __init__(self, data, tag=None, x=0, y=0, radius=80, font_name=None, font_size=10, label_distance=None):
         Flowable.__init__(self)
+        self.tag = tag
         self.data = data
         self.x = x
         self.y = y
@@ -492,7 +530,7 @@ class PieChart(Flowable):
 
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing(self.width, self.height)
+        draw = Drawing()
 
         # 绘制饼图：大小、位置
         pie = Pie()
@@ -514,9 +552,34 @@ class PieChart(Flowable):
 
 
 class RingChart(PieChart):
+
+    def circle(self, pie, draw):
+        # 绘制覆盖饼图的同心圆
+        circle = Circle(cx=self.radius + pie.x, cy=self.radius + pie.y, r=self.radius / 2,
+                        fillColor=colors.white, strokeColor=colors.white)
+        # 设置标签
+        self.generate_label(pie, draw)
+        draw.add(circle)
+        # 计算总数
+        total_count = sum(pie.data)
+        # 创建用于显示总数的字符串
+        tag_str = String(self.radius + pie.x, self.radius + pie.y + 2 / 3 * self.font_size,
+                         self.tag if self.tag else "总数",
+                         textAnchor='middle')
+        total_str = String(self.radius + pie.x, self.radius + pie.y - 2 / 3 * self.font_size, str(total_count),
+                           textAnchor='middle')
+
+        # 设置文本样式（例如字体大小、颜色等）
+        tag_str.fontName = total_str.fontName = self.font_name
+        tag_str.fontSize = total_str.fontSize = self.font_size
+        tag_str.fillColor = total_str.fillColor = colors.black
+
+        draw.add(tag_str)
+        draw.add(total_str)
+
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing(self.width, self.height)
+        draw = Drawing()
 
         # 绘制饼图：大小、位置
         pie = Pie()
@@ -531,15 +594,8 @@ class RingChart(PieChart):
             pie.slices[i].fillColor = colors.HexColor(item["color"])
             pie.slices[i].strokeColor = colors.white
             pie.slices[i].strokeWidth = 2
-
-        # 绘制覆盖饼图的同心圆
-        circle = Circle(cx=self.radius + pie.x, cy=self.radius + pie.y, r=self.radius / 2,
-                        fillColor=colors.white, strokeColor=colors.white)
-
         draw.add(pie)
-        # 设置标签
-        self.generate_label(pie, draw)
-        draw.add(circle)
+        draw.add(self.circle(pie, draw))
         draw.drawOn(self.canv, self.x, self.y)
 
 
@@ -558,26 +614,80 @@ def build(filename: str) -> None:
     doc.append(toc)
     doc.append(PageBreak())
     doc.extend(Pages)
-    pdf = CustomTemplate(filename, pagesize=pagesizes.A4)
+    pdf = CustomTemplate(filename, pagesize=A4)
     pdf.multiBuild(doc, canvasmaker=NumberPageCanvas)
 
 
-def addCover(coverPath: str, info: tuple) -> None:
+def addCover(coverPath: str, info, type=None) -> None:
     """ 添加封面
     :param coverPath: 封面路径
     :param info: 封面信息
     """
-    Cover.append(CanvasDrawing(coverPath, info))
+    Cover.append(CanvasDrawing(coverPath, info, type=type))
     Cover.append(PageBreak())
 
 
 # 设置页面内容
-def addText(body: List[dict[str, str]]) -> None:
+def addContent(body: List[dict]) -> None:
     """ 添加文本内容、List[dict]格式指明标题等级1、2、3为标题、4：为正文
     例：body=[{'level': 1, 'content': "一、一级标题"}]
     :param body: 文本内容
     """
-    Pages.extend(contents(body))
+    content_list = [item for item in body if item and item['level'] <= 3]
+    Pages.extend(contents(content_list))
+
+
+def addTitle(name: str, tag=None, color=colors.red, font_size=12, font_color=colors.black, leading=20,
+             leftIndent=-20, space=10) -> None:
+    style = ParagraphStyle(
+        'ColoredText',
+        parent=styles['Normal'],
+        fontName='ChineseFont-Bold',
+        font_color=font_color,
+        fontSize=font_size,
+        leftIndent=leftIndent,
+        spaceBefore=space,
+        spaceAfter=space,
+        leading=leading
+    )
+    title = f"{name}"
+    if tag:
+        title = title + f"<font color={color}>{'&nbsp;' * 10}{tag}</font>"
+    Pages.append(Paragraph(title, style))
+
+
+def addParagraph(content: str, font_size=10.5, font_color=colors.black, leading=15, leftIndent=-20,
+                 space=5):
+    """
+    创建一个自动换行的段落。
+
+    :param text: 段落中的文本。
+    :param style: 段落的样式，如果没有提供，则使用默认样式。
+    :return: 一个Paragraph对象。
+    """
+    # 获取默认样式表，如果没有提供特定样式
+    style = ParagraphStyle(
+        'contentText',
+        parent=styles['Normal'],
+        fontName='ChineseFont-Slim',
+        font_color=font_color,
+        fontSize=font_size,
+        leading=leading,
+        spaceBefore=space,
+        spaceAfter=space,
+        leftIndent=leftIndent,
+        firstLineIndent=font_size * 2  # 设置首行缩进
+    )
+
+    # 创建段落
+    paragraph = Paragraph(content, style)
+    Pages.append(paragraph)
+
+
+def addText(text: List[dict]) -> None:
+    for item in text:
+        addTitle(item.get("title"), space=3, leftIndent=-10)
+        addParagraph(item.get("content"), leftIndent=-10, space=3)
 
 
 def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold: List[str] = None,
@@ -590,8 +700,11 @@ def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold
     :param conditions: 指定列数据条件判断
     :param merge: 指定列合并单元格
     """
+    Pages.append(Spacer(1, 12))
     Pages.append(insert_table(header, table, add_sub_row=addSubRow,
                               column_bold=columnBold, conditions=conditions, merge=merge))
+    Pages.append(Spacer(1, 12))
+
 
 def addVerticalChart(data: List[dict[str, str]], label: str, bars: List[str], colors: List[str], legend: List[str]):
     """
@@ -625,7 +738,8 @@ def addPie(data):
 
 
 def addRing(data):
-    Pages.append(RingChart(font_name="ChineseFont-Slim", data=data))
+    Pages.append(
+        RingChart(font_name="ChineseFont-Slim", data=data, radius=80, font_size=10))
 
 
 def contents(title) -> List[Paragraph]:

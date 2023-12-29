@@ -4,7 +4,7 @@ from src.base.script.pdf.chart import addText, build, addCover, addVerticalChart
 
 with open('resources/设备信息.json', 'r', encoding='utf-8') as file:
     deviceInfo = json.load(file)
-    addCover("resources/cover.jpg", deviceInfo)
+    addCover("resources/cover_a.jpg", deviceInfo)
 
 body = [{'level': 1, 'content': "2 网络设备"},
         {'level': 2, 'content': "2.1 网络状态检查"},

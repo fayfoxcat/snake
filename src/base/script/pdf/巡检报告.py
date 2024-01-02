@@ -15,7 +15,7 @@ from reportlab.graphics.charts.legends import Legend
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing, String, Line, Circle
 from reportlab.graphics.widgetbase import TypedPropertyCollection
-from reportlab.lib import pagesizes, colors
+from reportlab.lib import colors
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -51,10 +51,26 @@ h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, l
                     spaceBefore=10, leading=20)
 
 # 定义全局表格样式
-tableStyle = TableStyle([
+tableStyle1 = TableStyle([
     ('SPAN', (0, 0), (-1, 0)),  # 首行合并单元格
     ('BACKGROUND', (0, 0), (-1, 0), "#A1C4E7"),  # 设置第一行的背景色为浅蓝色
     ('GRID', (0, 1), (-1, -1), 1, '#49A8D8'),  # 定义网格线，从第二行开始
+    ('BOX', (0, 0), (-1, -1), 1, '#49A8D8'),  # 整体边框
+    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # 文本垂直居中
+    ('ALIGN', (0, 0), (-1, 0), 'CENTER'),  # 首行居中对齐
+    ('ALIGN', (0, 1), (-1, -1), 'LEFT'),  # 除首行外，其余行向左对齐
+    ('FONTNAME', (0, 0), (-1, 0), 'ChineseFont-Bold'),  # 首行字体加粗
+    ('FONTSIZE', (0, 0), (-1, -1), 10),  # 字体大小
+    ('LINEABOVE', (0, 0), (-1, 0), 1.5, '#49A8D8'),  # 首行上方线条加粗
+    ('LINEBELOW', (0, -1), (-1, -1), 1.5, '#49A8D8'),  # 尾行下方线条加粗
+    ('LINEBEFORE', (0, 0), (0, -1), 0, '#FFFFFF'),  # 设置第一列左边框为白色
+    ('LINEAFTER', (-1, 0), (-1, -1), 0, '#FFFFFF'),  # 设置最后一列右边框为白色
+])
+
+# 定义全局表格样式
+tableStyle2 = TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), "#A1C4E7"),  # 设置第一行的背景色为浅蓝色
+    ('GRID', (0, 0), (-1, -1), 1, '#49A8D8'),  # 定义网格线，从第二行开始
     ('BOX', (0, 0), (-1, -1), 1, '#49A8D8'),  # 整体边框
     ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),  # 文本垂直居中
     ('ALIGN', (0, 0), (-1, 0), 'CENTER'),  # 首行居中对齐
@@ -76,6 +92,7 @@ cellStyle = styles['Normal'].clone(name='cellStyle', fontName='ChineseFont-Slim'
 # pdf页面：封面、正文
 Cover = []
 Pages = []
+page_header = None
 
 
 class CanvasDrawing(Flowable):
@@ -197,22 +214,24 @@ class NumberPageCanvas(Canvas):
         self.height = 17
         self.fontName = "ChineseFont-Bold"
         self.fontSize = 14
+        self.header_text = page_header
 
     def showPage(self):
         # 仅当不是封面时，增加页面计数器
         if not self.has_cover:
             self.pages += 1
-            self.draw_page_number(self.pages)
-            self.draw_header("巡检总结报告")
+            self.footer(self.pages)
+            if self.header_text is not None:
+                self.header(self.header_text)
         else:
             self.has_cover = False  # 第一页之后，取消封面标记
         Canvas.showPage(self)
 
-    def draw_header(self, header_text):
+    def header(self, header_text):
         # 设置页眉的位置和样式
-        header_x = 50  # 页眉的横向位置，可以根据需要调整
-        header_y = A4[1]-30  # 页眉的纵向位置，可以根据需要调整
-        header_font = "ChineseFont-Slim"  # 页眉的字体，可以根据需要调整
+        header_x = 55  # 页眉的横向位置，可以根据需要调整
+        header_y = A4[1] - 40  # 页眉的纵向位置，可以根据需要调整
+        header_font = "ChineseFont-Bold"  # 页眉的字体，可以根据需要调整
         header_font_size = 10  # 页眉的字号，可以根据需要调整
         header_color = "#2F5496"  # 浅蓝色
 
@@ -224,13 +243,13 @@ class NumberPageCanvas(Canvas):
         self.drawString(header_x, header_y, header_text)
 
         # 绘制同色横线
-        line_width = 480  # 横线的长度，可以根据需要调整
-        line_height = header_y - 5  # 横线的位置，略低于文字
+        line_width = A4[0] - 2 * header_x  # 横线的长度，可以根据需要调整
+        line_height = header_y - 8  # 横线的位置，略低于文字
         self.setLineWidth(1)  # 横线的宽度，可以根据需要调整
-        self.setStrokeColor(header_color)
+        self.setStrokeColor("#3480B7")
         self.line(header_x, line_height, header_x + line_width, line_height)
 
-    def draw_page_number(self, page_number):
+    def footer(self, page_number):
         # 绘制阴影矩形
         self.setFillColor("#808080")
         self.rect(self.x, self.y, self.width, self.height, fill=True, stroke=False)
@@ -600,9 +619,10 @@ class RingChart(PieChart):
 
 
 # 函数接受数据参数并生成PDF
-def build(filename: str) -> None:
+def build(filename: str, header=None) -> None:
     """
     生成pdf
+    :param header:
     :param filename: 指定文件路径文件名
     """
     doc = []
@@ -615,6 +635,8 @@ def build(filename: str) -> None:
     doc.append(PageBreak())
     doc.extend(Pages)
     pdf = CustomTemplate(filename, pagesize=A4)
+    global page_header
+    page_header = header
     pdf.multiBuild(doc, canvasmaker=NumberPageCanvas)
 
 
@@ -690,7 +712,7 @@ def addText(text: List[dict]) -> None:
         addParagraph(item.get("content"), leftIndent=-10, space=3)
 
 
-def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold: List[str] = None,
+def addTable(table: List[dict], header=None, addSubRow: bool = False, columnBold: List[str] = None,
              conditions: List[dict] = None, merge: List[str] = None) -> None:
     """ 添加表格
     :param header: 表格表头
@@ -701,7 +723,7 @@ def addTable(header: str, table: List[dict], addSubRow: bool = False, columnBold
     :param merge: 指定列合并单元格
     """
     Pages.append(Spacer(1, 12))
-    Pages.append(insert_table(header, table, add_sub_row=addSubRow,
+    Pages.append(insert_table(table, header, add_sub_row=addSubRow,
                               column_bold=columnBold, conditions=conditions, merge=merge))
     Pages.append(Spacer(1, 12))
 
@@ -748,12 +770,20 @@ def contents(title) -> List[Paragraph]:
     :param title: 目录内容
     :return: 样式列表
     """
-    return [
-        heading(item.get('content'),
-                h1 if item.get('level') == 1 else h2 if item.get('level') == 2 else h3 if item.get(
-                    'level') == 3 else h4)
-        for item in title
-    ]
+    style = None
+    content_list = []
+    for item in title:
+        if item.get('level') == 1:
+            style = h1
+        elif item.get('level') == 2:
+            style = h2
+        elif item.get('level') == 3:
+            style = h3
+        else:
+            style = h4
+        style.textColor = item.get("color", colors.black)
+        content_list.append(heading(item.get('content'), style))
+    return content_list
 
 
 #
@@ -770,7 +800,7 @@ def heading(text, style) -> Paragraph:
     return h
 
 
-def insert_table(header, data, add_sub_row=False, column_bold: List[str] = None, conditions=None, merge=None) -> Table:
+def insert_table(data, header, add_sub_row=False, column_bold: List[str] = None, conditions=None, merge=None) -> Table:
     """
     插入表格内容
     :param header: 表格表头
@@ -803,10 +833,14 @@ def insert_table(header, data, add_sub_row=False, column_bold: List[str] = None,
     auto_wrap(rows, is_sub_bold=add_sub_row, column_bold=columns)
 
     # 创建表格, 固定首行行高，其余行行高自适应
-    table = Table([header_row] + rows, rowHeights=([27] + [None] * (len(rows))), colWidths=480 / len(sub_row))
+    if header is not None:
+        table = Table([header_row] + rows, rowHeights=([27] + [None] * (len(rows))), colWidths=480 / len(sub_row))
+        table.setStyle(tableStyle1)
+    else:
+        table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=480 / len(sub_row))
+        table.setStyle(tableStyle2)
     # 设置全局表格样式
-    table.setStyle(tableStyle)
-    cell_style(table, conditions, original_sub, original_items, has_sub_header=add_sub_row)
+    cell_style(table, conditions, original_sub, original_items, has_header=header is not None,has_sub_header=add_sub_row)
     merge_cells(table, merge, original_sub, original_items)
     return table
 
@@ -832,7 +866,7 @@ def auto_wrap(rows, is_sub_bold=False, column_bold=None) -> None:
 
 
 #
-def cell_style(table, conditions, sub_row, items, has_sub_header=True) -> None:
+def cell_style(table, conditions, sub_row, items, has_header=True,has_sub_header=True) -> None:
     """
     定义单元格样式
     :param table: 表格
@@ -843,7 +877,12 @@ def cell_style(table, conditions, sub_row, items, has_sub_header=True) -> None:
     """
     if conditions is None:
         return
-    offset = 2 if has_sub_header else 1
+    if has_header and has_sub_header:
+        offset = 2
+    elif has_header or has_sub_header:
+        offset = 1
+    else:
+        offset = 0
     for element in conditions:
         error_column: bool = True
         for i, item in enumerate(items):
@@ -852,7 +891,8 @@ def cell_style(table, conditions, sub_row, items, has_sub_header=True) -> None:
                     try:
                         if element.get('expression')(cell):
                             table.setStyle(
-                                TableStyle([('BACKGROUND', (j, i + offset), (j, i + offset), element.get('color'))]))
+                                TableStyle([('BACKGROUND', (j, i + offset), (j, i + offset),
+                                             element.get('background', None))]))
                     except Exception as e:
                         # 设置判断列表达式False，跳出该表达式的所有循环
                         error_column = False

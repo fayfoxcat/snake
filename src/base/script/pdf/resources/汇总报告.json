@@ -9,12 +9,209 @@
   },
   "parts": [
     {
-      "first": "巡检CPU利用率",
-      "second": "硬件",
+      "headline": [
+        {
+          "name": "巡检信息汇总",
+          "level": 1,
+          "color": "#6CB69D"
+        }
+      ],
       "groups": [
         {
-          "three": {
-            "title": "软件状态检查巡检项组",
+          "table": [
+            {
+              "data": [
+                [
+                  {
+                    "value": "局点基本信息",
+                    "background": "#3480B7",
+                    "alignment": 1,
+                    "size": 4,
+                    "color": "#ffffff",
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "任务名称",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "默认局点",
+                    "alignment": 1,
+                    "size": 3
+                  }
+                ],
+                [
+                  {
+                    "value": "检查数(台/套)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "44",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "指被检查资源可以正常访问的数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "任务健康度评分",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "37（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "对设备巡检后系统得出的指标评分",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "检出问题数(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "23（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "所有检查指标中存在问题的总数",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "紧急问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "3（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为严重的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "重要问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "4（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为重要的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "次要问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "15（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为一般的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "提示问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "1（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为提示的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "检查人员名称",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "c30102",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "巡检完成时间",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "2023年01月12日 23:23:23",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "headline": [
+        {
+          "name": "设备巡检",
+          "level": 1,
+          "color": "#000000"
+        },
+        {
+          "name": "巡检CPU利用率",
+          "level": 2,
+          "color": "#000000"
+        },
+        {
+          "name": "硬件",
+          "level": 3,
+          "color": "#000000"
+        }
+      ],
+      "groups": [
+        {
+          "fourth": {
+            "name": "软件状态检查巡检项组",
             "tag": "告警",
             "color": "#FFA500"
           },

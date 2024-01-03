@@ -1,16 +1,16 @@
 #!/bin/env python
 # -*- coding: UTF-8 -*-
 """
-方法用于生成pdf，依次需求调用cover反复调用 addText addTable构建pdf页面，调用build生成pdf文档
+方法用于生成pdf
 """
 import copy
 import math
 from datetime import datetime
 from hashlib import sha1
-from math import cos, pi, sin
+from math import pi, cos, sin
 from typing import List
 
-from reportlab.graphics.charts.barcharts import VerticalBarChart, BarChartProperties, HorizontalBarChart
+from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart, BarChartProperties
 from reportlab.graphics.charts.legends import Legend
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing, String, Line, Circle
@@ -64,14 +64,13 @@ tableStyle = TableStyle([
 
 # 表格条件样式：次表头样式、指定列样式、单元格样式
 styles = getSampleStyleSheet()
-subRowStyle = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
-columnStyles = styles['Normal'].clone(name='subRowStyle', fontName='ChineseFont-Bold', fontSize=10)
 cellStyle = styles['Normal'].clone(name='cellStyle', fontName='ChineseFont-Slim', fontSize=10, alignment=0)
 
-# pdf页面：封面、正文
+# pdf页面：封面、页眉、目录、正文
 Cover = []
+PageHeader = None
+Contents = [0, 0, 0, 0]
 Pages = []
-page_header = None
 
 
 class CanvasDrawing(Flowable):
@@ -94,11 +93,11 @@ class CanvasDrawing(Flowable):
         sub = self.info.get("deviceName", None).replace("_", " ") + " RESOURCE DETAILS"
         self.draw_custom_text(header, 0, 570, "center", "ChineseFont-Bold", 30, "#244B98")
         self.draw_custom_text(sub, 0, 600, "center", "ChineseFont-Bold", 14, "#969897")
-        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), 170, (650), "left",
+        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), 170, 650, "left",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), 170, (680), "left",
+        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), 170, 680, "left",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), 170, (710), "left",
+        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), 170, 710, "left",
                               "ChineseFont-Bold", 16, "#000000")
 
     def cover_b(self):
@@ -181,7 +180,8 @@ class CustomTemplate(SimpleDocTemplate):
 
                 e = [level, text, adjusted_page_num]
                 bn = getattr(flowable, '_bookmarkName', None)
-                if bn is not None: e.append(bn)
+                if bn is not None:
+                    e.append(bn)
                 self.notify('TOCEntry', tuple(e))
 
 
@@ -198,7 +198,7 @@ class NumberPageCanvas(Canvas):
         self.height = 17
         self.fontName = "ChineseFont-Bold"
         self.fontSize = 14
-        self.header_text = page_header
+        self.header_text = PageHeader
 
     def showPage(self):
         # 仅当不是封面时，增加页面计数器
@@ -320,7 +320,7 @@ class VerticalChart(Flowable):
         bar.valueAxis.valueMin = self.valueMin
         bar.valueAxis.valueMax = self.valueMax
         bar.valueAxis.valueStep = self.valueStep
-        bar.valueAxis.labels.fontName = 'ChineseFont-Slim'
+        bar.valueAxis.labels.fontName = self.fontName
         bar.valueAxis.labels.fontSize = 10
         # bar.valueAxis.labelFormat = '%d'  # 可以设置刻度标签的格式
 
@@ -603,9 +603,9 @@ class RingChart(PieChart):
 
 
 class CustomTable:
-    def __init__(self, data, merge=None):
+    def __init__(self, data, merge_columns=None):
         self.data = data
-        self.merge = merge
+        self.merge_columns = merge_columns
 
     def insert_table(self) -> Table:
         """
@@ -616,13 +616,12 @@ class CustomTable:
         columns = max([sum(item.get('size', 1) for item in row) for row in self.data])
         # 处理文本样式
         rows = self.text_style()
-
         # 创建表格, 固定首行行高，其余行行高自适应
         table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=480 / columns)
         table.setStyle(tableStyle)
+        # 处理单元格样式
         self.cell_style(table)
-        if self.merge:
-            self.same_merge(table, rows)
+        self.same_merge(table, rows)
         return table
 
     def text_style(self) -> []:
@@ -639,7 +638,7 @@ class CustomTable:
                 style = copy.deepcopy(cellStyle)
                 style.textColor = item.get("color", colors.black)
                 style.alignment = item.get("alignment", 0)
-                style.fontName = "ChineseFont-Bold" if item.get("isBold") else "ChineseFont-Slim"
+                style.fontName = "ChineseFont-Bold" if item.get("bold") else "ChineseFont-Slim"
                 value = item.get("value")
                 if value is not None:
                     result[ri][ci + offset] = Paragraph(str(value), style)
@@ -671,47 +670,39 @@ class CustomTable:
                         table.setStyle(TableStyle([('SPAN', (ci, ri), (ci + size - 1, ri))]))
                         skip = size - 1
 
-    def same_merge(self, table, items) -> None:
+    def same_merge(self, table: Table, items: List[List]) -> None:
         """
-        相邻列行的单元格值相同自动合并，为None也自动合并
+        指定列若含相同数据，则自动合并单元格
         :param table: 表格
         :param items: 数据
         """
-        num_rows = len(items)
-        num_cols = len(items[0])
-
-        for col in range(num_cols):
-            row_start = 0
-            while row_start < num_rows:
-                row_end = row_start
-                while row_end < num_rows - 1:
-                    # 提取当前行和下一行的单元格内容
-                    current_item = items[row_end][col]
-                    next_item = items[row_end + 1][col]
-
-                    # 如果当前单元格和下一个单元格的值相同（或都是 None），则扩展合并范围
-                    if (current_item, next_item) == (None, None) or \
-                            (
-                                    current_item is not None and next_item is not None and current_item.text == next_item.text):
-                        row_end += 1
-                    else:
-                        break
-
-                if row_end > row_start:
-                    # 合并从 row_start 到 row_end 的单元格
-                    table.setStyle(TableStyle([
-                        ('SPAN', (col, row_start), (col, row_end))
-                    ]))
-
-                row_start = row_end + 1
+        # 准备一个列表来存储所有的合并指令
+        merges = []
+        # 遍历指定的合并列
+        for ci in self.merge_columns:
+            row_start = None
+            # 遍历每一行
+            for ri, row in enumerate(items):
+                # 检查当前单元格是否为None或者与下一单元格不同
+                if (row[ci] is None or ri == len(items) - 1 or
+                        (items[ri + 1][ci] is not None and row[ci].text != items[ri + 1][ci].text)):
+                    if row_start is not None:
+                        # 如果找到了需要合并的单元格，添加合并指令
+                        merges.append(('SPAN', (ci, row_start), (ci, ri)))
+                    row_start = None
+                elif row_start is None:
+                    # 标记合并的起始行
+                    row_start = ri
+        # 应用所有的合并指令
+        table.setStyle(TableStyle(merges))
 
 
 # 函数接受数据参数并生成PDF
 def build(filename: str, header=None) -> None:
     """
     生成pdf
-    :param header:
     :param filename: 指定文件路径文件名
+    :param header: 设置页眉
     """
     doc = []
     toc = TableOfContents()
@@ -723,8 +714,8 @@ def build(filename: str, header=None) -> None:
     doc.append(PageBreak())
     doc.extend(Pages)
     pdf = CustomTemplate(filename, pagesize=A4)
-    global page_header
-    page_header = header
+    global PageHeader
+    PageHeader = header
     pdf.multiBuild(doc, canvasmaker=NumberPageCanvas)
 
 
@@ -738,22 +729,35 @@ def addCover(info) -> None:
 
 # 设置页面内容
 def addContent(body: List[dict]) -> None:
-    """ 添加文本内容、List[dict]格式指明标题等级1、2、3为标题、4：为正文
+    """ 添加文本内容、List[dict]格式指明标题等级1、2、3为标题
     例：body=[{'level': 1, 'content': "一、一级标题"}]
     :param body: 文本内容
     """
-    content_list = [item for item in body if item and item['level'] <= 3]
-    Pages.extend(contents(content_list))
+    Pages.extend(contents(body))
 
 
-def addTitle(name=None, tag=None, color=colors.red, font_size=12, font_color=colors.black, leading=20,
-             leftIndent=-20, space=10) -> None:
+def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="ChineseFont-Slim",
+             font_size=12, font_color=colors.black, leading=20, leftIndent=-20, space=10) -> None:
+    """
+    添加四级标题
+    :param name: 标题名
+    :param tag: 标签
+    :param serial: 是否添加标题序号，默认添加
+    :param color: 标签字体颜色
+    :param font_name: 字体
+    :param font_size: 字体大小
+    :param font_color: 字体颜色
+    :param leading: 行间距
+    :param leftIndent: 左间距
+    :param space: 空格
+    :return:
+    """
     if name is None:
         return None
     style = ParagraphStyle(
         'ColoredText',
         parent=styles['Normal'],
-        fontName='ChineseFont-Bold',
+        fontName=font_name,
         font_color=font_color,
         fontSize=font_size,
         leftIndent=leftIndent,
@@ -761,23 +765,27 @@ def addTitle(name=None, tag=None, color=colors.red, font_size=12, font_color=col
         spaceAfter=space,
         leading=leading
     )
+    if serial:
+        Contents[3] += 1
+        no = str(Contents[0]) + "." + str(Contents[1]) + "." + str(Contents[2]) + "." + str(Contents[3]) + ". "
+        name = no + name
+
     title = f"{name}"
     if tag:
-        title = title + f"<font color={color}>{'&nbsp;' * 10}{tag}</font>"
+        title = title + f"<font color={color}>{'&nbsp;' * 5}{tag}</font>"
     Pages.append(Paragraph(title, style))
 
 
 def addParagraph(content: str, font_size=10.5, font_color=colors.black, leading=15, leftIndent=-20,
-                 space=5):
+                 space=5) -> None:
     """
-     创建一个自动换行的段落
-    :param content:
-    :param font_size:
-    :param font_color:
-    :param leading:
-    :param leftIndent:
-    :param space:
-    :return:
+     添加一个自动换行的段落
+    :param content: 段落内容
+    :param font_size: 字体大小
+    :param font_color: 字体颜色
+    :param leading: 行间距
+    :param leftIndent: 左间距
+    :param space: 空格
     """
     # 获取默认样式表，如果没有提供特定样式
     style = ParagraphStyle(
@@ -799,97 +807,107 @@ def addParagraph(content: str, font_size=10.5, font_color=colors.black, leading=
 
 
 def addText(text: List[dict]) -> None:
+    """
+    添加文本
+    :param text: 文本内容
+    """
     for item in text:
-        addTitle(item.get("title"), space=3, leftIndent=-10)
+        addTitle(item.get("title"), serial=False, font_name="ChineseFont-Bold", space=3, leftIndent=-10)
         addParagraph(item.get("content"), leftIndent=-10, space=3)
 
 
-def addTable(table, merge: bool) -> None:
+def addTable(table: List[List[dict[str, str]]], columns: List) -> None:
     """ 添加表格
-    :param header: 表格表头
     :param table: 表格数据
-    :param columnBold: 指定列加粗
-    :param conditions: 指定列数据条件判断
-    :param merge: 指定列合并单元格
+    :param columns: 指定列相同数据自动合并单元格
     """
     Pages.append(Spacer(1, 12))
-    Pages.append(CustomTable.insert_table(CustomTable(table, merge=merge)))
+    Pages.append(CustomTable.insert_table(CustomTable(table, merge_columns=columns)))
     Pages.append(Spacer(1, 12))
 
 
 def addVerticalChart(data: List[dict[str, str]], bars: List[str],
-                     label='name', legend=None, colors=None):
+                     label='name', legend=None, color_list=None):
     """
     添加柱状图
     :param data: 图表数据
-    :param label: 横坐标标签
     :param bars: 柱状图显示数据列表
-    :param colors: 柱状图显示数据列颜色列表
+    :param label: 横坐标标签
     :param legend: 图例说明列表
+    :param color_list: 柱状图显示数据列颜色列表
     :return:
     """
-    if colors is None:
-        colors = ["#4472C4", "#ED7D31", "#FFC000"]
-    Pages.append(VerticalChart(data=data, label=label, bars=bars, color_list=colors, legend=legend))
+    if color_list is None:
+        color_list = ["#4472C4", "#ED7D31", "#FFC000"]
+    Pages.append(VerticalChart(data=data, label=label, bars=bars, color_list=color_list, legend=legend))
 
 
 def addHorizontalChart(data: List[dict[str, str]], bars: List[str],
-                       label='name', legend=None, colors=None):
+                       label='name', legend=None, color_list=None):
     """
     添加柱状图
     :param data: 图表数据
-    :param label: 横坐标标签
     :param bars: 柱状图显示数据列表
-    :param colors: 柱状图显示数据列颜色列表
+    :param label: 横坐标标签
     :param legend: 图例说明列表
+    :param color_list: 柱状图显示数据列颜色列表
     :return:
     """
-    if colors is None:
-        colors = ["#4472C4", "#ED7D31", "#FFC000"]
+    if color_list is None:
+        color_list = ["#4472C4", "#ED7D31", "#FFC000"]
     Pages.append(
-        HorizontalChart(data, label, bars, colors, legend, font_size=7, label_len_max=220, width=400, height=200))
+        HorizontalChart(data, label, bars, color_list, legend, font_size=7, label_len_max=220, width=400, height=200))
 
 
 def addPie(data):
+    """
+    添加饼图
+    :param data: 数据
+    """
     Pages.append(PieChart(font_name="ChineseFont-Slim", data=data, label_distance=20, radius=50, font_size=8))
 
 
-def addRing(data, tag=None):
+def addRing(data: List[dict[str, str]], tag=None):
+    """
+    添加环图
+    :param data: 数据
+    :param tag: 环中心显示
+    """
     Pages.append(
         RingChart(font_name="ChineseFont-Slim", data=data, radius=80, font_size=10, tag=tag))
 
 
 def contents(title) -> List[Paragraph]:
     """
-    生成目录
+    生成目录,关联链接
     :param title: 目录内容
     :return: 样式列表
     """
-    style = None
     content_list = []
+
     for item in title:
+        text = item.get('name')
         if item.get('level') == 1:
             style = h1
+            Contents[0] += 1
+            Contents[-3:] = [0, 0, 0]
+            text = str(Contents[0]) + ". " + text
         elif item.get('level') == 2:
             style = h2
+            Contents[1] += 1
+            Contents[-2:] = [0, 0]
+            text = str(Contents[0]) + "." + str(Contents[1]) + ". " + text
         elif item.get('level') == 3:
             style = h3
+            Contents[2] += 1
+            Contents[3] = 0
+            text = str(Contents[0]) + "." + str(Contents[1]) + "." + str(Contents[2]) + ". " + text
         else:
             style = h4
+
         style.textColor = item.get("color", colors.black)
-        content_list.append(heading(item.get('content'), style))
+        bn = sha1((text + style.name).encode()).hexdigest()
+        link = Paragraph(text + '<a name="%s"/>' % bn, style)
+        link._bookmarkName = bn
+        content_list.append(link)
     return content_list
-
-
-#
-def heading(text, style) -> Paragraph:
-    """
-    生成目录和标题关联链接
-    :param text: 标题内容
-    :param style: 样式
-    :return: 样式
-    """
-    bn = sha1((text + style.name).encode()).hexdigest()
-    h = Paragraph(text + '<a name="%s"/>' % bn, style)
-    h._bookmarkName = bn
-    return h

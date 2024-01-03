@@ -9,12 +9,14 @@ with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:
     cover = data.get('cover')
     addCover(cover)
     for part in data.get('parts', []):
-        addContent([{'level': 1, 'content': part['first']},
-                    {'level': 2, 'content': part['second']}])
+        addContent(part.get("headline", []))
         for group in part.get('groups', []):
-            title = group.get('three', None)
-            addTitle(title.get('title', None), title.get('tag', None), title.get('color', None))
+            title = group.get('fourth', None)
+            if title:
+                addTitle(name=title.get('name', None), tag=title.get('tag', None), color=title.get('color', None))
             addText(group.get('text', []))
+            for item in group.get('table', []):
+                addTable(item.get('data', None), item.get('columns', []))
             for chart in group.get('verticalCharts', []):
                 addVerticalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []))
             for chart in group.get('horizontalCharts', []):

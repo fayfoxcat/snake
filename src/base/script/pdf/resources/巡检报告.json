@@ -9,12 +9,27 @@
   },
   "parts": [
     {
-      "first": "巡检CPU利用率",
-      "second": "硬件",
+      "headline": [
+        {
+          "name": "设备巡检",
+          "level": 1,
+          "color": "#000000"
+        },
+        {
+          "name": "巡检CPU利用率",
+          "level": 2,
+          "color": "#000000"
+        },
+        {
+          "name": "硬件",
+          "level": 3,
+          "color": "#000000"
+        }
+      ],
       "groups": [
         {
-          "three": {
-            "title": "软件状态检查巡检项组"
+          "fourth": {
+            "name": "软件状态检查巡检项组"
           },
           "text": [
             {
@@ -32,7 +47,9 @@
           ],
           "table": [
             {
-              "merge": false,
+              "columns": [
+                1
+              ],
               "data": [
                 [
                   {
@@ -41,38 +58,38 @@
                     "alignment": 1,
                     "size": 5,
                     "color": "#000000",
-                    "isBold": true
+                    "bold": true
                   }
                 ],
                 [
                   {
                     "value": "Slot_ID",
-                    "isBold": true
+                    "bold": true
                   },
                   {
                     "value": "Type",
-                    "isBold": true
+                    "bold": true
                   },
                   {
                     "value": "Status",
-                    "isBold": true
+                    "bold": true
                   },
                   {
                     "value": "Primary",
-                    "isBold": true
+                    "bold": true
                   },
                   {
                     "value": "Master/Slave",
-                    "isBold": true
+                    "bold": true
                   }
                 ],
                 [
                   {
                     "value": "3"
-
                   },
                   {
-                    "value": "LPU"
+                    "value": "LPU",
+                    "alignment": 1
                   },
                   {
                     "value": 25
@@ -165,14 +182,15 @@
                     "alignment": 1,
                     "size": 2,
                     "color": "#000000",
-                    "isBold": true
+                    "bold": true
                   }
                 ],
                 [
                   {
                     "value": "检查要求",
                     "background": "#ffffff",
-                    "color": "#000000"
+                    "color": "#000000",
+                    "bold": true
                   },
                   {
                     "value": "要求设备正常运行时不应该出现OSPF协议错误",
@@ -184,7 +202,8 @@
                   {
                     "value": "检查结果",
                     "background": "#ffffff",
-                    "color": "#000000"
+                    "color": "#000000",
+                    "bold": true
                   },
                   {
                     "value": "不合格",
@@ -196,7 +215,8 @@
                   {
                     "value": "改进意见",
                     "background": "#ffffff",
-                    "color": "#000000"
+                    "color": "#000000",
+                    "bold": true
                   },
                   {
                     "value": "请查看OSPF协议错误信息，根据具体的错误信息进行相应处理。",

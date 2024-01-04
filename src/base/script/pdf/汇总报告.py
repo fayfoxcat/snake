@@ -13,10 +13,11 @@ with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:
         for group in part.get('groups', []):
             title = group.get('fourth', None)
             if title:
-                addTitle(name=title.get('name', None), tag=title.get('tag', None), color=title.get('color', None))
+                addTitle(name=title.get('name', None), tag=title.get('tag', None), color=title.get('color', None),
+                         bold=title.get('bold', False))
             addText(group.get('text', []))
             for item in group.get('table', []):
-                addTable(item.get('data', None), item.get('columns', []))
+                addTable(item.get('data', None), item.get('columns', []), item.get("pattern", None))
             for chart in group.get('verticalCharts', []):
                 addVerticalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []))
             for chart in group.get('horizontalCharts', []):

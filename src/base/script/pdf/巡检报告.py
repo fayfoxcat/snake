@@ -15,6 +15,6 @@ with open('resources/巡检报告.json', 'r', encoding='utf-8') as file:
                 addTitle(name=title.get('name', None), tag=title.get('tag', None), color=title.get('color', None))
             addText(group.get('text', []))
             for item in group.get('table', []):
-                addTable(item.get('data', None), item.get('columns', []))
+                addTable(item.get('data', None), item.get('columns', []), item.get("pattern", None))
     # 调用函数生成PDF
     build(reportName, header=data.get('pageHeader', None))

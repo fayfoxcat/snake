@@ -20,6 +20,9 @@
         {
           "table": [
             {
+              "annotation": {
+                "content": "注：括号表示修复的问题数量"
+              },
               "pattern": [
                 {
                   "type": "GRID",
@@ -212,6 +215,10 @@
         {
           "ringCharts": [
             {
+              "annotation": {
+                "content": "告警级别统计",
+                "alignment": 1
+              },
               "tag": "告警总数",
               "data": [
                 {
@@ -264,6 +271,10 @@
                 "涉及资源",
                 "告警数量"
               ],
+              "annotation": {
+                "content": "告警分类统计",
+                "alignment": 1
+              },
               "data": [
                 {
                   "name": "硬件状态检查",
@@ -319,6 +330,9 @@
               "columns": [
                 0
               ],
+              "annotation": {
+                "content": "注：括号表示修复的问题数量"
+              },
               "pattern": [
                 {
                   "type": "GRID",
@@ -1389,6 +1403,10 @@
         {
           "horizontalCharts": [
             {
+              "annotation": {
+                "content": "告警检查项top10汇总",
+                "alignment": 1
+              },
               "label": "name",
               "bars": [
                 "count"

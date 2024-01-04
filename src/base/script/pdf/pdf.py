@@ -783,7 +783,7 @@ def addContent(body: List[dict]) -> None:
 
 
 def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="ChineseFont-Slim", bold=True,
-             font_size=12, font_color=colors.black, leading=20, leftIndent=-20, space=10) -> None:
+             font_size=12, alignment=0, font_color=colors.black, leading=20, leftIndent=-20, space=10) -> None:
     """
     添加四级标题
     :param name: 标题名
@@ -792,6 +792,7 @@ def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="Chin
     :param color: 标签字体颜色
     :param font_name: 字体
     :param font_size: 字体大小
+    :param alignment: 文本对齐，0向右，1居中
     :param font_color: 字体颜色
     :param leading: 行间距
     :param leftIndent: 左间距
@@ -808,6 +809,7 @@ def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="Chin
         fontName=font_name,
         font_color=font_color,
         fontSize=font_size,
+        alignment=alignment,
         leftIndent=leftIndent,
         spaceBefore=space,
         spaceAfter=space,
@@ -865,65 +867,79 @@ def addText(text: List[dict]) -> None:
             addParagraph(item.get("content"), leftIndent=-10, space=3)
 
 
-def addTable(table: List[List[dict[str, str]]], columns: List, pattern=None) -> None:
+def addTable(table: List[List[dict[str, str]]], columns: List, pattern=None, annotation=None) -> None:
     """ 添加表格
     :param table: 表格数据
     :param columns: 指定列相同数据自动合并单元格
     :param pattern: 自定义样式
+    :param annotation: 表注
     """
     if pattern is None:
         pattern = []
     Pages.append(Spacer(1, 12))
     Pages.append(CustomTable.insert_table(CustomTable(table, pattern=pattern, merge_columns=columns)))
+    if annotation:
+        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
     Pages.append(Spacer(1, 12))
 
 
 def addVerticalChart(data: List[dict[str, str]], bars: List[str],
-                     label='name', legend=None, color_list=None):
+                     label='name', legend=None, color_list=None, annotation=None) -> None:
     """
-    添加柱状图
+    添加垂直柱状图
     :param data: 图表数据
     :param bars: 柱状图显示数据列表
     :param label: 横坐标标签
     :param legend: 图例说明列表
     :param color_list: 柱状图显示数据列颜色列表
-    :return:
+    :param annotation: 图注
     """
     if color_list is None:
         color_list = ["#4472C4", "#ED7D31", "#FFC000"]
     Pages.append(VerticalChart(data=data, label=label, bars=bars, color_list=color_list, legend=legend))
+    if annotation:
+        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
 
 
 def addHorizontalChart(data: List[dict[str, str]], bars: List[str],
-                       label='name', legend=None, color_list=None):
+                       label='name', legend=None, color_list=None, annotation=None):
     """
-    添加柱状图
+    添加水平柱状图
     :param data: 图表数据
     :param bars: 柱状图显示数据列表
     :param label: 横坐标标签
     :param legend: 图例说明列表
     :param color_list: 柱状图显示数据列颜色列表
+    :param annotation: 图注
     :return:
     """
     if color_list is None:
         color_list = ["#FFC000", "#4472C4", "#ED7D31"]
     Pages.append(
         HorizontalChart(data, label, bars, color_list, legend, font_size=7, label_len_max=220, width=400, height=200))
+    if annotation:
+        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
 
 
-def addPie(data):
+def addPie(data, annotation=None):
     """
     添加饼图
     :param data: 数据
+    :param annotation: 图注
     """
     Pages.append(PieChart(font_name="ChineseFont-Slim", data=data, label_distance=20, radius=50, font_size=8))
+    if annotation:
+        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
 
 
-def addRing(data: List[dict[str, str]], tag=None):
+def addRing(data: List[dict[str, str]], tag=None, annotation=None):
     """
     添加环图
     :param data: 数据
     :param tag: 环中心显示
+    :param annotation: 图注
     """
     Pages.append(
         RingChart(font_name="ChineseFont-Slim", data=data, radius=80, font_size=10, tag=tag))
+    if annotation:
+        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))

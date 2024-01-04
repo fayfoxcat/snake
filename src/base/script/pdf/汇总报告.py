@@ -17,14 +17,17 @@ with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:
                          bold=title.get('bold', False))
             addText(group.get('text', []))
             for item in group.get('table', []):
-                addTable(item.get('data', None), item.get('columns', []), item.get("pattern", None))
+                addTable(item.get('data', None), columns=item.get('columns', []), pattern=item.get("pattern", None),
+                         annotation=item.get("annotation", None))
             for chart in group.get('verticalCharts', []):
-                addVerticalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []))
+                addVerticalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []),
+                                 annotation=chart.get("annotation", None))
             for chart in group.get('horizontalCharts', []):
-                addHorizontalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []))
+                addHorizontalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []),
+                                   annotation=chart.get("annotation", None))
             for chart in group.get('pieCharts', []):
-                addPie(chart.get('data', []))
+                addPie(chart.get('data', []), annotation=chart.get("annotation", None))
             for chart in group.get('ringCharts', []):
-                addRing(chart.get('data', []), chart.get('tag', None))
+                addRing(chart.get('data', []), chart.get('tag', None), annotation=chart.get("annotation", None))
     # 调用函数生成PDF
     build(reportName, header=data.get('pageHeader', None))

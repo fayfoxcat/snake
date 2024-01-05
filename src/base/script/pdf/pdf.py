@@ -132,11 +132,18 @@ class CoverCanvas(Flowable):
         sub = self.info.get("deviceName", None).replace("_", " ") + " RESOURCE DETAILS"
         self.draw_custom_text(header, 0, 500, "center", "ChineseFont-Bold", 30, "#244B98")
         self.draw_custom_text(sub, 0, 530, "center", "ChineseFont-Bold", 14, "#969897")
-        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), 0, 600, "center",
+        # 计算最长文本起始位置，设置居中
+        max_x = max(self.position("资源名称：" + self.info.get("deviceName", None), 0, 0, "center",
+                                  "ChineseFont-Bold", 16)[0],
+                    self.position("资源名称：" + self.info.get("deviceName", None), 0, 0, "center",
+                                  "ChineseFont-Bold", 16)[0],
+                    self.position("资源名称：" + self.info.get("deviceName", None), 0, 0, "center",
+                                  "ChineseFont-Bold", 16)[0])
+        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), max_x, 600, "left",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), 0, 630, "center",
+        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), max_x, 630, "left",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), 0, 660, "center",
+        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), max_x, 660, "left",
                               "ChineseFont-Bold", 16, "#000000")
 
     def cover_b(self):
@@ -172,6 +179,20 @@ class CoverCanvas(Flowable):
         rgb_color = self.hex_to_rgb(color)
         self.canv.setFillColorRGB(*rgb_color)
 
+        x, y = self.position(text, x, y, align, font, size)
+        # 绘制文本
+        self.canv.drawString(x, self.height - y, text)
+
+    def position(self, text, x, y, align, font, size) -> tuple:
+        """
+        计算文本绘制位置
+        :param text: 文本
+        :param x: 左下x
+        :param y: 左下y
+        :param align: 文本
+        :param font: 字体
+        :param size: 字体大小
+        """
         # 计算文本宽度
         text_width = self.canv.stringWidth(text, font, size)
 
@@ -180,8 +201,7 @@ class CoverCanvas(Flowable):
             x += (self.width - text_width) / 2
         elif align == "right":
             x += text_width
-        # 绘制文本
-        self.canv.drawString(x, self.height - y, text)
+        return x, y
 
     @staticmethod
     def hex_to_rgb(hex_color):

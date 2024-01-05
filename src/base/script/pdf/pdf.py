@@ -5,10 +5,10 @@
 """
 import copy
 import math
-from datetime import datetime
+from typing import List
 from hashlib import sha1
 from math import pi, cos, sin
-from typing import List
+from datetime import datetime
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -30,7 +30,7 @@ from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, T
 pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
 pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))
 
-# A4尺寸页面尺寸,外边距，内边距默认值，Frame尺寸
+# 页面纸张尺寸、Frame外边距、Frame内边距、Frame尺寸
 pageWidth, pageHeight = A4
 topMargin, bottomMargin, leftMargin, rightMargin = (50, 50, 50, 50)
 leftPadding, bottomPadding, rightPadding, topPadding = (6, 12, 6, 18)
@@ -39,6 +39,8 @@ frameWidth, frameHeight = (pageWidth - leftMargin - rightMargin, pageHeight - to
 # 目录样式
 ContentStyle = ParagraphStyle(name='centered', fontName='ChineseFont-Bold', fontSize=17, leftIndent=-leftPadding,
                               leading=18, spaceAfter=10, textColor="#365F91")
+
+# 目录级别样式
 ContentsStyle = [
     ParagraphStyle(name='TOCHeading1', fontName='ChineseFont-Slim', fontSize=10, leading=18,
                    leftIndent=-leftPadding),
@@ -314,10 +316,10 @@ class CustomTable:
                                             (item.get('end_x', -1), item.get('end_y', -1)),
                                             item.get("line_width", 0.5), item.get('color', None))]))
             else:
-                print(f"警告: 样式 '{style_type}' 不是表格支持的合法样式，支持样式：'{self.valid_styles}'")
+                print(f"警告: 样式 '{style_type}' 不是表格支持的合法样式，仅支持样式：'{self.valid_styles}'")
         # 处理单元格样式
         self.cell_style(table)
-        self.same_merge(table, rows)
+        self.merge_cell(table)
         return table
 
     def text_style(self) -> []:
@@ -362,12 +364,23 @@ class CustomTable:
                         table.setStyle(TableStyle([('SPAN', (ci + offset, ri), (ci + offset + size - 1, ri))]))
                         offset += size - 1
 
-    def same_merge(self, table: Table, items: List[List]) -> None:
+    def merge_cell(self, table: Table) -> None:
         """
         指定列若含相同数据，则自动合并单元格
         :param table: 表格
-        :param items: 数据
         """
+        # 填充空位
+        items = copy.deepcopy(self.data)
+        for row in items:
+            i = 0
+            while i < len(row):
+                obj = row[i]
+                if obj is not None and obj.get('size', 1) > 1:
+                    for _ in range(obj['size'] - 1):
+                        row.insert(i + 1, None)
+                    i += obj['size']
+                else:
+                    i += 1
         # 准备一个列表来存储所有的合并指令
         merges = []
         # 遍历指定的合并列
@@ -375,15 +388,23 @@ class CustomTable:
             row_start = None
             # 遍历每一行
             for ri, row in enumerate(items):
-                # 检查当前单元格是否为None或者与下一单元格不同
-                if (row[ci] is None or ri == len(items) - 1 or
-                        (items[ri + 1][ci] is not None and row[ci].text != items[ri + 1][ci].text)):
+                current = row[ci].get('value') if row[ci] else None
+                offset = row[ci].get('size', 1) - 1 if row[ci] else 0
+                # 检查当前单元格是否为None
+                if current is None or ri == len(items) - 1:
+                    should_merge = False
+                # 检查当前单元格与下一单元格的数据是否不同
+                elif items[ri + 1][ci] is not None and current != items[ri + 1][ci].get('value'):
+                    should_merge = False
+                else:
+                    should_merge = True
+                # 判断合并
+                if not should_merge:
                     if row_start is not None:
-                        # 如果找到了需要合并的单元格，添加合并指令
-                        merges.append(('SPAN', (ci, row_start), (ci, ri)))
+                        merges.append(('SPAN', (ci, row_start), (ci + offset, ri)))
                     row_start = None
+                # 记录开始合并起始行
                 elif row_start is None:
-                    # 标记合并的起始行
                     row_start = ri
         # 应用所有的合并指令
         table.setStyle(TableStyle(merges))
@@ -773,10 +794,9 @@ def contents(title) -> List[Paragraph]:
     return content_list
 
 
-# 函数接受数据参数并生成PDF
 def build(filename: str, header=None) -> None:
     """
-    生成pdf
+    函数接受数据参数并生成PDF
     :param filename: 指定文件路径文件名
     :param header: 设置页眉
     """
@@ -803,7 +823,6 @@ def addCover(info) -> None:
     Cover.append(PageBreak())
 
 
-# 设置页面内容
 def addContent(body: List[dict]) -> None:
     """ 添加文本内容、List[dict]格式指明标题等级1、2、3为标题
     例：body=[{'level': 1, 'content': "一、一级标题"}]
@@ -906,8 +925,7 @@ def addTable(table: List[List[dict[str, str]]], columns: List, pattern=None, ann
     :param pattern: 自定义样式
     :param annotation: 表注
     """
-    if pattern is None:
-        pattern = []
+    pattern = [] if pattern is None else pattern
     Pages.append(Spacer(1, 12))
     Pages.append(CustomTable.insert_table(CustomTable(table, pattern=pattern, merge_columns=columns)))
     if annotation:

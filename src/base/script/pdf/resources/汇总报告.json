@@ -1620,7 +1620,7 @@
                     "background": "#3480B7",
                     "color": "#ffffff",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1644,7 +1644,7 @@
                     "background": "#3480B7",
                     "color": "#ffffff",
                     "alignment": 1,
-                    "size": 5,
+                    "size": 4,
                     "bold": true
                   }
                 ],
@@ -1653,7 +1653,7 @@
                     "value": "网络资源-交换-S12508G-AF",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1675,7 +1675,7 @@
                     "value": "如下设备对应接口光模块非H3C所售光模块，该模块在H3C设备上不保证正常稳定工作，请您确认物理光模块标签，如果有H3C Logo，怀疑是伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1683,7 +1683,7 @@
                     "value": "网络资源-交换-S12508G-AF",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1705,7 +1705,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1713,7 +1713,7 @@
                     "value": "网络资源-交换-S12508G-AF",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1735,7 +1735,7 @@
                     "value": "如下设备对应接口光模块非H3C所售光模块，该模块在H3C设备上不保证正常稳定工作，请您确认物理光模块标签，如果有H3C Logo，怀疑是伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1743,7 +1743,7 @@
                     "value": "网络资源-交换-S12508G-AF",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1765,7 +1765,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1773,7 +1773,7 @@
                     "value": "网络资源-交换-S12516F-AF",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1795,7 +1795,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1803,7 +1803,7 @@
                     "value": "网络资源-交换-S5560-54C-EI",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1825,7 +1825,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1833,7 +1833,7 @@
                     "value": "网络资源-交换-S5560-54C-EI",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1855,7 +1855,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ],
                 [
@@ -1863,7 +1863,7 @@
                     "value": "网络资源-交换-S5560-54C-EI",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 1,
+                    "size": 2,
                     "bold": true
                   },
                   {
@@ -1885,7 +1885,7 @@
                     "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
                     "background": "#E4F5FD",
                     "alignment": 1,
-                    "size": 5
+                    "size": 4
                   }
                 ]
               ]

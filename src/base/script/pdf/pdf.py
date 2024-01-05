@@ -22,8 +22,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, SimpleDocTemplate, Flowable, \
-    Spacer
+from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, Flowable, Spacer, BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.tableofcontents import TableOfContents
 
@@ -31,23 +30,32 @@ from reportlab.platypus.tableofcontents import TableOfContents
 pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
 pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))
 
+# A4尺寸页面尺寸,外边距，内边距默认值，Frame尺寸
+pageWidth, pageHeight = A4
+topMargin, bottomMargin, leftMargin, rightMargin = (50, 50, 50, 50)
+leftPadding, bottomPadding, rightPadding, topPadding = (6, 12, 6, 18)
+frameWidth, frameHeight = (pageWidth - leftMargin - rightMargin, pageHeight - topMargin - bottomMargin)
+
 # 目录样式
-ContentStyle = ParagraphStyle(name='centered', fontName='ChineseFont-Bold', fontSize=17, leftIndent=-10, leading=18,
-                              spaceAfter=10, textColor="#365F91")
+ContentStyle = ParagraphStyle(name='centered', fontName='ChineseFont-Bold', fontSize=17, leftIndent=-leftPadding,
+                              leading=18, spaceAfter=10, textColor="#365F91")
 ContentsStyle = [
-    ParagraphStyle(name='TOCHeading1', fontName='ChineseFont-Slim', fontSize=10, leading=18, leftIndent=-10),
-    ParagraphStyle(name='TOCHeading2', fontName='ChineseFont-Slim', fontSize=10, leading=18, leftIndent=0),
-    ParagraphStyle(name='TOCHeading3', fontName='ChineseFont-Slim', fontSize=10, leading=18, leftIndent=10)
+    ParagraphStyle(name='TOCHeading1', fontName='ChineseFont-Slim', fontSize=10, leading=18,
+                   leftIndent=-leftPadding),
+    ParagraphStyle(name='TOCHeading2', fontName='ChineseFont-Slim', fontSize=10, leading=18,
+                   leftIndent=-leftPadding + 10),
+    ParagraphStyle(name='TOCHeading3', fontName='ChineseFont-Slim', fontSize=10, leading=18,
+                   leftIndent=-leftPadding + 20)
 ]
 
 # 定义1-4级标题样式
-h1 = ParagraphStyle(name='Heading1', fontName='ChineseFont-Bold', fontSize=16, leftIndent=-20, spaceAfter=10,
+h1 = ParagraphStyle(name='Heading1', fontName='ChineseFont-Bold', fontSize=16, spaceAfter=10, leftIndent=-leftPadding,
                     spaceBefore=10, leading=20)
-h2 = ParagraphStyle(name='Heading2', fontName='ChineseFont-Bold', fontSize=14, leftIndent=-20, spaceAfter=10,
+h2 = ParagraphStyle(name='Heading2', fontName='ChineseFont-Bold', fontSize=14, spaceAfter=10, leftIndent=-leftPadding,
                     spaceBefore=10, leading=20)
-h3 = ParagraphStyle(name='Heading3', fontName='ChineseFont-Bold', fontSize=12, leftIndent=-20, spaceAfter=10,
+h3 = ParagraphStyle(name='Heading3', fontName='ChineseFont-Bold', fontSize=12, spaceAfter=10, leftIndent=-leftPadding,
                     spaceBefore=10, leading=20)
-h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, leftIndent=-20, spaceAfter=10,
+h4 = ParagraphStyle(name='Heading4', fontName='ChineseFont-Slim', fontSize=12, spaceAfter=10, leftIndent=-leftPadding,
                     spaceBefore=10, leading=20)
 
 # 定义全局表格样式
@@ -70,12 +78,14 @@ Contents = [0, 0, 0, 0]
 Pages = []
 
 
-class CustomPageTemplate(SimpleDocTemplate):
+class CustomPageTemplate(BaseDocTemplate):
     """ 定义页面模板样式 """
 
     def __init__(self, filename, **kw):
         super().__init__(filename, **kw)
-        template = PageTemplate('normal', [Frame(0, 0, A4[0], A4[1], id='F1')])
+        template = PageTemplate('normal', [Frame(leftMargin, bottomMargin, frameWidth, frameHeight,
+                                                 topPadding=topPadding, bottomPadding=bottomPadding,
+                                                 leftPadding=leftPadding, rightPadding=rightPadding, id='F1')])
         self.addPageTemplates(template)
 
     def afterFlowable(self, flowable):
@@ -109,32 +119,34 @@ class CoverCanvas(Flowable):
         self.img_path = info['coverPath']
         self.type = info.get('reportType', 'a')
         self.info = info
-        self.width = A4[0] - 11
-        self.height = A4[1] - 12
+        self.width = frameWidth - (leftPadding + rightPadding)
+        self.height = frameHeight - (bottomPadding + topPadding)
 
     def cover_a(self):
         """ 绘制封面 """
-        self.canv.drawImage(self.img_path, -6, 14, width=A4[0], height=A4[1])
+        self.canv.drawImage(self.img_path, -(leftMargin + leftPadding), -(topMargin + topPadding),
+                            width=pageWidth, height=pageHeight)
 
         # 绘制标题
         header = self.info.get("deviceName", None) + " 资源明细报告"
         sub = self.info.get("deviceName", None).replace("_", " ") + " RESOURCE DETAILS"
-        self.draw_custom_text(header, 0, 570, "center", "ChineseFont-Bold", 30, "#244B98")
-        self.draw_custom_text(sub, 0, 600, "center", "ChineseFont-Bold", 14, "#969897")
-        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), 170, 650, "left",
+        self.draw_custom_text(header, 0, 500, "center", "ChineseFont-Bold", 30, "#244B98")
+        self.draw_custom_text(sub, 0, 530, "center", "ChineseFont-Bold", 14, "#969897")
+        self.draw_custom_text("资源名称：" + self.info.get("deviceName", None), 0, 600, "center",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), 170, 680, "left",
+        self.draw_custom_text("资源类型：" + self.info.get("deviceType", None), 0, 630, "center",
                               "ChineseFont-Bold", 16, "#000000")
-        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), 170, 710, "left",
+        self.draw_custom_text("资源地址：" + self.info.get("deviceAddress", None), 0, 660, "center",
                               "ChineseFont-Bold", 16, "#000000")
 
     def cover_b(self):
         """ 绘制封面 """
-        self.canv.drawImage(self.img_path, -6, 14, width=A4[0], height=A4[1])
+        self.canv.drawImage(self.img_path, -(leftMargin + leftPadding), -topMargin - 30,
+                            width=pageWidth, height=pageHeight)
         self.draw_custom_text(self.info.get("reportTime", datetime.now().year),
-                              100, 550, "left", "ChineseFont-Bold", 40, "#DF8528")
+                              60, 520, "left", "ChineseFont-Bold", 40, "#DF8528")
         self.draw_custom_text(self.info.get("reportName", None),
-                              100, 600, "left", "ChineseFont-Bold", 40, "#23548A")
+                              60, 570, "left", "ChineseFont-Bold", 40, "#23548A")
 
     def draw(self):
         if self.type == 'a':
@@ -182,8 +194,8 @@ class CoverCanvas(Flowable):
         return tuple(int(hex_color[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
 
 
-class PageNumberCanvas(Canvas):
-    """ 定义页面页码样式 """
+class PageHeaderFooterCanvas(Canvas):
+    """ 定义页面页眉页角样式 """
 
     def __init__(self, *args, **kwargs):
         Canvas.__init__(self, *args, **kwargs)
@@ -210,8 +222,8 @@ class PageNumberCanvas(Canvas):
 
     def header(self, header_text):
         # 设置页眉的位置和样式
-        header_x = 55  # 页眉的横向位置，可以根据需要调整
-        header_y = A4[1] - 40  # 页眉的纵向位置，可以根据需要调整
+        header_x = leftMargin  # 页眉的横向位置，可以根据需要调整
+        header_y = pageHeight - 40  # 页眉的纵向位置，可以根据需要调整
         header_font = "ChineseFont-Bold"  # 页眉的字体，可以根据需要调整
         header_font_size = 10  # 页眉的字号，可以根据需要调整
         header_color = "#2F5496"  # 浅蓝色
@@ -224,7 +236,7 @@ class PageNumberCanvas(Canvas):
         self.drawString(header_x, header_y, header_text)
 
         # 绘制同色横线
-        line_width = A4[0] - 2 * header_x  # 横线的长度，可以根据需要调整
+        line_width = frameWidth  # 横线的长度，可以根据需要调整
         line_height = header_y - 8  # 横线的位置，略低于文字
         self.setLineWidth(1)  # 横线的宽度，可以根据需要调整
         self.setStrokeColor("#3480B7")
@@ -268,7 +280,8 @@ class CustomTable:
         # 处理文本样式
         rows = self.text_style()
         # 创建表格, 固定首行行高，其余行行高自适应
-        table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=480 / columns)
+        table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)),
+                      colWidths=frameWidth / columns)
 
         # 设置默认样式和自定义样式
         table.setStyle(tableStyle)
@@ -446,8 +459,7 @@ class VerticalChart(Flowable):
         d.add(self.set_legend(bar))
         d.add(bar)
         # 绘制到canvas
-        d.wrapOn(self.canv, self.width, self.height)
-        d.drawOn(self.canv, self.x, self.y)
+        d.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 class HorizontalChart(Flowable):
@@ -493,12 +505,12 @@ class HorizontalChart(Flowable):
         # 全角字符 (包括中文字符和全角标点)
         if '\u4e00' <= c <= '\u9fff' or '\uff01' <= c <= '\uff60' or '\u3000' <= c <= '\u303f':
             return 1 * self.fontSize
-        # 半角英文字符和数字
-        elif c.isalnum():
-            return 0.5 * self.fontSize
-        # 其他半角字符（包括半角标点等）
+        # 英文字母（无论大小写）
+        elif c.isalpha():
+            return 0.6 * self.fontSize
+        # 其他数字、半角字符、半角标点
         else:
-            return 0.45 * self.fontSize
+            return 0.5 * self.fontSize
 
     def wrap_text(self, text):
         wrapped_text = ""
@@ -519,9 +531,9 @@ class HorizontalChart(Flowable):
         d = Drawing(self.width, self.height)
         bar = HorizontalBarChart()
         bar.height = self.height * 0.8
-        bar.width = self.width - max_label_width - 30
+        bar.width = self.width - max_label_width
         bar.x = max_label_width
-        bar.y = 0
+        bar.y = (self.height - bar.height) / 2
         bar.data = [[item[bar] for item in self.data] for bar in self.bars]
 
         # 设置纵坐标
@@ -553,11 +565,9 @@ class HorizontalChart(Flowable):
         bar.bars = style
         for index in range(len(bar.data)):
             bar.bars[index].fillColor = self.colors[index]
-
         d.add(self.set_legend(bar))
         d.add(bar)
-        d.wrapOn(self.canv, self.width, self.height)
-        d.drawOn(self.canv, self.x, self.y)
+        d.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 class PieChart(Flowable):
@@ -638,7 +648,7 @@ class PieChart(Flowable):
 
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing()
+        draw = Drawing(self.width, self.height)
 
         # 绘制饼图：大小、位置
         pie = Pie()
@@ -656,7 +666,7 @@ class PieChart(Flowable):
 
         draw.add(pie)
         self.generate_label(pie, draw)
-        draw.drawOn(self.canv, self.x, self.y)
+        draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 class RingChart(PieChart):
@@ -687,7 +697,7 @@ class RingChart(PieChart):
 
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing()
+        draw = Drawing(self.width, self.height)
 
         # 绘制饼图：大小、位置
         pie = Pie()
@@ -704,7 +714,7 @@ class RingChart(PieChart):
             pie.slices[i].strokeWidth = 2
         draw.add(pie)
         draw.add(self.circle(pie, draw))
-        draw.drawOn(self.canv, self.x, self.y)
+        draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 def contents(title) -> List[Paragraph]:
@@ -762,7 +772,7 @@ def build(filename: str, header=None) -> None:
     pdf = CustomPageTemplate(filename, pagesize=A4)
     global PageHeader
     PageHeader = header
-    pdf.multiBuild(doc, canvasmaker=PageNumberCanvas)
+    pdf.multiBuild(doc, canvasmaker=PageHeaderFooterCanvas)
 
 
 def addCover(info) -> None:
@@ -783,7 +793,7 @@ def addContent(body: List[dict]) -> None:
 
 
 def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="ChineseFont-Slim", bold=True,
-             font_size=12, alignment=0, font_color=colors.black, leading=20, leftIndent=-20, space=10) -> None:
+             font_size=12, alignment=0, font_color=colors.black, leading=20, leftIndent=-leftPadding, space=10) -> None:
     """
     添加四级标题
     :param name: 标题名
@@ -823,10 +833,11 @@ def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="Chin
     title = f"{name}"
     if tag:
         title = title + f"<font color={color}>{'&nbsp;' * 5}{tag}</font>"
-    Pages.append(Paragraph(title, style))
+    paragraph = Paragraph(title, style)
+    Pages.append(paragraph)
 
 
-def addParagraph(content: str, font_size=10.5, font_color=colors.black, leading=15, leftIndent=-20,
+def addParagraph(content: str, font_size=10.5, font_color=colors.black, leading=15, leftIndent=-leftPadding,
                  space=5) -> None:
     """
      添加一个自动换行的段落
@@ -862,9 +873,9 @@ def addText(text: List[dict]) -> None:
     :param text: 文本内容
     """
     for item in text:
-        addTitle(item.get("title"), serial=False, font_name="ChineseFont-Bold", space=3, leftIndent=-10)
+        addTitle(item.get("title"), serial=False, font_name="ChineseFont-Bold", space=3, leftIndent=-leftPadding + 10)
         if item.get("content"):
-            addParagraph(item.get("content"), leftIndent=-10, space=3)
+            addParagraph(item.get("content"), leftIndent=-leftPadding + 10, space=3)
 
 
 def addTable(table: List[List[dict[str, str]]], columns: List, pattern=None, annotation=None) -> None:
@@ -898,7 +909,8 @@ def addVerticalChart(data: List[dict[str, str]], bars: List[str],
         color_list = ["#4472C4", "#ED7D31", "#FFC000"]
     Pages.append(VerticalChart(data=data, label=label, bars=bars, color_list=color_list, legend=legend))
     if annotation:
-        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
+        addTitle(annotation.get("content"), serial=False, font_size=10, leftIndent=0,
+                 alignment=annotation.get("alignment", 0))
 
 
 def addHorizontalChart(data: List[dict[str, str]], bars: List[str],
@@ -916,9 +928,10 @@ def addHorizontalChart(data: List[dict[str, str]], bars: List[str],
     if color_list is None:
         color_list = ["#FFC000", "#4472C4", "#ED7D31"]
     Pages.append(
-        HorizontalChart(data, label, bars, color_list, legend, font_size=7, label_len_max=220, width=400, height=200))
+        HorizontalChart(data, label, bars, color_list, legend, font_size=7, label_len_max=200, width=400, height=200))
     if annotation:
-        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
+        addTitle(annotation.get("content"), serial=False, font_size=10, leftIndent=0,
+                 alignment=annotation.get("alignment", 0))
 
 
 def addPie(data, annotation=None):
@@ -929,7 +942,8 @@ def addPie(data, annotation=None):
     """
     Pages.append(PieChart(font_name="ChineseFont-Slim", data=data, label_distance=20, radius=50, font_size=8))
     if annotation:
-        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
+        addTitle(annotation.get("content"), serial=False, font_size=10, leftIndent=0,
+                 alignment=annotation.get("alignment", 0))
 
 
 def addRing(data: List[dict[str, str]], tag=None, annotation=None):
@@ -942,4 +956,5 @@ def addRing(data: List[dict[str, str]], tag=None, annotation=None):
     Pages.append(
         RingChart(font_name="ChineseFont-Slim", data=data, radius=80, font_size=10, tag=tag))
     if annotation:
-        addTitle(annotation.get("content"), serial=False, font_size=10, alignment=annotation.get("alignment", 0))
+        addTitle(annotation.get("content"), serial=False, font_size=10, leftIndent=0,
+                 alignment=annotation.get("alignment", 0))

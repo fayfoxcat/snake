@@ -3,7 +3,7 @@
   "pageHeader": "巡检汇总报告",
   "cover": {
     "reportType": "b",
-    "coverPath": "resources/cover_a.jpg",
+    "coverPath": "resources/cover_b.jpg",
     "reportTime": "2023",
     "reportName": "巡检总结报告"
   },
@@ -1433,7 +1433,7 @@
                   "count": 26
                 },
                 {
-                  "name": "【2022】120号【代理商级别】-关于3C部分产品保存配置时退出登录导致配置丢失的技术公告",
+                  "name": "【2022】120号【代理商级别】-关于正3C部分产品保存配置时退出登录导致配置丢失的技术公告",
                   "count": 22
                 },
                 {

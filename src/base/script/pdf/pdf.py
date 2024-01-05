@@ -10,21 +10,21 @@ from hashlib import sha1
 from math import pi, cos, sin
 from typing import List
 
-from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart, BarChartProperties
-from reportlab.graphics.charts.legends import Legend
-from reportlab.graphics.charts.piecharts import Pie
-from reportlab.graphics.shapes import Drawing, String, Line, Circle
-from reportlab.graphics.widgetbase import TypedPropertyCollection
 from reportlab.lib import colors
-from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.colors import HexColor
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, Flowable, Spacer, BaseDocTemplate
 from reportlab.platypus.frames import Frame
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.graphics.charts.legends import Legend
 from reportlab.platypus.tableofcontents import TableOfContents
+from reportlab.graphics.widgetbase import TypedPropertyCollection
+from reportlab.graphics.shapes import Drawing, String, Line, Circle
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart, BarChartProperties
+from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, Flowable, Spacer, BaseDocTemplate
 
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
@@ -508,7 +508,7 @@ class HorizontalChart(Flowable):
         # 英文字母（无论大小写）
         elif c.isalpha():
             return 0.6 * self.fontSize
-        # 其他数字、半角字符、半角标点
+        # 半角 标点、半角 字符、其他数字
         else:
             return 0.5 * self.fontSize
 
@@ -801,6 +801,7 @@ def addTitle(name=None, tag=None, serial=True, color=colors.red, font_name="Chin
     :param serial: 是否添加标题序号，默认添加
     :param color: 标签字体颜色
     :param font_name: 字体
+    :param bold: 是否加粗
     :param font_size: 字体大小
     :param alignment: 文本对齐，0向右，1居中
     :param font_color: 字体颜色

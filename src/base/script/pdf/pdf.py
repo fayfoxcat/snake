@@ -3,6 +3,7 @@
 """
 方法用于生成pdf
 """
+import os
 import copy
 import math
 from typing import List
@@ -27,8 +28,9 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarC
 from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, Flowable, Spacer, BaseDocTemplate
 
 # 注册字体
-pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
-pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+pdfmetrics.registerFont(TTFont('ChineseFont-Slim', os.path.join(script_dir, 'font', 'SimSun.ttf')))
+pdfmetrics.registerFont(TTFont('ChineseFont-Bold', os.path.join(script_dir, 'font', '微软雅黑粗体.ttf')))
 
 # 页面纸张尺寸、Frame外边距、Frame内边距、Frame尺寸
 pageWidth, pageHeight = A4

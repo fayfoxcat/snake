@@ -1,6 +1,6 @@
 import json
 
-from src.base.script.pdf.pdf import addCover, addContent, addTable, build, addVerticalChart, addPie, addRing, \
+from pdf import addCover, addContent, addTable, build, addVerticalChart, addPie, addRing, \
     addHorizontalChart, addTitle, addText
 
 with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:

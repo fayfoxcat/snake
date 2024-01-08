@@ -1,6 +1,6 @@
 import json
 
-from src.base.script.pdf.pdf import addCover, addContent, addTable, build, addTitle, addText
+from pdf import addCover, addContent, addTable, build, addTitle, addText
 
 with open('resources/巡检报告.json', 'r', encoding='utf-8') as file:
     data = json.load(file)

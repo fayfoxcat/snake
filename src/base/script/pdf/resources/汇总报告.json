@@ -743,7 +743,7 @@
                     "bold": true
                   },
                   {
-                    "value": "设备local logbuffer告警检查",
+                    "value": "设备local log buffer告警检查",
                     "background": "#FBE4D5",
                     "alignment": 1,
                     "size": 3
@@ -1163,7 +1163,7 @@
                     "bold": true
                   },
                   {
-                    "value": "关闭ip unreachables命令检查",
+                    "value": "关闭ip un reach ables命令检查",
                     "background": "#FBE4D5",
                     "alignment": 1,
                     "size": 3

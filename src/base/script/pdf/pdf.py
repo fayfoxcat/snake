@@ -104,7 +104,7 @@ class CustomPageTemplate(BaseDocTemplate):
                     level = 2
 
                 # 调整页码，如果有封面则减1
-                adjusted_page_num = self.page - len(Cover)
+                adjusted_page_num = self.page - len(Cover) + 1
 
                 e = [level, text, adjusted_page_num]
                 bn = getattr(flowable, '_bookmarkName', None)

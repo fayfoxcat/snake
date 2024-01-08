@@ -103,8 +103,8 @@ class CustomPageTemplate(BaseDocTemplate):
                 elif style == 'Heading3':
                     level = 2
 
-                # 调整页码，如果有封面则减1
-                adjusted_page_num = self.page - len(Cover) + 1
+                # 调整页码，如果有封面则减去封面大小，除2是每个封面都会跟一个换页符
+                adjusted_page_num = self.page - len(Cover) / 2
 
                 e = [level, text, adjusted_page_num]
                 bn = getattr(flowable, '_bookmarkName', None)

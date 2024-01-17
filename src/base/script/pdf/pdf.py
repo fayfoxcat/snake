@@ -698,7 +698,7 @@ class PieChart(Flowable):
         pie.y = (draw.height - pie.width) / 2
 
         # 设置饼图各部分的数量
-        pie.data = [item["cont"] for item in self.data]
+        pie.data = [item["count"] for item in self.data]
         # 设置饼图各部分的颜色
         for i, item in enumerate(self.data):
             pie.slices[i].fillColor = colors.HexColor(item["color"])

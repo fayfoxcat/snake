@@ -615,7 +615,8 @@ class PieChart(Flowable):
     def __init__(self, data, tag=None, x=0, y=0, radius=80, font_name=None, font_size=10, label_distance=None):
         Flowable.__init__(self)
         self.tag = tag
-        self.data = data
+        self.data = sorted(data, key=lambda x: x["count"], reverse=False)
+        self.offset = 3
         self.x = x
         self.y = y
         self.radius = radius
@@ -625,7 +626,9 @@ class PieChart(Flowable):
         self.font_name = font_name
         self.font_size = font_size
 
-    def calculate_label_position(self, line_start_x, line_start_y, angle, text):
+    def calculate_label_position(self, line_start_x, line_start_y, angle, text, label_positions):
+        label_width = len(text) * self.font_size * 0.7
+        label_height = self.font_size
         # 使用 label_distance 调整标签坐标
         label_x = line_start_x + self.label_distance * cos(angle * pi / 180)
         label_y = line_start_y + self.label_distance * sin(angle * pi / 180)
@@ -634,6 +637,18 @@ class PieChart(Flowable):
             label_y -= 10
         elif 0 <= angle % 360 < 30 or 330 <= angle % 360 < 360:
             label_x += 10
+        elif 60 <= angle % 360 < 90:
+            label_y += 10
+        # 确保新标签不与已有标签重叠
+        for pos in label_positions:
+            while (label_x < pos[0] + label_width and
+                   label_x + label_width > pos[0] and
+                   label_y < pos[1] + label_height and
+                   label_y + label_height > pos[1]):
+                # 如果发现重叠，label_x label_y
+                label_x = label_x + self.offset * 2
+                label_y = label_y - self.offset
+        # 返回新的标签位置
         return label_x, label_y
 
     def calculate_label_midpoints(self, label_x, label_y, angle, text):
@@ -656,12 +671,13 @@ class PieChart(Flowable):
         # 计算并添加标签和线条
         start_angle = 90
         # 绘制标签
-        for item in self.data:
+        label_positions = []
+        for index, item in enumerate(self.data):
             # 标签文本
             label_text = f'{item["name"]} ({item["count"]})'
 
             # 计算每个扇形的中点角度
-            angle = (item["count"] / total) * 360
+            angle = (pie.data[index] / total) * 360
             mid_angle = start_angle - angle / 2
             start_angle -= angle
 
@@ -679,7 +695,9 @@ class PieChart(Flowable):
             line_start_y = center_y + 0.75 * (mid_arc_y - center_y)
 
             # 添加标签
-            label_x, label_y = self.calculate_label_position(line_start_x, line_start_y, mid_angle, label_text)
+            label_x, label_y = self.calculate_label_position(line_start_x, line_start_y, mid_angle, label_text,
+                                                             label_positions)
+            label_positions.append((label_x, label_y))  # 将新标签位置存储起来
             d.add(String(label_x, label_y, label_text, fillColor=colors.black,
                          fontName=self.font_name, fontSize=self.font_size))
 
@@ -697,22 +715,25 @@ class PieChart(Flowable):
         pie.x = (draw.width - pie.width) / 2
         pie.y = (draw.height - pie.width) / 2
 
-        # 设置饼图各部分的数量
-        pie.data = [item["count"] for item in self.data]
+        # 设置饼图各部分的数量，并确保至少占1%
+        total_count = sum(item["count"] for item in self.data)  # 计算总数
+        min_percentage = 0.01  # 最小占比
+        min_count = total_count * min_percentage  # 计算最小数量
+
+        pie.data = [max(item["count"], min_count) for item in self.data]  # 确保每部分至少占1%
         # 设置饼图各部分的颜色
         for i, item in enumerate(self.data):
             pie.slices[i].fillColor = colors.HexColor(item["color"])
 
-        # 设置标签
-
         draw.add(pie)
+        # 设置标签
         self.generate_label(pie, draw)
         draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 class RingChart(PieChart):
 
-    def circle(self, pie, draw):
+    def concentric_circle(self, pie, draw):
         # 绘制覆盖饼图的同心圆
         circle = Circle(cx=self.radius + pie.x, cy=self.radius + pie.y, r=self.radius / 2,
                         fillColor=colors.white, strokeColor=colors.white)
@@ -720,7 +741,7 @@ class RingChart(PieChart):
         self.generate_label(pie, draw)
         draw.add(circle)
         # 计算总数
-        total_count = sum(pie.data)
+        total_count = sum([item["count"] for item in self.data])
         # 创建用于显示总数的字符串
         tag_str = String(self.radius + pie.x, self.radius + pie.y + 2 / 3 * self.font_size,
                          self.tag if self.tag else "总数",
@@ -746,15 +767,20 @@ class RingChart(PieChart):
         pie.x = (draw.width - pie.width) / 2
         pie.y = (draw.height - pie.width) / 2
 
-        # 设置饼图各部分的数量
-        pie.data = [item["count"] for item in self.data]
+        # 设置饼图各部分的数量，并确保至少占1%
+        total_count = sum(item["count"] for item in self.data)  # 计算总数
+        min_percentage = 0.01  # 最小占比
+        min_count = total_count * min_percentage  # 计算最小数量
+
+        pie.data = [max(item["count"], min_count) for item in self.data]  # 确保每部分至少占1%
+
         # 设置饼图各部分的颜色
         for i, item in enumerate(self.data):
             pie.slices[i].fillColor = colors.HexColor(item["color"])
             pie.slices[i].strokeColor = colors.white
             pie.slices[i].strokeWidth = 2
         draw.add(pie)
-        draw.add(self.circle(pie, draw))
+        draw.add(self.concentric_circle(pie, draw))
         draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 

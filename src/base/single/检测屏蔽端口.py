@@ -122,4 +122,4 @@ def scan_ports(hostname, start=None, end=None):
 
 
 # 输入域名或ip
-scan_ports("dev.asac.cc", 0, 20000)
+scan_ports("dev.asac.cc", 443)

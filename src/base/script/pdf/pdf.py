@@ -111,6 +111,7 @@ class CustomPageTemplate(BaseDocTemplate):
                 if bn is not None:
                     e.append(bn)
                 self.notify('TOCEntry', tuple(e))
+                self.canv.addOutlineEntry(text, bn, level=level, closed=True)
 
 
 class CoverCanvas(Flowable):

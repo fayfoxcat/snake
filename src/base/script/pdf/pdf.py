@@ -4,27 +4,28 @@
 方法用于生成pdf
 """
 import copy
-import math
-from typing import List
-from hashlib import sha1
-from math import pi, cos, sin
+import logging
 from datetime import datetime
+from hashlib import sha1
+from typing import List
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase import pdfmetrics
-from reportlab.lib.colors import HexColor
-from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus.frames import Frame
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.graphics.charts.piecharts import Pie
-from reportlab.graphics.charts.legends import Legend
-from reportlab.platypus.tableofcontents import TableOfContents
-from reportlab.graphics.widgetbase import TypedPropertyCollection
-from reportlab.graphics.shapes import Drawing, String, Line, Circle
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+import math
+from math import pi, cos, sin
 from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart, BarChartProperties
+from reportlab.graphics.charts.legends import Legend
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.graphics.shapes import Drawing, String, Line, Circle
+from reportlab.graphics.widgetbase import TypedPropertyCollection
+from reportlab.lib import colors
+from reportlab.lib.colors import HexColor
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, Table, Flowable, Spacer, BaseDocTemplate
+from reportlab.platypus.frames import Frame
+from reportlab.platypus.tableofcontents import TableOfContents
 
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
@@ -616,7 +617,7 @@ class PieChart(Flowable):
     def __init__(self, data, tag=None, x=0, y=0, radius=80, font_name=None, font_size=10, label_distance=None):
         Flowable.__init__(self)
         self.tag = tag
-        self.data = sorted(data, key=lambda x: x["count"], reverse=False)
+        self.data = sorted(data, key=lambda i: i["count"], reverse=False)
         self.offset = 3
         self.x = x
         self.y = y
@@ -708,16 +709,19 @@ class PieChart(Flowable):
 
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing(self.width, self.height)
+        drawing = Drawing(self.width, self.height)
 
         # 绘制饼图：大小、位置
         pie = Pie()
         pie.width = pie.height = self.radius * 2
-        pie.x = (draw.width - pie.width) / 2
-        pie.y = (draw.height - pie.width) / 2
+        pie.x = (drawing.width - pie.width) / 2
+        pie.y = (drawing.height - pie.width) / 2
 
         # 设置饼图各部分的数量，并确保至少占1%
         total_count = sum(item["count"] for item in self.data)  # 计算总数
+        if total_count == 0:
+            logging.error("饼图数据总和不能为0")
+            return
         min_percentage = 0.01  # 最小占比
         min_count = total_count * min_percentage  # 计算最小数量
 
@@ -726,21 +730,21 @@ class PieChart(Flowable):
         for i, item in enumerate(self.data):
             pie.slices[i].fillColor = colors.HexColor(item["color"])
 
-        draw.add(pie)
+        drawing.add(pie)
         # 设置标签
-        self.generate_label(pie, draw)
-        draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
+        self.generate_label(pie, drawing)
+        drawing.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 class RingChart(PieChart):
 
-    def concentric_circle(self, pie, draw):
+    def concentric_circle(self, pie, drawing):
         # 绘制覆盖饼图的同心圆
         circle = Circle(cx=self.radius + pie.x, cy=self.radius + pie.y, r=self.radius / 2,
                         fillColor=colors.white, strokeColor=colors.white)
         # 设置标签
-        self.generate_label(pie, draw)
-        draw.add(circle)
+        self.generate_label(pie, drawing)
+        drawing.add(circle)
         # 计算总数
         total_count = sum([item["count"] for item in self.data])
         # 创建用于显示总数的字符串
@@ -755,21 +759,24 @@ class RingChart(PieChart):
         tag_str.fontSize = total_str.fontSize = self.font_size
         tag_str.fillColor = total_str.fillColor = colors.black
 
-        draw.add(tag_str)
-        draw.add(total_str)
+        drawing.add(tag_str)
+        drawing.add(total_str)
 
     def draw(self):
         # 新建画布，指定位置
-        draw = Drawing(self.width, self.height)
+        drawing = Drawing(self.width, self.height)
 
         # 绘制饼图：大小、位置
         pie = Pie()
         pie.width = pie.height = self.radius * 2
-        pie.x = (draw.width - pie.width) / 2
-        pie.y = (draw.height - pie.width) / 2
+        pie.x = (drawing.width - pie.width) / 2
+        pie.y = (drawing.height - pie.width) / 2
 
         # 设置饼图各部分的数量，并确保至少占1%
         total_count = sum(item["count"] for item in self.data)  # 计算总数
+        if total_count == 0:
+            logging.error("环图数据总和不能为0")
+            return
         min_percentage = 0.01  # 最小占比
         min_count = total_count * min_percentage  # 计算最小数量
 
@@ -780,9 +787,9 @@ class RingChart(PieChart):
             pie.slices[i].fillColor = colors.HexColor(item["color"])
             pie.slices[i].strokeColor = colors.white
             pie.slices[i].strokeWidth = 2
-        draw.add(pie)
-        draw.add(self.concentric_circle(pie, draw))
-        draw.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
+        drawing.add(pie)
+        drawing.add(self.concentric_circle(pie, drawing))
+        drawing.drawOn(self.canv, (frameWidth - leftPadding - rightPadding - self.width) / 2 + self.x, self.y)
 
 
 def contents(title) -> List[Paragraph]:
@@ -1006,7 +1013,7 @@ def addPie(data, annotation=None):
     :param data: 数据
     :param annotation: 图注
     """
-    Pages.append(PieChart(font_name="ChineseFont-Slim", data=data, label_distance=20, radius=50, font_size=8))
+    Pages.append(PieChart(font_name="ChineseFont-Slim", data=data, radius=80, font_size=8))
     if annotation:
         addTitle(annotation.get("content"), serial=False, font_size=10, leftIndent=0,
                  alignment=annotation.get("alignment", 0))

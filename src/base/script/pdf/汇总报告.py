@@ -20,7 +20,7 @@ with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:
                 addTable(item.get('data', None), columns=item.get('columns', []), pattern=item.get("pattern", None),
                          annotation=item.get("annotation", None))
             for chart in group.get('verticalCharts', []):
-                addVerticalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []),
+                addVerticalChart(chart.get('data', []), bars=chart.get('bars', None), legend=chart.get('legend', []),
                                  annotation=chart.get("annotation", None))
             for chart in group.get('horizontalCharts', []):
                 addHorizontalChart(chart.get('data', []), bars=chart.get('bars', []), legend=chart.get('legend', []),

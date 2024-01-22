@@ -413,7 +413,7 @@ class CustomTable:
 
 
 class VerticalChart(Flowable):
-    def __init__(self, data, label, bars, color_list, legend=None, x=0, y=0, width=400, height=250,
+    def __init__(self, data, label, color_list, bars=None, legend=None, x=0, y=0, width=400, height=250,
                  value_min=0, value_max=None, value_step=None, font_name="ChineseFont-Slim", font_size=10):
         Flowable.__init__(self)
         self.data = data
@@ -461,7 +461,13 @@ class VerticalChart(Flowable):
         bar.width = self.width * 0.8
         bar.x = (d.width - bar.width) / 2
         bar.y = text_width + 10
-        bar.data = [[item[bar] for item in self.data] for bar in self.bars]
+        if self.bars is None and all('values' in item for item in self.data):
+            bar.data = [[item['values'][i] for item in self.data] for i in range(len(self.data[0]['values']))]
+        elif self.bars is not None and not('values' in item for item in self.data):
+            bar.data = [[item[bar] for item in self.data] for bar in self.bars]
+        else:
+            logging.error("垂直图表数据不完整，bars和values必须包含其一")
+            return None
         bar.categoryAxis.categoryNames = [item[self.label] for item in self.data]
 
         # 设置横坐标
@@ -967,7 +973,7 @@ def addTable(table: List[List[dict[str, str]]], columns: List, pattern=None, ann
     Pages.append(Spacer(1, 12))
 
 
-def addVerticalChart(data: List[dict[str, str]], bars: List[str],
+def addVerticalChart(data: List[dict[str, str]], bars: None,
                      label='name', legend=None, color_list=None, annotation=None) -> None:
     """
     添加垂直柱状图

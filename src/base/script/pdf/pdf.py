@@ -27,6 +27,9 @@ from reportlab.platypus import TableStyle, Paragraph, PageBreak, PageTemplate, T
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.tableofcontents import TableOfContents
 
+# 日志
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
 # 注册字体
 pdfmetrics.registerFont(TTFont('ChineseFont-Slim', 'font/SimSun.ttf'))
 pdfmetrics.registerFont(TTFont('ChineseFont-Bold', 'font/微软雅黑粗体.ttf'))
@@ -318,7 +321,7 @@ class CustomTable:
                                             (item.get('end_x', -1), item.get('end_y', -1)),
                                             item.get("line_width", 0.5), item.get('color', None))]))
             else:
-                print(f"警告: 样式 '{style_type}' 不是表格支持的合法样式，仅支持样式：'{self.valid_styles}'")
+                logging.warning(f"警告: 样式 '{style_type}' 不是表格支持的合法样式，仅支持样式：'{self.valid_styles}'")
         # 处理单元格样式
         self.cell_style(table)
         self.merge_cell(table)
@@ -461,15 +464,24 @@ class VerticalChart(Flowable):
         bar.width = self.width * 0.8
         bar.x = (d.width - bar.width) / 2
         bar.y = text_width + 10
-        if self.bars is None and all('values' in item for item in self.data):
-            bar.data = [[item['values'][i] for item in self.data] for i in range(len(self.data[0]['values']))]
-        elif self.bars is not None and not('values' in item for item in self.data):
-            bar.data = [[item[bar] for item in self.data] for bar in self.bars]
-        else:
-            logging.error("垂直图表数据不完整，bars和values必须包含其一")
+        try:
+            if all('values' in item for item in self.data):
+                max_length = max(len(item['values']) for item in self.data)
+                bar.data = [[item['values'][i] if i < len(item['values']) else 0
+                             for item in self.data] for i in range(max_length)]
+            elif self.bars is not None:
+                bar.data = [[item[bar] for item in self.data] for bar in self.bars]
+            else:
+                logging.error("verticalChart图表数据不完整，bars和values不能同时为空")
+                return None
+        except KeyError as e:
+            logging.error("verticalChart图表数据不完整，data中缺少bars中声明的字段：%s", ', '.join(e.args))
             return None
-        bar.categoryAxis.categoryNames = [item[self.label] for item in self.data]
+        except Exception as e:
+            logging.error("verticalChart图表数据有误，%s", e)
+            return None
 
+        bar.categoryAxis.categoryNames = [item[self.label] for item in self.data]
         # 设置横坐标
         label_width = bar.width / len(self.data)
         bar.categoryAxis.labels.fontName = self.fontName

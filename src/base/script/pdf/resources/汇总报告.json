@@ -278,7 +278,9 @@
               },
               "data": [
                 {
-                  "name": "硬件状态检查"
+                  "name": "硬件状态检查",
+                  "resources": 150,
+                  "alarm": 80
                 },
                 {
                   "name": "软件状态检查",
@@ -289,6 +291,22 @@
                   "name": "协议状态检查",
                   "resources": 70,
                   "alarm": 60
+                },
+
+                {
+                  "name": "安全状态检查",
+                  "resources": 60,
+                  "alarm": 50
+                },
+                {
+                  "name": "诊断信息检查",
+                  "resources": 60,
+                  "alarm": 110
+                },
+                {
+                  "name": "技术公告检查",
+                  "resources": 180,
+                  "alarm": 90
                 },
                 {
                   "name": "安全状态检查",

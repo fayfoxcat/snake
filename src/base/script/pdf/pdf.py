@@ -493,6 +493,9 @@ class VerticalChart(Flowable):
             bar.categoryAxis.labels.angle = math.degrees(math.acos(radio))  # 设置横坐标的文字倾斜角度
             bar.categoryAxis.labels.dx = - self.fontSize / 1.5  # 根据字体大小自适应
             bar.categoryAxis.labels.dy = - math.sqrt((text_width + 20) ** 2 - label_width ** 2) / 2  # 根据文本宽度自动自适应
+        else:
+            bar.height += 60
+            bar.y -= 60
 
         # 设置纵坐标
         bar.valueAxis.strokeWidth = 0.5  # 设置纵坐标的粗细

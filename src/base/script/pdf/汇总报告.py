@@ -3,7 +3,7 @@ import json
 from pdf import addCover, addContent, addTable, build, addVerticalChart, addPie, addRing, \
     addHorizontalChart, addTitle, addText
 
-with open('resources/汇总报告.json', 'r', encoding='utf-8') as file:
+with open('resources/data1.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
     reportName = data.get('reportName', '汇总报告.pdf')
     cover = data.get('cover')

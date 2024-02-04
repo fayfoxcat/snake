@@ -1,0 +1,86 @@
+# ======================== Elasticsearch Configuration =========================
+#
+# 注意：Elasticsearch 默认提供了大多数设置的合理默认值。
+#       在您开始调整和优化配置之前，请确保您理解您想要实现的目标和可能的后果。
+#
+# 配置节点的主要方式是通过此文件。此模板列出了您可能想要为生产集群配置的最重要的设置。
+#
+# 有关配置选项的进一步信息，请参阅文档：
+# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
+#
+# ---------------------------------- Cluster -----------------------------------
+#
+# 为您的集群使用描述性的名称：
+#
+cluster.name: cluster_wiscom_nc
+
+# ------------------------------------ Node ------------------------------------
+#
+# 为节点使用描述性的名称：
+#
+node.name: 172.18.37.216
+
+# ----------------------------------- Paths ------------------------------------
+#
+# 存储数据的目录路径（通过逗号分隔多个位置）：
+#
+path.data:
+  - /home/wiscomdata/elasticsearch/data
+
+# 日志文件路径：
+#
+path.logs:
+  - /home/wiscomdata/elasticsearch/logs
+
+# 存储仓库的路径：
+#
+path.repo: ["/home/wiscomdata/elasticsearch/wiscom_backup"]
+
+# 锁定内存：
+#
+bootstrap.memory_lock: true
+
+# ---------------------------------- Network -----------------------------------
+#
+# 默认情况下，Elasticsearch 只能在 localhost 上访问。在此处设置不同的地址以在网络上公开此节点：
+#
+network.host: 172.18.37.216
+
+# 默认情况下，Elasticsearch 在找到的第一个空闲端口上监听 HTTP 流量。在此处设置特定的 HTTP 端口：
+#
+http.port: 22030
+
+# --------------------------------- Discovery ----------------------------------
+#
+# 启动此节点时，传递一个进行发现的初始主机列表：
+# 默认主机列表为 ["127.0.0.1", "[::1]"]
+#
+discovery.seed_hosts:
+  - 172.18.37.216:22031
+
+# 使用一组初始的主节点引导集群：
+#
+cluster.initial_master_nodes:
+  - 172.18.37.216
+
+# ---------------------------------- Various -----------------------------------
+#
+# 在删除索引时需要显式名称：
+#
+#action.destructive_requires_name: true
+
+# 设置节点的最大分片数：
+#
+cluster.max_shards_per_node: 10000
+
+# 启用 X-Pack 安全性：
+#
+xpack.security.enabled: true
+
+# 启用 X-Pack 安全性传输层 SSL：
+#
+xpack.security.transport.ssl.enabled: true
+
+# 查询缓存大小占用索引内存的百分比：
+#
+indices.queries.cache.size: 30%

@@ -290,6 +290,9 @@ class PageHeaderFooterCanvas(Canvas):
 class CustomTable:
     def __init__(self, data, pattern=None, merge_columns=None):
         self.data = data
+        self.max_table_height = frameHeight - 262
+        self.heights = []
+        self.columns_width = None
         self.pattern = pattern
         self.merge_columns = merge_columns
         self.valid_styles = ['ALIGN', 'VALIGN', 'FONT', 'TEXTCOLOR', 'BACKGROUND', 'GRID', 'BOX', 'SPAN',
@@ -304,11 +307,11 @@ class CustomTable:
         """
         # 表头、列表数据
         columns = max([sum(item.get('size', 1) for item in row) for row in self.data])
+        self.columns_width = frameWidth / columns
         # 处理文本样式
         rows = self.text_style()
         # 创建表格, 固定首行行高，其余行行高自适应
-        table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)),
-                      colWidths=frameWidth / columns)
+        table = Table(rows, rowHeights=([27] + [None] * (len(rows) - 1)), colWidths=self.columns_width)
 
         # 设置默认样式和自定义样式
         table.setStyle(tableStyle)
@@ -337,6 +340,7 @@ class CustomTable:
         result: List[List] = [[None for _ in range(max_column)] for _ in range(max_row)]
         for ri, row in enumerate(self.data):
             offset = 0  # 占用多个单元格偏移量
+            max_row_height = []
             for ci, item in enumerate(row):
                 style = copy.deepcopy(cellStyle)
                 style.textColor = item.get("color", colors.black)
@@ -344,9 +348,12 @@ class CustomTable:
                 style.fontName = "ChineseFont-Bold" if item.get("bold") else "ChineseFont-Slim"
                 value = item.get("value")
                 if value is not None:
-                    result[ri][ci + offset] = Paragraph(str(value), style)
+                    paragraph = Paragraph(str(value), style)
+                    max_row_height.append(paragraph.wrap(self.columns_width, 0)[1])
+                    result[ri][ci + offset] = paragraph
                 size = item.get("size", 1)
                 offset += size - 1 if size > 1 else 0
+            self.heights.append(max(max_row_height))
         return result
 
     #
@@ -371,7 +378,7 @@ class CustomTable:
 
     def merge_cell(self, table: Table) -> None:
         """
-        指定列若含相同数据，则自动合并单元格
+        指定列若含相同数据，则自动合并单元格。如果合并的单元格高度超过200，则停止合并。
         :param table: 表格
         """
         # 填充空位
@@ -391,26 +398,34 @@ class CustomTable:
         # 遍历指定的合并列
         for ci in self.merge_columns:
             row_start = None
+            current_height = 0  # 初始化当前合并单元格的高度
+            last_value = None
             # 遍历每一行
             for ri, row in enumerate(items):
                 current = row[ci].get('value') if row[ci] else None
-                offset = row[ci].get('size', 1) - 1 if row[ci] else 0
-                # 检查当前单元格是否为None
-                if current is None or ri == len(items) - 1:
-                    should_merge = False
-                # 检查当前单元格与下一单元格的数据是否不同
-                elif items[ri + 1][ci] is not None and current != items[ri + 1][ci].get('value'):
-                    should_merge = False
+                cell_height = self.heights[ri]
+
+                # 如果当前单元格值与上一个值相同，且合并高度未超过200，或者当前是第一个单元格
+                if (
+                        current == last_value or last_value is None) and current_height + cell_height <= self.max_table_height:
+                    if row_start is None:
+                        row_start = ri  # 设置合并起始行
+                    current_height += cell_height  # 累加高度
                 else:
-                    should_merge = True
-                # 判断合并
-                if not should_merge:
-                    if row_start is not None:
-                        merges.append(('SPAN', (ci, row_start), (ci + offset, ri)))
-                    row_start = None
-                # 记录开始合并起始行
-                elif row_start is None:
-                    row_start = ri
+                    # 如果遇到不同的值或高度超过200，且之前有合并的行，添加合并指令
+                    if row_start is not None and ri > row_start:
+                        merges.append(('SPAN', (ci, row_start), (ci, ri - 1)))
+                    # 重置合并起始行和高度
+                    row_start = ri if current is not None else None
+                    current_height = cell_height if current is not None else 0
+
+                # 更新上一个值
+                last_value = current
+
+                # 检查是否为最后一行，如果是且存在合并，则添加合并指令
+                if ri == len(items) - 1 and row_start is not None and ri > row_start:
+                    merges.append(('SPAN', (ci, row_start), (ci, ri)))
+
         # 应用所有的合并指令
         table.setStyle(TableStyle(merges))
 

@@ -8,10 +8,10 @@ inputPath = rootPath + '/数据/*.sql'
 outputPath = rootPath + '/数据2/'
 
 # 要替换的字符串,关键词等
-replace_list = [('"', ''), ('percent', 'percentage')]
+replace_list = [('public.', ''), ('percent', 'percentage')]
 
 # 全局变量，控制读取每个文件的最大长度，如果maxline为负数则不限制每个文件的读取长度
-maxLine = 10000
+maxLine = -1
 
 
 def process_file(filename):

@@ -2,9 +2,9 @@ import os
 import shutil
 
 # 源文件夹路径
-source_folder = "C:\\Users\\root\\Desktop\\数据3"
+source_folder = "C:/Users/root/Desktop/所有数据"
 # 目标文件夹路径
-destination_folder = "C:\\Users\\root\\Desktop\\数据"
+destination_folder = "C:/Users/root/Desktop/部分数据"
 # 指定要移动的文件名列表
 files_to_move = ['datasource_config', 'consumed_power_district', 'district_info', 'electric_production_day_district',
                  'electric_production_day_station', 'electric_production_hour_district',
@@ -54,8 +54,8 @@ for file_name in files_to_move:
     # 检查文件是否存在
     if os.path.exists(source_file):
         # 移动文件
-        shutil.move(source_file, destination_file)
-        print(f"文件 {file_name} 已移动到 {destination_folder}")
+        shutil.copy(source_file, destination_file)
+        print(f"文件 {file_name} 已复制到 {destination_folder}")
     else:
         print(f"文件 {file_name} 不存在于源文件夹中。")
 

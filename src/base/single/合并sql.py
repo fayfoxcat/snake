@@ -1,6 +1,5 @@
 import glob
 import threading
-import os
 from queue import Queue
 
 
@@ -44,6 +43,6 @@ def process_folder(folder_path, result_path):
 
 
 # 示例使用
-folder_path = "C:/Users/root/Desktop/数据2/*.sql"
-output_path = "C:/Users/root/Desktop/合并后数据.sql"
+folder_path = "C:/Users/root/Desktop/所有数据结果/*.sql"
+output_path = "C:/Users/root/Desktop/合并后数据2.sql"
 process_folder(folder_path, output_path)

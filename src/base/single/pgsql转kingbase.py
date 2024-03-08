@@ -12,15 +12,20 @@ replace_list = [(r'"public"\.', ''),
                 (r'varchar ', 'varchar(255)'),
                 (r'"pg_catalog"\."default"', ''),
                 (r'USING btree', ''),
-                (r'"pg_catalog"\."int2_ops" ASC NULLS LAST', ''),
-                (r'"pg_catalog"\."int4_ops" ASC NULLS LAST', ''),
-                (r'"pg_catalog"\."int8_ops" ASC NULLS LAST', ''),
-                (r'"pg_catalog"\."timestamp_ops" ASC NULLS LAST', ''),
-                (r'timestamp\(\d+\)', 'timestamp'),
+                (r'"pg_catalog"\."int2_ops"', ''),
+                (r'"pg_catalog"\."int4_ops"', ''),
+                (r'"pg_catalog"\."int8_ops"', ''),
+                (r'"pg_catalog"\."date_ops"', ''),
+                (r'"pg_catalog"\."timestamp_ops"', ''),
+                (r'timestamp\(\d+\)', 'datetime'),
+                (r'numeric\(\d+,\d+\)', 'numeric(38,0)'),
                 (r'percent', 'percentage'),
+                (r'\bCACHE\s+1;', ';'),
+                (r'\border\b', 'sort'),
                 (r'"', '')]
 # 删除包含下列字符串的行
-delete_list = ['OWNER TO', 'SELECT']
+delete_list = ['OWNER TO', 'SELECT', 'INCREMENT 1',
+               'MINVALUE  1', 'MAXVALUE', 'START 1']
 
 if not os.path.exists(outputPath):
     os.makedirs(outputPath)

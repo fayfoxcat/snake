@@ -1,0 +1,1899 @@
+{
+  "reportName": "out/汇总报告.pdf",
+  "pageHeader": "巡检汇总报告",
+  "cover": {
+    "reportType": "b",
+    "coverPath": "resources/cover_b.jpg",
+    "reportTime": "2023",
+    "reportName": "巡检总结报告"
+  },
+  "parts": [
+    {
+      "headline": [
+        {
+          "name": "巡检信息汇总",
+          "level": 1,
+          "color": "#6CB69D"
+        }
+      ],
+      "groups": [
+        {
+          "table": [
+            {
+              "annotation": {
+                "content": "注：括号表示修复的问题数量"
+              },
+              "pattern": [
+                {
+                  "type": "GRID",
+                  "start_x": 0,
+                  "start_y": 0,
+                  "end_x": -1,
+                  "end_y": -1,
+                  "color": "#4472C4"
+                }
+              ],
+              "data": [
+                [
+                  {
+                    "value": "局点基本信息",
+                    "background": "#3480B7",
+                    "alignment": 1,
+                    "size": 4,
+                    "color": "#ffffff",
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "任务名称",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "默认局点",
+                    "alignment": 1,
+                    "size": 3
+                  }
+                ],
+                [
+                  {
+                    "value": "检查数(台/套)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "44",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "指被检查资源可以正常访问的数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "任务健康度评分",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "37（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "对设备巡检后系统得出的指标评分",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "检出问题数(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "23（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "所有检查指标中存在问题的总数",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "紧急问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "3（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为严重的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "重要问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "4（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为重要的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "次要问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "15（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为一般的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "提示问题(个)",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "1（1）",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "级别为提示的问题数量",
+                    "alignment": 1,
+                    "size": 2
+                  }
+                ],
+                [
+                  {
+                    "value": "检查人员名称",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "c30102",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "巡检完成时间",
+                    "alignment": 1,
+                    "size": 1
+                  },
+                  {
+                    "value": "2023年01月12日 23:23:23",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "headline": [
+        {
+          "name": "检查问题汇总",
+          "level": 1,
+          "color": "#6CB69D"
+        }
+      ],
+      "groups": [
+        {
+          "ringCharts": [
+            {
+              "annotation": {
+                "content": "告警级别统计",
+                "alignment": 1
+              },
+              "tag": "告警总数",
+              "data": [
+                {
+                  "name": "公告告警",
+                  "count": 70,
+                  "color": "#5089BD"
+                },
+                {
+                  "name": "日志告警",
+                  "count": 100,
+                  "color": "#D3D3D3"
+                },
+                {
+                  "name": "严重告警",
+                  "count": 143,
+                  "color": "#4472C4"
+                },
+                {
+                  "name": "一般告警",
+                  "count": 380,
+                  "color": "#ED7D31"
+                },
+                {
+                  "name": "重要告警",
+                  "count": 40,
+                  "color": "#FD3C67"
+                },
+                {
+                  "name": "提示告警",
+                  "count": 441,
+                  "color": "#FFC000"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groups": [
+        {
+          "verticalCharts": [
+            {
+              "label": "name",
+              "bars": [
+                "resources",
+                "alarm"
+              ],
+              "legend": [
+                "涉及资源",
+                "告警数量"
+              ],
+              "annotation": {
+                "content": "告警分类统计",
+                "alignment": 1
+              },
+              "data": [
+                {
+                  "name": "硬件状态检查",
+                  "resources": 60,
+                  "alarm": 100
+                },
+                {
+                  "name": "软件状态检查",
+                  "resources": 150,
+                  "alarm": 80
+                },
+                {
+                  "name": "协议状态检查",
+                  "resources": 70,
+                  "alarm": 60
+                },
+                {
+                  "name": "安全状态检查",
+                  "resources": 60,
+                  "alarm": 50
+                },
+                {
+                  "name": "诊断信息检查",
+                  "resources": 60,
+                  "alarm": 110
+                },
+                {
+                  "name": "技术公告检查",
+                  "resources": 180,
+                  "alarm": 90
+                },
+                {
+                  "name": "配置规范检查",
+                  "resources": 190,
+                  "alarm": 160
+                },
+                {
+                  "name": "智能日志分析",
+                  "resources": 70,
+                  "alarm": 50
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groups": [
+        {
+          "table": [
+            {
+              "columns": [
+                0
+              ],
+              "annotation": {
+                "content": "注：括号表示修复的问题数量"
+              },
+              "pattern": [
+                {
+                  "type": "GRID",
+                  "start_x": 0,
+                  "start_y": 0,
+                  "end_x": -1,
+                  "end_y": -1,
+                  "color": "#4472C4"
+                }
+              ],
+              "data": [
+                [
+                  {
+                    "value": "巡检问题汇总信息",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 5,
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "检查项目",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "检查子项",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 3,
+                    "bold": true
+                  },
+                  {
+                    "value": "命中数",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "硬件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "光模块温度检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "硬件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "伪光模块检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "24（1）",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "硬件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "光模块功率检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "13",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "硬件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "光口Alarm检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "15",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "CPU收发包BCM诊断检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "32",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "CPU报文超限速/攻击诊断检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "23",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "控制平面CPU占用率检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "7",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "版本推荐检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "18",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "设备堆栈记录检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "2",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "高危版本检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "接口物理状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "39",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "三层接口状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "24",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "以太网接口双工状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "27",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "接口芯片检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "35",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "设备端口流量工作情况检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "34",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "物理接口广播报文流量检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "37",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "F系列设备IRF环境下是否存在跨框镜像检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "软件状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "设备local log buffer告警检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "3",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IRF链路信息检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "堆叠口部署检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "7",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IRF MAD信息检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "12",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IRF端口绑定检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "3",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IRF资源状态信息检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "2",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IRF本地优先转发检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "6",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "链路聚合成员口跨板/跨框部署检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "17",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "聚合组成员端口选中状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "28",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "STP边缘端口检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "28",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "STP非正常阻塞端口检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "4",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "STP拓扑变化检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "14",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "设备动态路由检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "13",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "协议状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "Radius Scheme状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "10",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "安全状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "远程访问安全性检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "33",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "安全状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "VTY用户访问权限安全性检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "43",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "安全状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "Login用户登录失败延迟检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "44",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "安全状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "缺省账号检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "17",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "安全状态检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "关闭网络服务检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "33",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "关闭ip ttl-expires命令检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "15",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "关闭ip un reach ables命令检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "13",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "启动配置文件信息检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "10",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "设备注册有效license检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "2",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "特殊配置检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "22",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "MAD检测保留接口配置检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "25",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "端口允许通过的vlan配置检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "静态聚合检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "40",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "IGMP Snooping功能不使用丢弃未知组播数据检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "3",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "NTP报文源接口为loopback接口检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "37",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "Trap功能设置检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "16",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ],
+                [
+                  {
+                    "value": "配置规范检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "info-center功能全局开启检查",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 3
+                  },
+                  {
+                    "value": "1",
+                    "background": "#FBE4D5",
+                    "alignment": 1,
+                    "size": 1
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "headline": [
+        {
+          "name": "紧急问题汇总",
+          "level": 1,
+          "color": "#6CB69D"
+        }
+      ],
+      "groups": [
+        {
+          "horizontalCharts": [
+            {
+              "annotation": {
+                "content": "告警检查项top10汇总",
+                "alignment": 1
+              },
+              "label": "name",
+              "bars": [
+                "count"
+              ],
+              "data": [
+                {
+                  "name": "L2stp拓扑变化历史检查",
+                  "count": 28
+                },
+                {
+                  "name": "【2013】010号-关于H3CS5500-H‖S5120-HlCE3000系列交换机出现自动重启的公告",
+                  "count": 9
+                },
+                {
+                  "name": "【2022】140号【代理商级别】-关于H3C框式交换机产品1PP口及堆溼口要求跨板沉余部署的公告",
+                  "count": 6
+                },
+                {
+                  "name": "MAD检测保留接口配置检查",
+                  "count": 24
+                },
+                {
+                  "name": "聚合组成员瑞口选中状态检查",
+                  "count": 26
+                },
+                {
+                  "name": "【2022】120号【代理商级别】-关于正3C部分产品保存配置时退出登录导致配置丢失的技术公告",
+                  "count": 22
+                },
+                {
+                  "name": " 版本推荐检查",
+                  "count": 17
+                },
+                {
+                  "name": "IRF MAD信息检查",
+                  "count": 12
+                },
+                {
+                  "name": "【2021】062号【代理商级别】-关于H3C框式交换机产品硬件故障修复和保护动作优化的公告",
+                  "count": 16
+                },
+                {
+                  "name": "Trap功能设置检查",
+                  "count": 15
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "headline": [
+        {
+          "name": "网络健康分析",
+          "level": 1,
+          "color": "#6CB69D"
+        },
+        {
+          "name": "硬件状态检查",
+          "level": 2
+        },
+        {
+          "name": "光模块状态",
+          "level": 3
+        }
+      ],
+      "groups": [
+        {
+          "fourth": {
+            "name": "光模块温度检查",
+            "bold": true,
+            "tag": "严重",
+            "color": "#DF0000"
+          },
+          "text": [
+            {
+              "title": "检查要求：",
+              "content": "要求可插拔模块的温度不超过正常范围。若温度值不在回显中提取到的最高最低温度阈值范围内则告警（仅关注物理状态为up且未手工关闭的端口）。"
+            },
+            {
+              "title": "改进建议：",
+              "content": "请检查设备的可插拔模块是否发生硬件故障或是散热条件较差导致可插拔模块温度异常。"
+            },
+            {
+              "title": "涉及资源（1台）："
+            }
+          ],
+          "table": [
+            {
+              "columns": [],
+              "pattern": [
+                {
+                  "type": "GRID",
+                  "start_x": 0,
+                  "start_y": 0,
+                  "end_x": -1,
+                  "end_y": -1,
+                  "color": "#4472C4"
+                }
+              ],
+              "data": [
+                [
+                  {
+                    "value": "资源大类",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "资源信息",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "告警级别",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "告警内容",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 3,
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "严重",
+                    "background": "#E4F5FD",
+                    "color": "#DF0000",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 3,
+                    "bold": true
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "fourth": {
+            "bold": true,
+            "name": "伪光模块检查",
+            "tag": "提示",
+            "color": "#00A745"
+          },
+          "text": [
+            {
+              "title": "检查要求：",
+              "content": "检查出伪光模块并打印模块所在端口和SN。"
+            },
+            {
+              "title": "改进建议：",
+              "content": "请更换接口光模块为H3C模块。"
+            },
+            {
+              "title": "涉及资源（3台）："
+            }
+          ],
+          "table": [
+            {
+              "columns": [
+                0
+              ],
+              "pattern": [
+                {
+                  "type": "GRID",
+                  "start_x": 0,
+                  "start_y": 0,
+                  "end_x": -1,
+                  "end_y": -1,
+                  "color": "#4472C4"
+                }
+              ],
+              "data": [
+                [
+                  {
+                    "value": "资源大类",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": "资源信息",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "告警级别",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "告警内容",
+                    "background": "#3480B7",
+                    "color": "#ffffff",
+                    "alignment": 1,
+                    "size": 4,
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S12508G-AF",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备对应接口光模块非H3C所售光模块，该模块在H3C设备上不保证正常稳定工作，请您确认物理光模块标签，如果有H3C Logo，怀疑是伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S12508G-AF",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S12508G-AF",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备对应接口光模块非H3C所售光模块，该模块在H3C设备上不保证正常稳定工作，请您确认物理光模块标签，如果有H3C Logo，怀疑是伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S12508G-AF",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S12516F-AF",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S5560-54C-EI",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S5560-54C-EI",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ],
+                [
+                  {
+                    "value": "网络资源-交换-S5560-54C-EI",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 2,
+                    "bold": true
+                  },
+                  {
+                    "value": null,
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "提示",
+                    "background": "#E4F5FD",
+                    "color": "#00A745",
+                    "alignment": 1,
+                    "size": 1,
+                    "bold": true
+                  },
+                  {
+                    "value": "如下设备的对应接口光模块不应存在相同的SN，疑似伪造H3C模块，为了您的权益，请联系供货商，H3C保留追究法律责任的权利",
+                    "background": "#E4F5FD",
+                    "alignment": 1,
+                    "size": 4
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

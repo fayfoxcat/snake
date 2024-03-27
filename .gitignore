@@ -1,5 +1,7 @@
-/snake.iml
-/.gitignore
 /.idea/
 single
-/src/base/script/pdf/out/*
+/coffee/target/
+/script.iml
+/.gitignore
+/snake/src/base/script/pdf/out/*
+/snake/src/base/script/doc/out/*

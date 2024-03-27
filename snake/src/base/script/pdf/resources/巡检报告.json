@@ -1,0 +1,235 @@
+{
+  "reportName": "out/巡检报告.pdf",
+  "cover": {
+    "reportType": "a",
+    "coverPath": "resources/cover_a.jpg",
+    "deviceName": "N_HWNE40E_JS_002",
+    "deviceType": "网络设备-路由器",
+    "deviceAddress": "172.31.208.17"
+  },
+  "parts": [
+    {
+      "headline": [
+        {
+          "name": "设备巡检",
+          "level": 1,
+          "color": "#000000"
+        },
+        {
+          "name": "巡检CPU利用率",
+          "level": 2,
+          "color": "#000000"
+        },
+        {
+          "name": "硬件",
+          "level": 3,
+          "color": "#000000"
+        }
+      ],
+      "groups": [
+        {
+          "fourth": {
+            "name": "软件状态检查巡检项组"
+          },
+          "text": [
+            {
+              "title": "检查要求",
+              "content": "要求可插拔模块的温度不超过正常范围。若温度值不在回显中提取到的最高最低温度阈值范围内则告警（仅关注物理状态为up且未手工关闭的端口）。"
+            },
+            {
+              "title": "处理建议",
+              "content": "请检查设备的可插拔模块是否发生硬件故障或是散热条件较差导致可插拔模块温度异常。"
+            },
+            {
+              "title": "描述",
+              "content": "请检查设备的可插拔模块是否发生硬件故障或是散热条件较差导致可插拔模块温度异常。"
+            }
+          ],
+          "table": [
+            {
+              "columns": [
+                1
+              ],
+              "data": [
+                [
+                  {
+                    "value": "单板运行状态",
+                    "background": "#A1C4E7",
+                    "alignment": 1,
+                    "size": 5,
+                    "color": "#000000",
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "Slot_ID",
+                    "bold": true
+                  },
+                  {
+                    "value": "Type",
+                    "bold": true
+                  },
+                  {
+                    "value": "Status",
+                    "bold": true
+                  },
+                  {
+                    "value": "Primary",
+                    "bold": true
+                  },
+                  {
+                    "value": "Master/Slave",
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "3"
+                  },
+                  {
+                    "value": "LPU",
+                    "alignment": 1
+                  },
+                  {
+                    "value": 25
+                  },
+                  {
+                    "value": null
+                  },
+                  {
+                    "value": "NA"
+                  }
+                ],
+                [
+                  {
+                    "value": "4"
+                  },
+                  {
+                    "value": "LPU"
+                  },
+                  {
+                    "value": 25
+                  },
+                  {
+                    "value": "Normal"
+                  },
+                  {
+                    "value": "NA"
+                  }
+                ],
+                [
+                  {
+                    "value": "3"
+                  },
+                  {
+                    "value": "LPU"
+                  },
+                  {
+                    "value": 95
+                  },
+                  {
+                    "value": "Normal"
+                  },
+                  {
+                    "value": "NA"
+                  }
+                ],
+                [
+                  {
+                    "value": "4",
+                    "background": "#E55765"
+                  },
+                  {
+                    "value": "LPU"
+                  },
+                  {
+                    "value": 68
+                  },
+                  {
+                    "value": "Normal"
+                  },
+                  {
+                    "value": "NA"
+                  }
+                ],
+                [
+                  {
+                    "value": "5"
+                  },
+                  {
+                    "value": "LPU"
+                  },
+                  {
+                    "value": 85
+                  },
+                  {
+                    "value": "Normal",
+                    "color": "#E55765"
+                  },
+                  {
+                    "value": "NA"
+                  }
+                ]
+              ]
+            },
+            {
+              "data": [
+                [
+                  {
+                    "value": "OSPF邻居状态",
+                    "background": "#A1C4E7",
+                    "alignment": 1,
+                    "size": 2,
+                    "color": "#000000",
+                    "bold": true
+                  }
+                ],
+                [
+                  {
+                    "value": "检查要求",
+                    "background": "#ffffff",
+                    "color": "#000000",
+                    "bold": true
+                  },
+                  {
+                    "value": "要求设备正常运行时不应该出现OSPF协议错误",
+                    "background": "#ffffff",
+                    "color": "#000000"
+                  }
+                ],
+                [
+                  {
+                    "value": "检查结果",
+                    "background": "#ffffff",
+                    "color": "#000000",
+                    "bold": true
+                  },
+                  {
+                    "value": "不合格",
+                    "background": "#ffffff",
+                    "color": "#000000"
+                  }
+                ],
+                [
+                  {
+                    "value": "改进意见",
+                    "background": "#ffffff",
+                    "color": "#000000",
+                    "bold": true
+                  },
+                  {
+                    "value": "请查看OSPF协议错误信息，根据具体的错误信息进行相应处理。",
+                    "background": "#ffffff",
+                    "color": "#000000"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

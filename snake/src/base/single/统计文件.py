@@ -3,13 +3,14 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 
-def process_folder(folder_path, list):
+def process_folder(folder_path, station_list):
     # 初始化列表，用于存储结果
     results = []
+
     # 遍历每个顶级文件夹
     for top_folder in os.listdir(folder_path):
         top_folder_path = os.path.join(folder_path, top_folder)
-        if list is not None and top_folder not in list:
+        if station_list is not None and top_folder not in station_list:
             continue
         if os.path.isdir(top_folder_path) and not is_compressed_folder(top_folder):
             # 遍历每个日期文件夹
@@ -60,6 +61,9 @@ def process_folder(folder_path, list):
     # 按场站和日期排序
     results_df.sort_values(by=['场站', '日期'], inplace=True)
 
+    # 去重
+    results_df.drop_duplicates(inplace=True)
+
     # 将结果写入Excel文件
     results_df.to_excel(r"缺失报告.xlsx", index=False)
     print("处理完成，结果已保存至：" + os.path.dirname(os.path.realpath(__file__)) + "\缺失报告.xlsx'")
@@ -73,5 +77,11 @@ def is_compressed_folder(folder_name):
 
 # 目标目录
 base_dir = r"C:\Users\root\Desktop\2023年3月\fileData"
-statistics_list = ['DTBHFD']
-process_folder(base_dir, statistics_list)
+statistics_list_1 = ['GHSYFD', 'SFGYFD', 'SNGYFD', 'SCTHFD', 'GYFDFX', 'YZBYFD', 'HYSNFD', 'HRGYFD', 'HRPZFD', 'HZSYFD',
+                     'RBDAFF', 'RBDLQF', 'XXCRFD', 'XTGYFD', 'RBZSFD', 'ZDDYFD', 'ZDCJGF', 'GYFDFY', 'YZJHFD', 'XTXYFD',
+                     'XXFNFD', 'RNHAFD', 'JHZEGF', 'DTSLFD', 'HZHYFD', 'GHXCGF', 'XXSHFD', 'GHTYFD']
+statistics_list_3 = ['GHSYFD', 'GXHHFD', 'GXLHFD', 'GXRHFD', 'SFGYFD', 'SNBYJF', 'SNLSFD', 'SNSYHF', 'SCTHFD', 'GYFDFX',
+                     'JSHRFD', 'HNRHFD', 'HRTHFD', 'HZSYFD', 'RBDLQF', 'XTGYFD', 'SXFHFD', 'ZDDYFD', 'ZDCJGF', 'BHFDBT',
+                     'JSXSFD', 'CJXHFD', 'YNSHFD', 'GYFDFY', 'XXFNFD', 'SXSHGF', 'RNHAFD', 'GXDZFD', 'GRJHFD', 'GXGYFD',
+                     'HNJHFD', 'HZHYFD', 'XXSHFD', 'GHRHFD']
+process_folder(base_dir, statistics_list_3)

@@ -1,6 +1,8 @@
 import os
 import shutil
 import zipfile
+import re
+
 
 # 遍历源目录中的所有文件
 def copy_files(source_dir, target_root_dir):
@@ -26,6 +28,7 @@ def copy_files(source_dir, target_root_dir):
                 print(f"文件名 {filename} 格式不正确。")
         else:
             print(f"文件 {filename} 不符合预期的后缀。")
+
 
 def compress_folders(target_root_dir, folders_to_compress=None):
     # 遍历目标根目录中的所有文件夹
@@ -54,6 +57,36 @@ def compress_folders(target_root_dir, folders_to_compress=None):
                                 zipf.write(file_path, arcname)
                 print(f"文件夹 {folder_path} 已压缩为 {zip_filename}")
 
+
+# 规则压缩文件
+def compress_files_by_patterns(target_path, prefix_patterns):
+    # 获取目标路径下的所有文件
+    files = [f for f in os.listdir(target_path) if os.path.isfile(os.path.join(target_path, f))]
+
+    for prefix_pattern in prefix_patterns:
+        # 创建一个字典用于存储匹配的文件
+        file_groups = {}
+
+        # 匹配文件并分组
+        for file in files:
+            match = re.match(rf"({prefix_pattern})_(\d{{6}})\d{{2}}_(\d{{4}})_DQ\.WPD", file)
+            if match:
+                prefix = match.group(1)
+                date = match.group(2)[:6]  # 只取到月份
+                key = f"{prefix}_{date}_DQ"
+
+                if key not in file_groups:
+                    file_groups[key] = []
+                file_groups[key].append(file)
+
+        # 压缩文件
+        for group, group_files in file_groups.items():
+            zip_file_path = os.path.join(target_path, f"{group}.zip")
+            with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+                for file in group_files:
+                    zipf.write(os.path.join(target_path, file), file)
+
+
 # 定义源文件夹和目标文件夹路径
 source_dir = r"C:\Users\root\Desktop\2023年3月\dq202303"
 target_root_dir = r"C:\Users\root\Desktop\2023年3月\fileData"
@@ -63,15 +96,13 @@ if not os.path.exists(target_root_dir):
     exit()
 
 # 示例调用
-copy_files(source_dir, target_root_dir)
+# copy_files(source_dir, target_root_dir)
 
 # 指定需要压缩的文件夹名称列表
-# folders_to_compress = ['BKGYGF','DTBHFD','GHHSFD','GHRHFD','GHYMFD','GXRHFD','HERQHF','HFGXFD','HNGYFD',
-#                        'HNTSFD','HTSNFD','HXRHFD','HYLJFD','JSLHFD','LYHHFD','SDRHFD','SJKRHF','ZDJWFD']
-
-folders_to_compress = ['DTBHFD','DTBYFD','GHHHFD','GHTYFD','GHYMFD','HERQHF','HFGXFD','HNGYFD','HWDHFD',
-                       'HWQHFD','JSHQFD','JSHRDL','JSRHFD','LYHHFD','LYLHFD','LYPHFD','SDRHFD','ZDJWFD',
-                       'ZDZHFD']
+folders_to_compress = ['SXSHGF', 'BRJHFD', 'BRJHFD']
 
 # 压缩指定的文件夹
-compress_folders(target_root_dir, folders_to_compress)
+# compress_folders(target_root_dir, folders_to_compress)
+
+# 压缩指定规则文件
+compress_files_by_patterns(source_dir, folders_to_compress)

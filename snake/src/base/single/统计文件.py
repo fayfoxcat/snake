@@ -3,28 +3,28 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 
-# 遍历每个顶级文件夹
-def process_folder(folder_path):
+def process_folder(folder_path, list):
     # 初始化列表，用于存储结果
     results = []
+    # 遍历每个顶级文件夹
     for top_folder in os.listdir(folder_path):
         top_folder_path = os.path.join(folder_path, top_folder)
-        if os.path.isdir(top_folder_path):
+        if list is not None and top_folder not in list:
+            continue
+        if os.path.isdir(top_folder_path) and not is_compressed_folder(top_folder):
             # 遍历每个日期文件夹
             for date_folder in os.listdir(top_folder_path):
                 date_folder_path = os.path.join(top_folder_path, date_folder)
                 if os.path.isdir(date_folder_path):
                     try:
-                        # 假设日期文件夹的名称是 "YYYYMMDD" 格式
+                        # 日期文件夹的名称是 "YYYYMMDD" 格式
                         date = datetime.strptime(date_folder, "%Y%m%d")
                         expected_times = set()
-
                         # 生成当天每15分钟的时间戳
                         for i in range(96):  # 24小时，每小时4个15分钟的间隔
                             time_suffix = (date + timedelta(minutes=15 * i)).strftime("%H:%M")
-                            expected_file = f"{top_folder}_{date_folder}_{time_suffix.replace(':', '')}_CDQ.WPD"
                             expected_times.add(time_suffix)
-
+                        # 实际路径文件列表
                         actual_files = set(os.listdir(date_folder_path))
                         actual_times = set()
 
@@ -57,11 +57,21 @@ def process_folder(folder_path):
     # 将结果转换为DataFrame
     results_df = pd.DataFrame(results)
 
+    # 按场站和日期排序
+    results_df.sort_values(by=['场站', '日期'], inplace=True)
+
     # 将结果写入Excel文件
     results_df.to_excel(r"缺失报告.xlsx", index=False)
     print("处理完成，结果已保存至：" + os.path.dirname(os.path.realpath(__file__)) + "\缺失报告.xlsx'")
 
 
+def is_compressed_folder(folder_name):
+    # 通过文件扩展名判断是否为压缩文件夹
+    compressed_extensions = ['.zip', '.rar', '.7z', '.tar', '.gz']
+    return any(folder_name.endswith(ext) for ext in compressed_extensions)
+
+
 # 目标目录
 base_dir = r"C:\Users\root\Desktop\2023年3月\fileData"
-process_folder(base_dir)
+statistics_list = ['DTBHFD']
+process_folder(base_dir, statistics_list)

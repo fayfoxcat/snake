@@ -1,17 +1,14 @@
 import os
 import pandas as pd
 from datetime import datetime, timedelta
-
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def process_folder(folder_path, station_list):
-    # 初始化列表，用于存储结果
-    results = []
-
-    # 遍历每个顶级文件夹
-    for top_folder in os.listdir(folder_path):
+    def process_top_folder(top_folder):
         top_folder_path = os.path.join(folder_path, top_folder)
+        result = []
         if station_list is not None and top_folder not in station_list:
-            continue
+            return result
         if os.path.isdir(top_folder_path) and not is_compressed_folder(top_folder):
             # 遍历每个日期文件夹
             for date_folder in os.listdir(top_folder_path):
@@ -45,7 +42,7 @@ def process_folder(folder_path, station_list):
 
                         # 如果有缺失文件，添加到结果列表
                         if missing_count > 0:
-                            results.append({
+                            result.append({
                                 "场站": top_folder,
                                 "日期": date_folder,
                                 "缺失数量": missing_count,
@@ -54,6 +51,20 @@ def process_folder(folder_path, station_list):
                     except ValueError:
                         # 如果日期文件夹名称不符合预期的日期格式，跳过该文件夹
                         print(f"跳过不符合日期格式的文件夹: {date_folder}")
+        return result
+
+    # 初始化列表，用于存储结果
+    results = []
+
+    # 使用 ThreadPoolExecutor 并行处理顶级文件夹
+    with ThreadPoolExecutor() as executor:
+        futures = {executor.submit(process_top_folder, top_folder): top_folder for top_folder in os.listdir(folder_path)}
+        for future in as_completed(futures):
+            top_folder = futures[future]
+            try:
+                results.extend(future.result())
+            except Exception as exc:
+                print(f"{top_folder} 生成异常: {exc}")
 
     # 将结果转换为DataFrame
     results_df = pd.DataFrame(results)
@@ -77,11 +88,9 @@ def is_compressed_folder(folder_name):
 
 # 目标目录
 base_dir = r"C:\Users\root\Desktop\2023年3月\fileData"
-statistics_list_1 = ['GHSYFD', 'SFGYFD', 'SNGYFD', 'SCTHFD', 'GYFDFX', 'YZBYFD', 'HYSNFD', 'HRGYFD', 'HRPZFD', 'HZSYFD',
-                     'RBDAFF', 'RBDLQF', 'XXCRFD', 'XTGYFD', 'RBZSFD', 'ZDDYFD', 'ZDCJGF', 'GYFDFY', 'YZJHFD', 'XTXYFD',
-                     'XXFNFD', 'RNHAFD', 'JHZEGF', 'DTSLFD', 'HZHYFD', 'GHXCGF', 'XXSHFD', 'GHTYFD']
 statistics_list_3 = ['GHSYFD', 'GXHHFD', 'GXLHFD', 'GXRHFD', 'SFGYFD', 'SNBYJF', 'SNLSFD', 'SNSYHF', 'SCTHFD', 'GYFDFX',
                      'JSHRFD', 'HNRHFD', 'HRTHFD', 'HZSYFD', 'RBDLQF', 'XTGYFD', 'SXFHFD', 'ZDDYFD', 'ZDCJGF', 'BHFDBT',
                      'JSXSFD', 'CJXHFD', 'YNSHFD', 'GYFDFY', 'XXFNFD', 'SXSHGF', 'RNHAFD', 'GXDZFD', 'GRJHFD', 'GXGYFD',
                      'HNJHFD', 'HZHYFD', 'XXSHFD', 'GHRHFD']
-process_folder(base_dir, statistics_list_3)
+
+process_folder(base_dir, None)

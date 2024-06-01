@@ -7,7 +7,7 @@ from PIL import Image
 import io
 
 
-def compress_image(image_path, max_size=256, quality=85):
+def compress_image(image_path, max_size=1600, quality=100):
     """压缩图片到指定的最大尺寸和质量"""
     with Image.open(image_path) as img:
         # 如果图片是RGBA模式，转换为RGB
@@ -66,4 +66,4 @@ def process_directory(directory):
                 print(f"No matching JPG found for {audio_path}")
 
 # 使用示例
-process_directory(r"C:\Users\root\Desktop\Tmp")
+process_directory(r"C:\Users\root\Music\Tmp")

@@ -1,8 +1,7 @@
 from typing import List
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 
 file: str = 'C:/Users/fayfo/Desktop/数据.xlsx'
 data_a = pd.read_excel(file, sheet_name='Sheet1', dtype='str')

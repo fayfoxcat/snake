@@ -1,7 +1,7 @@
 from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml.ns import qn, nsdecls
 from docx.oxml import parse_xml, OxmlElement
+from docx.oxml.ns import qn, nsdecls
 from docx.shared import Pt
 
 

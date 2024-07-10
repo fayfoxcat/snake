@@ -1,7 +1,8 @@
 import json
 import threading
-from locust import HttpUser, task, between
+
 import requests as r
+from locust import HttpUser, task, between
 
 
 class AtomicInteger:

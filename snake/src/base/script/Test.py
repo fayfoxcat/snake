@@ -2,8 +2,10 @@
 '''
 Pyqt5 文件对话框实例
 '''
-from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QColorDialog, QFontDialog, QTextEdit, QFileDialog
 import sys
+
+from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QColorDialog, QFontDialog, QTextEdit, QFileDialog
+
 
 class Example(QWidget):
     def __init__(self):

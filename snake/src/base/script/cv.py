@@ -1,8 +1,5 @@
 # 清点法
-import random
 import timeit
-from timeit import Timer
-from typing import List
 
 
 def anagram_by_list(s1, s2):

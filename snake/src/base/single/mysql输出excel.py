@@ -1,6 +1,7 @@
 from typing import List
-import pymysql as db
+
 import pandas as pd
+import pymysql as db
 
 # 连接数据库
 conn = db.connect(host='localhost', port=3306, user='root', password='123456', database='api', charset='utf8')

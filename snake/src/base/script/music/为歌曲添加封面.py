@@ -66,4 +66,4 @@ def process_directory(directory):
                 print(f"No matching JPG found for {audio_path}")
 
 # 使用示例
-process_directory(r"C:\Users\root\Music\Tmp")
+process_directory(r"C:\Users\root\Music\待处理\源文件")

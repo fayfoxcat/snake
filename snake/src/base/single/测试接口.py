@@ -1,5 +1,3 @@
-import json
-
 import requests as requests
 
 # 基础url

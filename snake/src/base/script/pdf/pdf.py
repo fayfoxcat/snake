@@ -5,12 +5,12 @@
 """
 import copy
 import logging
+import math
 from datetime import datetime
 from hashlib import sha1
+from math import pi, cos, sin
 from typing import List
 
-import math
-from math import pi, cos, sin
 from reportlab.graphics.charts.barcharts import VerticalBarChart, HorizontalBarChart, BarChartProperties
 from reportlab.graphics.charts.legends import Legend
 from reportlab.graphics.charts.piecharts import Pie

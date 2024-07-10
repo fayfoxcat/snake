@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def quick_sort(array):
     quick_sort_helper(array, 0, len(array) - 1)
 

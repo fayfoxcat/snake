@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import ttk
-import pywinusb as hid
+
 from pywinusb.hid import find_all_hid_devices
 
 

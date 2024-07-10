@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget, QPushButton, QGroupBox, QMainWindow
-from PyQt5.QtCore import Qt
+
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QWidget, QPushButton
 
 
 class MyWindow(QWidget):

@@ -1,8 +1,8 @@
 # 导入所需的库和模块
 import torch
+from datasets import load_dataset
 from transformers import MarianMTModel, MarianTokenizer, Seq2SeqTrainingArguments, Seq2SeqTrainer, \
     DataCollatorWithPadding
-from datasets import load_dataset
 
 # 指定模型名称，这里使用的是'Helsinki-NLP/opus-mt-en-zh'，是一个英文到中文的预训练模型
 model_name = 'Helsinki-NLP/opus-mt-en-zh'

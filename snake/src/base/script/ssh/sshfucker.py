@@ -1,7 +1,11 @@
 #!/usr/bin/python python
 # -*- coding: utf-8 -*-
 
-import paramiko, threading, sys, time, os
+import os
+import paramiko
+import sys
+import threading
+import time
 
 
 class SSHThread(threading.Thread):

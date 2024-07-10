@@ -1,6 +1,6 @@
+import ctypes
 import subprocess
 import time
-import ctypes
 
 # 蓝牙设备名
 bluetooth_device_name = "喵~"

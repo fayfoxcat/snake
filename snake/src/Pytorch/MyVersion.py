@@ -1,4 +1,5 @@
-import torch, torchvision
+import torch
+import torchvision
 
 # 加载预训练的ResNet18模型，使用ImageNet1K的权重
 model = torchvision.models.resnet18(weights=torchvision.models.resnet.ResNet18_Weights.IMAGENET1K_V1)

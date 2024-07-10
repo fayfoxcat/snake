@@ -1,5 +1,3 @@
-from turtle import Turtle, setworldcoordinates, setup, tracer, update
-
 PART_OF_PATH = 'O'  # 部分路径
 TRIED = '.'  # 尝试
 OBSTACLE = '+'  # 障碍

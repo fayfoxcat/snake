@@ -1,7 +1,8 @@
 # -*- coding:utf-8 -*-
-import os.path
 import fnmatch
+import os.path
 import shutil
+
 
 def open_save(file, savepath):
     # 读入一个seq文件，然后拆分成image存入savepath当中

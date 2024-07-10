@@ -1,9 +1,9 @@
+import datetime as datetime
 from typing import List
 
-import datetime as datetime
-import yaml
 import pymssql as mssql
 import pymysql as mysql
+import yaml
 
 f = open('DataBase.yaml')
 data = f.read()

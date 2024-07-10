@@ -1,7 +1,6 @@
-import socket
-import threading
-
 import errno
+import socket
+
 from tqdm import tqdm
 
 

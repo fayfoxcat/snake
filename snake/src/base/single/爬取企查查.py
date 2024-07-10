@@ -1,6 +1,3 @@
-import json
-import time
-
 import requests as requests
 
 url = "https://www.qcc.com/api/datalist/partner"

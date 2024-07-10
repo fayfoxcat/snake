@@ -1,5 +1,6 @@
 import pandas as pd
-import win32api, win32con
+import win32api
+import win32con
 
 # 文件路径
 filePath: str = "C:/Users/cat/Desktop/HD公司主要会计数据和财务指标.xlsx"

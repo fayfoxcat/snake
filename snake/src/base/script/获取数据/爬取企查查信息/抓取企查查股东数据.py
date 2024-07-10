@@ -2,9 +2,10 @@ import json
 import os
 import random
 import sys
-import requests
 import time
+
 import pandas as pd
+import requests
 from bs4 import BeautifulSoup
 from requests import HTTPError
 

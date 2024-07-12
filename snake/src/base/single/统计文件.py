@@ -38,6 +38,27 @@ def process_folder(folder_path, station_list):
 
                         # 计算缺失的时间
                         missing_times = expected_times - actual_times
+                        missing_times = sorted(list(missing_times))
+
+                        # 将缺失时间合并成连续的时间段
+                        missing_intervals = []
+                        if missing_times:
+                            start = missing_times[0]
+                            end = missing_times[0]
+
+                            for i in range(1, len(missing_times)):
+                                current_time = datetime.strptime(missing_times[i], "%H:%M")
+                                previous_time = datetime.strptime(missing_times[i - 1], "%H:%M")
+
+                                if current_time - previous_time == timedelta(minutes=15):
+                                    end = missing_times[i]
+                                else:
+                                    missing_intervals.append(f"{start} - {end}" if start != end else start)
+                                    start = missing_times[i]
+                                    end = missing_times[i]
+
+                            missing_intervals.append(f"{start} - {end}" if start != end else start)
+
                         missing_count = len(missing_times)
 
                         # 如果有缺失文件，添加到结果列表
@@ -46,7 +67,7 @@ def process_folder(folder_path, station_list):
                                 "场站": top_folder,
                                 "日期": date_folder,
                                 "缺失数量": missing_count,
-                                "缺失时间": ", ".join(sorted(missing_times))
+                                "缺失时间": ", ".join(missing_intervals)
                             })
                     except ValueError:
                         # 如果日期文件夹名称不符合预期的日期格式，跳过该文件夹
@@ -79,12 +100,10 @@ def process_folder(folder_path, station_list):
     results_df.to_excel(r"缺失报告.xlsx", index=False)
     print("处理完成，结果已保存至：" + os.path.dirname(os.path.realpath(__file__)) + "\缺失报告.xlsx'")
 
-
 def is_compressed_folder(folder_name):
     # 通过文件扩展名判断是否为压缩文件夹
     compressed_extensions = ['.zip', '.rar', '.7z', '.tar', '.gz']
     return any(folder_name.endswith(ext) for ext in compressed_extensions)
-
 
 # 目标目录
 base_dir = r"C:\Users\root\Desktop\2023年3月\fileData"

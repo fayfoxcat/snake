@@ -1,4 +1,3 @@
-import datetime
 import json
 
 import pandas as pd
@@ -36,7 +35,7 @@ def convert_decimal(value):
 
 def produce_to_kafka(topic, data_list):
     # 创建Producer实例
-    producer = Producer({'bootstrap.servers': '172.18.37.208:9092'})
+    producer = Producer({'bootstrap.servers': '172.18.37.248:9092'})
 
     # 批量发送数据
     for data in data_list:

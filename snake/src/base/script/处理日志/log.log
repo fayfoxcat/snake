@@ -1,0 +1,2 @@
+[DEBUG] [2024-07-11 16:52:49] [BaseJdbcLogger.java-137] ==>  Preparing: SELECT station_type AS id, SUM(ROUND(discharge)) AS discharge FROM predict_discharge WHERE discharge IS NOT NULL AND predict_type = ? AND district_id = ? AND ( ( station_type = ? ) ) AND time_point >= ? AND ? >= time_point PARTITION BY station_type
+[DEBUG] [2024-07-11 16:52:49] [BaseJdbcLogger.java-137] ==> Parameters: SHORT_PREDICT_10T_TYPE(String), 0(Integer), 110(Integer), 2024-05-30 00:00:00.0(Timestamp), 2024-05-30 23:59:59.0(Timestamp)

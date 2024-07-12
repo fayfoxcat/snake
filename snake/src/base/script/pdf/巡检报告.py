@@ -2,11 +2,11 @@ import json
 
 from pdf import addCover, addContent, addTable, build, addTitle, addText
 
-with open('resources/巡检报告.json', 'r', encoding='utf-8') as file:
+with open('resources/3200000201000414_48965720685543685.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
     reportName = data.get('reportName', '巡检报告.pdf')
     cover = data.get('cover')
-    addCover(cover)
+    # addCover(cover)
     for part in data.get('parts', []):
         addContent(part.get("headline", []))
         for group in part.get('groups', []):

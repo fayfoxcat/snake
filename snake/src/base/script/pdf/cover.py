@@ -1,5 +1,5 @@
-data = [[{"inspect_name": "abc", "inspect_value": "22.2", "inspect_status": "1"}],
-        [{"inspect_name": "abc", "inspect_value": "22.2", "inspect_status": "1"}]]
+data = [[{"inspect_name": "abc.py", "inspect_value": "22.2", "inspect_status": "1"}],
+        [{"inspect_name": "abc.py", "inspect_value": "22.2", "inspect_status": "1"}]]
 
 
 def cover():

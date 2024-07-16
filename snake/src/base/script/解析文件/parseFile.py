@@ -27,7 +27,7 @@ def process_files(folder_path):
                 station, date, time = parse_filename(filename)
                 formatted_date = datetime.strptime(date, '%Y-%m-%d').strftime('%Y/%m/%d')
                 value = extract_data_from_file(os.path.join(root, filename))
-                data.setdefault(station, {}).setdefault(formatted_date, {})[time] = value
+                data.setdefault(station, {}).setdefault(formatted_date, {})[f"{time[:2]}:{time[2:]}"] = value
     return data
 
 
@@ -37,7 +37,7 @@ def create_excel(data, output_path):
     full_path = os.path.join(output_path, file_name)
 
     writer = pd.ExcelWriter(full_path, engine='openpyxl')
-    time_columns = [f"{hour:02d}{minute:02d}" for hour in range(24) for minute in range(0, 60, 15)]
+    time_columns = [f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in range(0, 60, 5)]
 
     for station, dates in data.items():
         df = pd.DataFrame(columns=['日期'] + time_columns)
@@ -84,4 +84,4 @@ if __name__ == "__main__":
         print("用法: python script.py <文件夹路径>")
     else:
         folder_path = sys.argv[1]
-        main(folder_path)
+    main(folder_path)

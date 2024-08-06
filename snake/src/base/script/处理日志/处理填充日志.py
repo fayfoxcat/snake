@@ -1,5 +1,6 @@
 import re
 
+
 def process_log_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         log = file.read()
@@ -20,7 +21,7 @@ def process_log_file(file_path):
         value, param_type = param.rsplit("(", 1)
         value = value.strip()
         param_type = param_type.rstrip(")")
-        if param_type == "String" or param_type == "Timestamp":
+        if param_type == "String" or param_type in ["Timestamp", "LocalDateTime"]:
             parsed_parameters.append(f"'{value}'")
         elif param_type == "Integer":
             parsed_parameters.append(value)
@@ -31,6 +32,7 @@ def process_log_file(file_path):
 
     # 输出完整的SQL
     print(sql_template)
+
 
 # 指定日志文件路径
 log_file_path = 'log.log'

@@ -1,5 +1,5 @@
 import socket
-import threading
+from threading import Thread
 import json
 import os
 
@@ -38,7 +38,7 @@ def start_proxy(config, log_func):
     """启动代理"""
     if not config['enabled']:
         config['enabled'] = True
-        thread = threading.Thread(target=run_proxy, args=(config, log_func))
+        thread = Thread(target=run_proxy, args=(config, log_func))
         thread.start()
 
 def stop_proxy(config, log_func):
@@ -58,6 +58,7 @@ def run_proxy(config, log_func):
     remote_host = config['remote_host']
     remote_port = config['remote_port']
 
+    server = None
     try:
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -69,10 +70,10 @@ def run_proxy(config, log_func):
         while config['enabled']:
             client_socket, addr = server.accept()
             log_func(f"接受连接来自：{addr}")
-            proxy_thread = threading.Thread(target=handle_client, args=(client_socket, remote_host, remote_port, log_func))
+            proxy_thread = Thread(target=handle_client, args=(client_socket, remote_host, remote_port, log_func))
             proxy_thread.start()
     except Exception as e:
-        print(f"错误: {e}")
+        log_func(f"错误: {e}")
     finally:
         if server:
             server.close()
@@ -82,6 +83,7 @@ def handle_client(client_socket, remote_host, remote_port, log_func):
     try:
         remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         remote_socket.connect((remote_host, remote_port))
+        log_func("已连接到远程服务器")
 
         def forward_data(source, destination):
             while True:
@@ -90,8 +92,8 @@ def handle_client(client_socket, remote_host, remote_port, log_func):
                     break
                 destination.sendall(data)
 
-        client_thread = threading.Thread(target=forward_data, args=(client_socket, remote_socket))
-        remote_thread = threading.Thread(target=forward_data, args=(remote_socket, client_socket))
+        client_thread = Thread(target=forward_data, args=(client_socket, remote_socket))
+        remote_thread = Thread(target=forward_data, args=(remote_socket, client_socket))
 
         client_thread.start()
         remote_thread.start()

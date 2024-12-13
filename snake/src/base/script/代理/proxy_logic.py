@@ -73,7 +73,7 @@ def run_proxy(config, log_func):
             proxy_thread = Thread(target=handle_client, args=(client_socket, remote_host, remote_port, log_func))
             proxy_thread.start()
     except Exception as e:
-        log_func(f"错误: {e}")
+        print(f"错误: {e}")
     finally:
         if server:
             server.close()

@@ -1,14 +1,18 @@
 import re
 
-
 def process_log_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         log = file.read()
 
     # 提取SQL模板
-    sql_template_pattern = re.compile(r"Preparing: (SELECT .+)")
+    sql_template_pattern = re.compile(r"Preparing: (.+)")
     sql_template_match = sql_template_pattern.search(log)
     sql_template = sql_template_match.group(1) if sql_template_match else None
+
+    # 如果没有找到SQL模板，输出提示信息并返回
+    if sql_template is None:
+        print("日志中未找到SQL模板。")
+        return
 
     # 提取参数
     parameters_pattern = re.compile(r"Parameters: (.+)")
@@ -21,9 +25,9 @@ def process_log_file(file_path):
         value, param_type = param.rsplit("(", 1)
         value = value.strip()
         param_type = param_type.rstrip(")")
-        if param_type == "String" or param_type in ["Timestamp", "LocalDateTime"]:
+        if param_type in ["String", "Timestamp", "LocalDateTime"]:
             parsed_parameters.append(f"'{value}'")
-        elif param_type == "Integer":
+        elif param_type in ["Long", "BigDecimal", "Integer"]:
             parsed_parameters.append(value)
 
     # 填充参数到SQL模板中
@@ -32,7 +36,6 @@ def process_log_file(file_path):
 
     # 输出完整的SQL
     print(sql_template)
-
 
 # 指定日志文件路径
 log_file_path = 'log.log'

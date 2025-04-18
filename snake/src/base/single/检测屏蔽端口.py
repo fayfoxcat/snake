@@ -32,7 +32,7 @@ def is_port_open_ipv4(ip, port):
 # 支持IPv6
 def is_port_open_ipv6(ip, port):
     sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-    sock.settimeout(10)  # 超时时间（秒）
+    sock.settimeout(0.1)  # 超时时间（秒）
     try:
         sock.connect((ip, port, 0, 0))
     except socket.error as e:
@@ -121,4 +121,4 @@ def scan_ports(hostname, start=None, end=None):
 
 
 # 输入域名或ip
-scan_ports("dev.asac.cc", 443)
+scan_ports("2409:8a55:60d:6ba5:b110:5ac2:b5e5:c7c8", 2000,10000)

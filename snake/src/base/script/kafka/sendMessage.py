@@ -8,23 +8,20 @@ from src.base.script.kafka.KafkaAgcTelemetry import KafkaAgcTelemetry
 
 def read_excel(file_path):
     # 使用pandas读取Excel文件
-    return pd.read_excel(file_path, sheet_name=None)
+    return pd.read_excel(file_path, sheet_name=None, dtype={'STATION_ID': str})
 
 
 def convert_row_to_object(row):
     # 将Excel行数据转换为KafkaAgcTelemetry对象
     return KafkaAgcTelemetry(
-        versionId=int(row['VERSION_ID']),
+        devId=str(row['STATION_ID']),
         dataId=int(row['DATA_ID']),
-        agcId=int(row['AGC_ID']),
-        stationId=int(row['STATION_ID']),
         dataTime=int(row['DATA_TIME']),
-        dynamoPressureP=convert_decimal(row['AGC控制对象发电机对象有功功率']),
-        pressureLower=convert_decimal(row['风场机组可调有功下限']),
-        pressureUpper=convert_decimal(row['风场机组可调有功上限']),
-        commandPressureP=convert_decimal(row['有功功率调节指令']),
-        commandReturn=convert_decimal(row['AGC指令返回值']),
-        colobjPressureP=convert_decimal(row['AGC控制对象有功功率'])
+        lower=convert_decimal(row['风场机组可调有功下限']),
+        upper=convert_decimal(row['风场机组可调有功上限']),
+        gen=convert_decimal(row['AGC控制对象有功功率']),
+        pulse=convert_decimal(row['有功功率调节指令']),
+        version=int(row['VERSION_ID'])
     )
 
 
@@ -54,20 +51,17 @@ def main():
             agc_telemetry = convert_row_to_object(row)
             # 转换对象为字典，用于JSON序列化
             agc_telemetry_dict = {
-                '\"versionId"': agc_telemetry.versionId,
-                '\"dataId"': agc_telemetry.dataId,
-                '\"agcId"': agc_telemetry.agcId,
-                '\"stationId"': agc_telemetry.stationId,
+                '\"devID"': "\""+agc_telemetry.devId+"\"",
+                '\"dataID"': agc_telemetry.dataId,
                 '\"dataTime"': agc_telemetry.dataTime,
-                '\"dynamoPressureP"': agc_telemetry.dynamoPressureP,
-                '\"pressureLower"': agc_telemetry.pressureLower,
-                '\"pressureUpper"': agc_telemetry.pressureUpper,
-                '\"commandPressureP"': agc_telemetry.commandPressureP,
-                '\"commandReturn"': agc_telemetry.commandReturn,
-                '\"colobjPressureP"': agc_telemetry.colobjPressureP,
+                '\"lower"': agc_telemetry.lower,
+                '\"upper"': agc_telemetry.upper,
+                '\"gen"': agc_telemetry.gen,
+                '\"pulse"': agc_telemetry.pulse,
+                '\"version"': agc_telemetry.version,
             }
             all_agc_telemetry_dicts.append(str(agc_telemetry_dict).replace("'","").replace("None", "null"))
-        produce_to_kafka('a15d0fae09714a4db1b0e07c35659577_agcData', all_agc_telemetry_dicts)
+        produce_to_kafka('a15d0fae09714a4db1b0e07c35659577_AgcDataToJZ', all_agc_telemetry_dicts)
 
     print("数据读取转换发送完成")
 

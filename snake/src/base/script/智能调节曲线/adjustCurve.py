@@ -169,7 +169,7 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     m.Minimize(sum(abs_delta))
 
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 60
+    solver.parameters.max_time_in_seconds = 20
     solver.parameters.num_search_workers = 16
     if solver.Solve(m) not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         raise RuntimeError("求解失败：无可行解。")
@@ -210,7 +210,11 @@ if __name__ == "__main__":
 
     print("调整前弃电量:", f"{get_discharge(data, startTime, endTime):.4f} 万kWh")
     for i in range(0, 20):
-        adjusted = smart_adjust(data, startTime, endTime, targetDischarge + i * 2, capacity, max_step=2.0)
+        # 初次调整
+        adjusted = smart_adjust(data, startTime, endTime, targetDischarge + i * 2, capacity, max_step=2.0,
+                                lowess_frac=0.3, lowess_it=2)
+        # 回归调整
+        adjusted = smart_adjust(adjusted, startTime, endTime, targetDischarge + i * 2, capacity, max_step=2.0)
         print("调整后弃电量:", f"{get_discharge(adjusted, startTime, endTime):.4f} 万kWh")
         # 如果需要可视化
         plot_power_curves(adjusted)

@@ -13,33 +13,20 @@ plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
 
-def plot_power_curves(items, adjusted_items=None, title='功率测量与预测', figsize=(60, 20)):
+def plot_power_curves(items, title='功率测量与预测', figsize=(60, 20)):
     times = [datetime.strptime(i["timePoint"], "%Y-%m-%d %H:%M:%S") for i in items]
     measured = [float(i["measuredPower"]) for i in items]
     predicted = [float(i["predictPower"]) for i in items]
 
-    # 获取原始预测功率（如果存在）
-    original_predicted = None
-    if "originalPredictPower" in items[0]:
-        original_predicted = [float(i["originalPredictPower"]) for i in items]
-
-    # 如果有调整后的数据，获取调整后的预测值
-    adjusted_predicted = None
-    if adjusted_items is not None:
-        adjusted_predicted = [float(i["predictPower"]) for i in adjusted_items]
-
     fig, ax = plt.subplots(figsize=figsize, dpi=100)
     plt.rcParams.update({'font.size': 26, 'lines.linewidth': 3})
-    ax.plot(times, measured, label='实际出力', marker='o', color='green', markersize=8)
-    ax.plot(times, predicted, label='当前预测功率', marker='o', color='red', markersize=8, alpha=0.5)
+    ax.plot(times, measured, label='实际出力', marker='o', color='orange', markersize=8)
+    ax.plot(times, predicted, label='预测功率', marker='o', color='grey', markersize=8, alpha=0.5)
 
-    # 绘制原始预测功率曲线
-    if original_predicted is not None:
-        ax.plot(times, original_predicted, label='原始预测功率', marker='o', color='orange', markersize=8, alpha=0.5)
-
-    # 如果有调整后的数据，绘制调整后的曲线
-    if adjusted_predicted is not None:
-        ax.plot(times, adjusted_predicted, label='调整后可用功率', marker='o', color='blue', markersize=8)
+    # 绘制调节预测功率曲线 （如果存在）
+    if "adjustedPower" in items[0]:
+        adjusted = [float(i["adjustedPower"]) for i in items]
+        ax.plot(times, adjusted, label='调节预测功率', marker='o', color='green', markersize=8, alpha=0.5)
 
     ax.set_title(title, fontsize=30, pad=20)
     ax.set_xlabel('时间', fontsize=26)
@@ -98,11 +85,11 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
      4、给出最终调整完成的每个时间点的调整值（兆瓦）
     """
     start_dt, end_dt = [datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for t in (start_dt, end_dt)]
-    # 保存原始预测功率
+    # 0、保存原始预测功率
     for item in items:
-        item["originalPredictPower"] = item["predictPower"]
+        item["adjustedPower"] = item["predictPower"]
     # 1. 收集窗口内点
-    idx_info = [(idx, float(it["measuredPower"]), float(it["predictPower"]))
+    idx_info = [(idx, float(it["measuredPower"]), float(it["adjustedPower"]))
                 for idx, it in enumerate(items)
                 if start_dt <= datetime.strptime(it["timePoint"], "%Y-%m-%d %H:%M:%S") <= end_dt]
     if not idx_info:
@@ -152,13 +139,13 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     first_idx, last_idx = idx_info[0][0], idx_info[-1][0]
 
     if first_idx > 0:  # 左边还有点
-        orig_prev = float(items[first_idx - 1]["predictPower"])
+        orig_prev = float(items[first_idx - 1]["adjustedPower"])
         orig_prev_kW = int(round(orig_prev * 1000))
         m.Add(pred[0] - orig_prev_kW <= step_kW)
         m.Add(orig_prev_kW - pred[0] <= step_kW)
 
     if last_idx < len(items) - 1:  # 右边还有点
-        orig_next = float(items[last_idx + 1]["predictPower"])
+        orig_next = float(items[last_idx + 1]["adjustedPower"])
         orig_next_kW = int(round(orig_next * 1000))
         m.Add(pred[-1] - orig_next_kW <= step_kW)
         m.Add(orig_next_kW - pred[-1] <= step_kW)
@@ -182,7 +169,7 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     m.Minimize(sum(abs_delta))
 
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 15
+    solver.parameters.max_time_in_seconds = 60
     solver.parameters.num_search_workers = 16
     if solver.Solve(m) not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         raise RuntimeError("求解失败：无可行解。")
@@ -198,8 +185,8 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
         it = it.copy()
         if i in idx2newpred:
             new_p = idx2newpred[i]
-            it["delta"] = f"{new_p - float(it['predictPower']):+.3f}"
-            it["predictPower"] = f"{new_p:.3f}"
+            it["delta"] = f"{new_p - float(it['adjustedPower']):+.3f}"
+            it["adjustedPower"] = f"{new_p:.3f}"
         else:
             it["delta"] = "+0.000"
         new_items.append(it)
@@ -207,14 +194,14 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     # 9、 精度检查
     actual = get_discharge(new_items, start_dt.strftime("%Y-%m-%d %H:%M:%S"), end_dt.strftime("%Y-%m-%d %H:%M:%S"))
     if abs(actual - target_discharge) > 1e-6:
-        print(f"弃电量 {actual:.6f} 万kWh &ne; 目标 {target_discharge:.6f}")
+        print(f"弃电量 {actual:.6f} 万kWh; 目标 {target_discharge:.6f}")
     return new_items
 
 
 # ---------- 直接运行 ----------
 if __name__ == "__main__":
     capacity = 50.0
-    targetDischarge = 12.5820  # 万kWh
+    targetDischarge = 5.5820  # 万kWh
     startTime = "2025-04-16 06:00:00"
     endTime = "2025-04-16 17:00:00"
 
@@ -223,7 +210,7 @@ if __name__ == "__main__":
 
     print("调整前弃电量:", f"{get_discharge(data, startTime, endTime):.4f} 万kWh")
     for i in range(0, 20):
-        adjusted = smart_adjust(data, startTime, endTime, targetDischarge + i * 5, capacity, max_step=2.0)
+        adjusted = smart_adjust(data, startTime, endTime, targetDischarge + i * 2, capacity, max_step=2.0)
         print("调整后弃电量:", f"{get_discharge(adjusted, startTime, endTime):.4f} 万kWh")
         # 如果需要可视化
         plot_power_curves(adjusted)

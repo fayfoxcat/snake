@@ -83,7 +83,20 @@ def apply_lowess_smoothing(predictions, frac=0.2, it=3):
 
 # ---------- 智能调节 ----------
 def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=2.0, lowess_frac=0.5, lowess_it=3):
-    """窗口内调 predictPower，使弃电量精准匹配且曲线平滑。"""
+    """
+    items数据结构：[
+       {
+         "timePoint": "2025-04-16 00:00:00", # 每五分钟一个时间点
+         "measuredPower": "0.0000",  #功率值（兆瓦）
+         "predictPower": "0.0000" #功率值（兆瓦）
+       }
+       ....
+     ]
+     1、通过变动源数据中predictPower每个点的值，在 startTime和endTime范围内调整使其弃电量的值等于target_discharge
+     2、调整完成的曲线保持平滑但要大致保持原有趋势，不要骤降骤升和一条平线
+     3、startTime和endTime范围外的predict_power可以适当调整，不会影响范围内弃电量
+     4、给出最终调整完成的每个时间点的调整值（兆瓦）
+    """
     start_dt, end_dt = [datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
                         for t in (start_dt, end_dt)]
     # 保存原始预测功率

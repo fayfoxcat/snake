@@ -82,7 +82,7 @@ def apply_lowess_smoothing(predictions, frac=0.2, it=3):
 
 
 # ---------- 智能调节 ----------
-def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4.0, lowess_frac=0.1, lowess_it=1):
+def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4.0):
     """
     items数据结构：[
        {
@@ -97,12 +97,15 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
      3、startTime和endTime范围外的predict_power可以适当调整，不会影响范围内弃电量
      4、给出最终调整完成的每个时间点的调整值（兆瓦）
     """
-    start_dt, end_dt = [datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for t in (start_dt, end_dt)]
+    start_dt, end_dt = [datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
+                        for t in (start_dt, end_dt)]
     # 保存原始预测功率
     for item in items:
         item["originalPredictPower"] = item["predictPower"]
     # 1. 收集窗口内点
-    idx_info = [(idx, float(it["measuredPower"]), float(it["predictPower"]))
+    idx_info = [(idx,
+                 float(it["measuredPower"]),
+                 float(it["predictPower"]))
                 for idx, it in enumerate(items)
                 if start_dt <= datetime.strptime(it["timePoint"], "%Y-%m-%d %H:%M:%S") <= end_dt]
     if not idx_info:
@@ -113,42 +116,23 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     step_kW = int(round(max_step * 1000))
     energy_target_kW5min = int(round(target_discharge * 120 * 1000))
 
-    # 2. 先对原始预测功率应用LOWESS平滑
-    original_predictions = [orig for _, _, orig in idx_info]
-    smoothed = apply_lowess_smoothing(original_predictions, frac=lowess_frac, it=lowess_it)
-
-    # 3. 重新缩放以满足弃电量目标
-    measured = [meas for _, meas, _ in idx_info]
-    surplus_smoothed = np.maximum(smoothed - measured, 0)
-    current_energy = np.sum(surplus_smoothed) * 5 / 60 / 10  # 转换为万kWh
-
-    if current_energy > 0:
-        scale_factor = target_discharge / current_energy
-        scaled_adjusted = measured + (smoothed - measured) * scale_factor
-    else:
-        scaled_adjusted = smoothed
-
-    # 4、确保不超过容量限制
-    scaled_adjusted = np.clip(scaled_adjusted, 0, capacity)
-
-    # 5、现在以平滑缩放后的曲线为基础进行约束求解
     m = cp_model.CpModel()
     pred = [m.NewIntVar(0, cap_kW, f"pred_{i}") for i in range(n)]
     surplus = [m.NewIntVar(0, cap_kW, f"sur_{i}") for i in range(n)]
 
-    # 5.1、 surplus_i = max(pred_i - measured_i, 0)
+    # 2. surplus_i = max(pred_i - measured_i, 0)
     for i, (_, meas, _) in enumerate(idx_info):
         meas_kW = int(round(meas * 1000))
         diff = m.NewIntVar(-cap_kW, cap_kW, f"diff_{i}")
         m.Add(diff == pred[i] - meas_kW)
         m.AddMaxEquality(surplus[i], [diff, 0])
 
-    # 5.2、 平滑约束 (窗口内部)
+    # 3. 平滑约束 (窗口内部)
     for i in range(1, n):
         m.Add(pred[i] - pred[i - 1] <= step_kW)
         m.Add(pred[i - 1] - pred[i] <= step_kW)
 
-    # 5.3、 平滑约束 (窗口边界&hArr;原曲线)
+    # 3.1 平滑约束 (窗口边界&hArr;原曲线)
     first_idx, last_idx = idx_info[0][0], idx_info[-1][0]
 
     if first_idx > 0:  # 左边还有点
@@ -163,15 +147,15 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
         m.Add(pred[-1] - orig_next_kW <= step_kW)
         m.Add(orig_next_kW - pred[-1] <= step_kW)
 
-    # 5.4. 弃电量等式
+    # 4. 弃电量等式
     m.Add(sum(surplus) == energy_target_kW5min)
 
-    # 6. 目标：最小化与平滑缩放后曲线的差异
+    # 5. 目标：最小化调整量
     abs_delta = []
-    for i, scaled_val in enumerate(scaled_adjusted):
-        scaled_kW = int(round(scaled_val * 1000))
+    for i, (_, _, orig) in enumerate(idx_info):
+        orig_kW = int(round(orig * 1000))
         d = m.NewIntVar(-cap_kW, cap_kW, f"d_{i}")
-        m.Add(d == pred[i] - scaled_kW)
+        m.Add(d == pred[i] - orig_kW)
         u = m.NewIntVar(0, cap_kW, f"u_{i}")
         v = m.NewIntVar(0, cap_kW, f"v_{i}")
         m.Add(d == u - v)
@@ -187,12 +171,14 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
     if solver.Solve(m) not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         raise RuntimeError("求解失败：无可行解。")
 
-    # 7、 获取调整结果
-    final_adjusted = [solver.Value(pred[i]) / 1000.0 for i in range(n)]
+    # 6. 获取初步调整结果
+    smoothed = [solver.Value(pred[i]) / 1000.0 for i in range(n)]
 
-    # 8、 写回结果
-    idx2newpred = {idx: final_adjusted[i]
-                   for i, (idx, _, _) in enumerate(idx_info)}
+    # 确保不超过容量限制
+    final_adjusted = np.clip(smoothed, 0, capacity)
+
+    # 9. 写回结果
+    idx2newpred = {idx: final_adjusted[i] for i, (idx, _, _) in enumerate(idx_info)}
     new_items = []
     for i, it in enumerate(items):
         it = it.copy()
@@ -204,7 +190,7 @@ def smart_adjust(items, start_dt, end_dt, target_discharge, capacity, max_step=4
             it["delta"] = "+0.000"
         new_items.append(it)
 
-    # 9、 精度检查
+    # 10. 精度检查
     actual = get_discharge(new_items, start_dt.strftime("%Y-%m-%d %H:%M:%S"), end_dt.strftime("%Y-%m-%d %H:%M:%S"))
     if abs(actual - target_discharge) > 1e-6:
         print(f"弃电量 {actual:.6f} 万kWh &ne; 目标 {target_discharge:.6f}")
@@ -221,7 +207,7 @@ if __name__ == "__main__":
     with open("data.json", encoding="utf-8") as f:
         data = json.load(f)
 
-    print("调整前弃电量:", f"{get_discharge(data, startTime, endTime):.4f} 万kWh")
+    print("调整前弃电量:",f"{get_discharge(data, startTime, endTime):.4f} 万kWh")
     for i in range(0, 20):
         adjusted = smart_adjust(data, startTime, endTime, targetDischarge + i * 5, capacity, max_step=2.0)
         print("调整后弃电量:", f"{get_discharge(adjusted, startTime, endTime):.4f} 万kWh")

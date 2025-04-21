@@ -1,0 +1,2 @@
+{"index": {"_index": "index_filerecord_202404", "_type": "_doc", "_id": "1_7:20240408000000_3", "routing": "20240408"}}
+{"stationCode": 7, "uploadStatus": 3, "uploadTime": "2024-04-07T16:00:00.000Z", "planeType": 1, "fileNameTime": "2024-04-07T16:00:00.000Z", "createTime": "2024-04-07T16:08:02.000Z", "fileSize": 0, "fileStatus": 0, "errCode": 1, "auditLogId": 0, "stationName": "\u5927\u5510\u5c04\u9633\u98ce\u7535", "stationTimeKey": "1_7:20240408000000_3", "fileType": 3}

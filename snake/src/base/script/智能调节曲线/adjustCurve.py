@@ -76,133 +76,143 @@ def apply_lowess_smoothing(predictions, frac=0.2, it=3):
 
 # 智能调节
 def smart_adjust(power_list, period_start, period_end, target_discharge, capacity_upper, max_step=4.0, lowess_frac=0.1,
-                 lowess_it=1):
-    """
-    items数据结构：[
-       {
-         "timePoint": "2025-04-16 00:00:00", # 每五分钟一个时间点
-         "measuredPower": "0.0000",  #功率值（兆瓦）
-         "predictPower": "0.0000" #功率值（兆瓦）
-       }
-       ....
-     ]
-     1、通过变动源数据中predictPower每个点的值，在 startTime和endTime范围内调整使其弃电量的值等于target_discharge
-     2、调整完成的曲线保持平滑但要大致保持原有趋势，不要骤降骤升和一条平线
-     3、可以适当调整period_start和period_end范围外的predict_power曲线。以配合范围内曲线趋势的变化
-     4、给出最终调整完成的每个时间点的调整值（兆瓦）
-    """
-    period_start, period_end = [datetime.strptime(t, "%Y-%m-%d %H:%M:%S") for t in (period_start, period_end)]
-    # 0、保存原始预测功率
-    for power in power_list:
-        power["adjustedPower"] = power.get("adjustedPower", power["predictPower"])
-    # 1. 收集窗口内点
-    idx_info = [(idx, float(it["measuredPower"]), float(it["adjustedPower"]))
-                for idx, it in enumerate(power_list)
-                if period_start <= datetime.strptime(it["timePoint"], "%Y-%m-%d %H:%M:%S") <= period_end]
-    if not idx_info:
+                 lowess_it=1, extend_by=12):
+    # Convert period times to datetime
+    period_start = datetime.strptime(period_start, "%Y-%m-%d %H:%M:%S")
+    period_end = datetime.strptime(period_end, "%Y-%m-%d %H:%M:%S")
+
+    # Preserve original adjustedPower
+    for item in power_list:
+        item["adjustedPower"] = item.get("adjustedPower", item["predictPower"])
+
+    # 1. Identify original window indices and extend the range
+    window_indices = []
+    for idx, item in enumerate(power_list):
+        tp = datetime.strptime(item["timePoint"], "%Y-%m-%d %H:%M:%S")
+        if period_start <= tp <= period_end:
+            window_indices.append(idx)
+    if not window_indices:
         raise ValueError("时间窗口与数据不匹配。")
+    min_idx, max_idx = min(window_indices), max(window_indices)
 
-    n = len(idx_info)
-    capacity_kw = int(round(capacity_upper * 1000))
-    step_kw = int(round(max_step * 1000))
-    target_power_gap = int(round(target_discharge * 120 * 1000))
+    # Extend the adjustment window
+    extended_min = max(0, min_idx - extend_by)
+    extended_max = min(len(power_list)-1, max_idx + extend_by)
+    extended_indices = list(range(extended_min, extended_max + 1))
+    original_window = set(window_indices)
 
-    # 2. 先对原始预测功率应用LOWESS平滑
+    # Collect extended window data
+    idx_info = [
+        (idx, float(power_list[idx]["measuredPower"]), float(power_list[idx]["adjustedPower"]))
+        for idx in extended_indices
+    ]
+
+    # 2. Apply LOWESS smoothing to the extended window
     adjusted_power = [orig for _, _, orig in idx_info]
     smoothed = apply_lowess_smoothing(adjusted_power, frac=lowess_frac, it=lowess_it)
 
-    # 3. 重新缩放以满足弃电量目标
-    measured = [meas for _, meas, _ in idx_info]
-    surplus_smoothed = np.maximum(smoothed - measured, 0)
-    current_energy = np.sum(surplus_smoothed) * 5 / 60 / 10  # 转换为万kWh
+    # 3. Scale only the original window points
+    measured_in_orig = []
+    smoothed_in_orig = []
+    for i, (idx, meas, _) in enumerate(idx_info):
+        if idx in original_window:
+            measured_in_orig.append(meas)
+            smoothed_in_orig.append(smoothed[i])
+
+    surplus_smoothed = np.maximum(np.array(smoothed_in_orig) - measured_in_orig, 0)
+    current_energy = np.sum(surplus_smoothed) * 5 / 60 / 10
 
     if current_energy > 0:
         scale_factor = target_discharge / current_energy
-        scaled_adjusted = measured + (smoothed - measured) * scale_factor
+        scaled_adjusted = []
+        for i, (idx, meas, _) in enumerate(idx_info):
+            if idx in original_window:
+                scaled = meas + (smoothed[i] - meas) * scale_factor
+            else:
+                scaled = smoothed[i]  # Keep smoothed values for extended points
+            scaled_adjusted.append(scaled)
     else:
-        scaled_adjusted = smoothed
+        scaled_adjusted = smoothed.copy()
 
-    # 4、确保不超过容量限制
     scaled_adjusted = np.clip(scaled_adjusted, 0, capacity_upper)
 
-    # 5、现在以平滑缩放后的曲线为基础进行约束求解
-    m = cp_model.CpModel()
-    pred = [m.NewIntVar(0, capacity_kw, f"pred_{i}") for i in range(n)]
-    surplus = [m.NewIntVar(0, capacity_kw, f"sur_{i}") for i in range(n)]
+    # 4. Setup optimization model
+    model = cp_model.CpModel()
+    capacity_kw = int(capacity_upper * 1000)
+    step_kw = int(max_step * 1000)
+    target_power_gap = int(target_discharge * 120 * 1000)  # 5-min interval
 
-    # 5.1、 surplus_i = max(pred_i - measured_i, 0)
-    for idx, (_, meas, _) in enumerate(idx_info):
-        measured_kw = int(round(meas * 1000))
-        diff = m.NewIntVar(-capacity_kw, capacity_kw, f"diff_{idx}")
-        m.Add(diff == pred[idx] - measured_kw)
-        m.AddMaxEquality(surplus[idx], [diff, 0])
+    # Create variables for all extended points
+    n = len(idx_info)
+    pred_vars = [model.NewIntVar(0, capacity_kw, f"pred_{i}") for i in range(n)]
+    surplus_vars = [model.NewIntVar(0, capacity_kw, f"surplus_{i}") for i in range(n)]
 
-    # 5.2、 平滑约束 (窗口内部)
-    for idx in range(1, n):
-        m.Add(pred[idx] - pred[idx - 1] <= step_kw)
-        m.Add(pred[idx - 1] - pred[idx] <= step_kw)
+    # 4.1 Define surplus calculation
+    for i, (idx, meas, _) in enumerate(idx_info):
+        meas_kw = int(round(meas * 1000))
+        diff = model.NewIntVar(-capacity_kw, capacity_kw, f"diff_{i}")
+        model.Add(diff == pred_vars[i] - meas_kw)
+        model.AddMaxEquality(surplus_vars[i], [diff, 0])
 
-    # 5.3、 平滑约束
-    first_idx, last_idx = idx_info[0][0], idx_info[-1][0]
+    # 4.2 Smoothing constraints between consecutive points
+    for i in range(1, n):
+        model.Add(pred_vars[i] - pred_vars[i-1] <= step_kw)
+        model.Add(pred_vars[i-1] - pred_vars[i] <= step_kw)
 
-    if first_idx > 0:  # 左边还有点
-        pre_point = float(power_list[first_idx - 1]["adjustedPower"])
-        pre_point_kw = int(round(pre_point * 1000))
-        m.Add(pred[0] - pre_point_kw <= step_kw)
-        m.Add(pre_point_kw - pred[0] <= step_kw)
+    # 4.3 Boundary constraints with external points
+    if extended_indices[0] > 0:
+        left_neighbor = float(power_list[extended_indices[0]-1]["adjustedPower"])
+        left_kw = int(round(left_neighbor * 1000))
+        model.Add(pred_vars[0] - left_kw <= step_kw)
+        model.Add(left_kw - pred_vars[0] <= step_kw)
 
-    if last_idx < len(power_list) - 1:  # 右边还有点
-        next_point = float(power_list[last_idx + 1]["adjustedPower"])
-        next_point_kw = int(round(next_point * 1000))
-        m.Add(pred[-1] - next_point_kw <= step_kw)
-        m.Add(next_point_kw - pred[-1] <= step_kw)
+    if extended_indices[-1] < len(power_list)-1:
+        right_neighbor = float(power_list[extended_indices[-1]+1]["adjustedPower"])
+        right_kw = int(round(right_neighbor * 1000))
+        model.Add(pred_vars[-1] - right_kw <= step_kw)
+        model.Add(right_kw - pred_vars[-1] <= step_kw)
 
-    # 5.4. 弃电量等式
-    m.Add(sum(surplus) == target_power_gap)
+    # 4.4 Discharge target constraint (only original window)
+    original_surplus = [surplus_vars[i] for i in range(n) if idx_info[i][0] in original_window]
+    model.Add(sum(original_surplus) == target_power_gap)
 
-    # 6. 目标：最小化与平滑缩放后曲线的差异
-    abs_delta = []
-    for idx, scaled_val in enumerate(scaled_adjusted):
-        scaled_kW = int(round(scaled_val * 1000))
-        d = m.NewIntVar(-capacity_kw, capacity_kw, f"d_{idx}")
-        m.Add(d == pred[idx] - scaled_kW)
-        u = m.NewIntVar(0, capacity_kw, f"u_{idx}")
-        v = m.NewIntVar(0, capacity_kw, f"v_{idx}")
-        m.Add(d == u - v)
-        m.Add(d >= -u)
-        m.Add(d <= v)
-        abs_delta.append(u + v)
+    # 4.5 Minimize deviation from smoothed curve
+    deviations = []
+    for i, target in enumerate(scaled_adjusted):
+        target_kw = int(round(target * 1000))
+        delta = model.NewIntVar(-capacity_kw, capacity_kw, f"delta_{i}")
+        model.Add(delta == pred_vars[i] - target_kw)
+        abs_delta = model.NewIntVar(0, capacity_kw, f"abs_delta_{i}")
+        model.AddAbsEquality(abs_delta, delta)
+        deviations.append(abs_delta)
 
-    m.Minimize(sum(abs_delta))
+    model.Minimize(sum(deviations))
 
+    # 5. Solve and apply results
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 5
-    solver.parameters.num_search_workers = 16
-    if solver.Solve(m) not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        raise RuntimeError("求解失败：无可行解。")
+    solver.parameters.max_time_in_seconds = 10
+    status = solver.Solve(model)
 
-    # 7、 获取调整结果
-    final_adjusted = [solver.Value(pred[idx]) / 1000.0 for idx in range(n)]
+    if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        raise RuntimeError("优化失败，无可行解")
 
-    # 8、 写回结果
-    idx2newpred = {idx: final_adjusted[i] for i, (idx, _, _) in enumerate(idx_info)}
-    new_items = []
-    for idx, it in enumerate(power_list):
-        it = it.copy()
-        if idx in idx2newpred:
-            new_p = idx2newpred[idx]
-            it["delta"] = f"{new_p - float(it['adjustedPower']):+.3f}"
-            it["adjustedPower"] = f"{new_p:.3f}"
-        else:
-            it["delta"] = "+0.000"
-        new_items.append(it)
+    # Update adjustedPower for extended window
+    adjusted_results = {extended_indices[i]: solver.Value(pred_vars[i])/1000.0
+                        for i in range(n)}
 
-    # 9、 精度检查
-    actual = get_discharge(new_items, period_start.strftime("%Y-%m-%d %H:%M:%S"),
+    # Apply to power_list
+    for idx in adjusted_results:
+        power_list[idx]["adjustedPower"] = f"{adjusted_results[idx]:.3f}"
+        power_list[idx]["delta"] = f"{adjusted_results[idx] - float(power_list[idx]['predictPower']):+.3f}"
+
+    # Verify discharge
+    actual = get_discharge(power_list,
+                           period_start.strftime("%Y-%m-%d %H:%M:%S"),
                            period_end.strftime("%Y-%m-%d %H:%M:%S"))
-    if abs(actual - target_discharge) > 1e-6:
-        print(f"调整误差 {actual - target_discharge:.6f} 万kWh")
-    return new_items
+    if abs(actual - target_discharge) > 0.001:
+        print(f"弃电量误差: {actual - target_discharge:.4f} 万kWh")
+
+    return power_list
 
 
 # ---------- 直接运行 ----------

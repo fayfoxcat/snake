@@ -96,8 +96,7 @@ def plot_power_curves(items, title='功率测量与预测', figsize=(60, 20)):
 
 
 # ================ 核心算法 ================
-def apply_lowess_smoothing(predictions: list[float],
-                           frac: float = 0.2, it: int = 3) -> np.ndarray:
+def apply_lowess_smoothing(predictions: list[float], frac: float = 0.2, it: int = 3) -> np.ndarray:
     """LOWESS 平滑"""
     x = np.arange(len(predictions))
     return lowess(predictions, x, frac=frac, it=it, return_sorted=False)
@@ -147,7 +146,7 @@ def smart_adjust(
     Other Keyword Args
     ------------------
     max_step : float
-        相邻 5 min 点允许的最大变化 (MW)
+        相邻 5min 点允许的最大变化 (MW)
     lowess_frac : float
         LOWESS 平滑窗口比例
     lowess_it : int
@@ -161,45 +160,33 @@ def smart_adjust(
         item.setdefault("adjustedPower", item["predictPower"])
 
     all_times = [str2dt(i["timePoint"]) for i in power_list]
-    window_idx = [i for i, t in enumerate(all_times)
-                  if period_start_dt <= t <= period_end_dt]
+    window_idx = [i for i, t in enumerate(all_times) if period_start_dt <= t <= period_end_dt]
     if not window_idx:
         raise ValueError("时间窗口与数据不匹配")
 
-    ext_idx = list(range(max(0, min(window_idx) - extend_by),
-                         min(len(power_list) - 1, max(window_idx) + extend_by) + 1))
+    ext_idx = list(range(max(0, min(window_idx) - extend_by), min(len(power_list) - 1, max(window_idx) + extend_by) + 1))
     window_set = set(window_idx)
 
-    idx_info = [(idx,
-                 float(power_list[idx]["measuredPower"]),
-                 float(power_list[idx]["adjustedPower"]))
-                for idx in ext_idx]
+    idx_info = [(idx, float(power_list[idx]["measuredPower"]), float(power_list[idx]["adjustedPower"])) for idx in ext_idx]
 
     # ---------- 1. LOWESS 平滑 ----------
-    smoothed = apply_lowess_smoothing(
-        [orig for _, _, orig in idx_info],
-        frac=lowess_frac, it=lowess_it,
-    )
+    smoothed = apply_lowess_smoothing( [orig for _, _, orig in idx_info], frac=lowess_frac, it=lowess_it)
 
     # ---------- 2. 比例缩放满足目标弃电 ----------
-    meas_orig = np.array([meas for (idx, meas, _), s
-                          in zip(idx_info, smoothed) if idx in window_set])
-    smooth_orig = np.array([s for (idx, _, _), s
-                            in zip(idx_info, smoothed) if idx in window_set])
+    meas_orig = np.array([meas for (idx, meas, _), s in zip(idx_info, smoothed) if idx in window_set])
+    smooth_orig = np.array([s for (idx, _, _), s in zip(idx_info, smoothed) if idx in window_set])
     surplus = np.maximum(smooth_orig - meas_orig, 0)
     cur_energy = surplus.sum() * 5 / 60 / 10
     scale = 1.0 if cur_energy == 0 else target_discharge / cur_energy
 
-    scaled_adj = [(meas + (smt - meas) * scale
-                   if idx in window_set else smt)
-                  for (idx, meas, _), smt in zip(idx_info, smoothed)]
+    scaled_adj = [(meas + (smt - meas) * scale if idx in window_set else smt) for (idx, meas, _), smt in zip(idx_info, smoothed)]
     scaled_adj = np.clip(scaled_adj, 0, capacity_upper)
 
     # ---------- 3. 构建 CP‑SAT ----------
     model = cp_model.CpModel()
     cap_kw = int(capacity_upper * 1000)
     step_kw = int(max_step * 1000)
-    target_kw_gap = int(target_discharge * 120 * 1000)  # 5 min
+    target_kw_gap = int(target_discharge * 120 * 1000)  # 5min
 
     n = len(idx_info)
     pred = [model.NewIntVar(0, cap_kw, f"pred_{i}") for i in range(n)]
@@ -228,8 +215,7 @@ def smart_adjust(
         model.Add(right_kw - pred[-1] <= step_kw)
 
     # 3.4 目标弃电量
-    model.Add(sum(surplus_v[i] for i, (idx, _, _) in enumerate(idx_info)
-                  if idx in window_set) == target_kw_gap)
+    model.Add(sum(surplus_v[i] for i, (idx, _, _) in enumerate(idx_info) if idx in window_set) == target_kw_gap)
 
     # 3.5 目标函数：逼近缩放曲线
     dev = []
@@ -278,7 +264,7 @@ def main() -> None:
     print("调整前弃电量:",
           f"{get_discharge(data, start_time, end_time):.4f} 万kWh")
 
-    for i in range(20):
+    for i in range(10):
         target = target_base + 2 * i
         # 第一次粗调
         adjusted = smart_adjust(

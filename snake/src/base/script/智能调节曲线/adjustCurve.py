@@ -155,40 +155,57 @@ def smart_adjust(
         在窗口两侧额外扩展的采样点数
     """
     # ---------- 0. 准备 ----------
+    # 转换时间字符串为datetime对象
     period_start_dt, period_end_dt = map(str2dt, (period_start, period_end))
+
+    # 初始化adjustedPower字段（如果不存在）
     for item in power_list:
         item.setdefault("adjustedPower", item["predictPower"])
 
+    # 获取所有时间点
     all_times = [str2dt(i["timePoint"]) for i in power_list]
+
+    # 找出在目标时间窗口内的索引
     window_idx = [i for i, t in enumerate(all_times) if period_start_dt <= t <= period_end_dt]
     if not window_idx:
         raise ValueError("时间窗口与数据不匹配")
 
+    # 扩展窗口索引（前后各加extend_by个点）
     ext_idx = list(range(max(0, min(window_idx) - extend_by), min(len(power_list) - 1, max(window_idx) + extend_by) + 1))
     window_set = set(window_idx)
 
+    # 准备数据：索引、实测功率、调整后功率
     idx_info = [(idx, float(power_list[idx]["measuredPower"]), float(power_list[idx]["adjustedPower"])) for idx in ext_idx]
 
     # ---------- 1. LOWESS 平滑 ----------
-    smoothed = apply_lowess_smoothing( [orig for _, _, orig in idx_info], frac=lowess_frac, it=lowess_it)
+    # 对原始调整功率进行平滑处理
+    smoothed = apply_lowess_smoothing([orig for _, _, orig in idx_info], frac=lowess_frac, it=lowess_it)
 
     # ---------- 2. 比例缩放满足目标弃电 ----------
+    # 获取窗口内的实测和平滑功率
     meas_orig = np.array([meas for (idx, meas, _), s in zip(idx_info, smoothed) if idx in window_set])
     smooth_orig = np.array([s for (idx, _, _), s in zip(idx_info, smoothed) if idx in window_set])
+
+    # 计算当前弃电能量
     surplus = np.maximum(smooth_orig - meas_orig, 0)
     cur_energy = surplus.sum() * 5 / 60 / 10
+
+    # 计算缩放比例
     scale = 1.0 if cur_energy == 0 else target_discharge / cur_energy
 
+    # 应用缩放
     scaled_adj = [(meas + (smt - meas) * scale if idx in window_set else smt) for (idx, meas, _), smt in zip(idx_info, smoothed)]
     scaled_adj = np.clip(scaled_adj, 0, capacity_upper)
 
     # ---------- 3. 构建 CP‑SAT ----------
     model = cp_model.CpModel()
+    # 单位转换：MW → kW
     cap_kw = int(capacity_upper * 1000)
     step_kw = int(max_step * 1000)
     target_kw_gap = int(target_discharge * 120 * 1000)  # 5min
 
     n = len(idx_info)
+    # 定义决策变量
     pred = [model.NewIntVar(0, cap_kw, f"pred_{i}") for i in range(n)]
     surplus_v = [model.NewIntVar(0, cap_kw, f"surp_{i}") for i in range(n)]
 
@@ -199,12 +216,12 @@ def smart_adjust(
         model.Add(diff == pred[i] - meas_kw)
         model.AddMaxEquality(surplus_v[i], [diff, 0])
 
-    # 3.2 平滑约束
+    # 3.2 平滑约束（相邻点变化不超过max_step）
     for i in range(1, n):
         model.Add(pred[i] - pred[i - 1] <= step_kw)
         model.Add(pred[i - 1] - pred[i] <= step_kw)
 
-    # 3.3 边界约束
+    # 3.3 边界约束（与扩展区域外的点平滑连接）
     if ext_idx[0] > 0:
         left_kw = int(round(float(power_list[ext_idx[0] - 1]["adjustedPower"]) * 1000))
         model.Add(pred[0] - left_kw <= step_kw)
@@ -214,10 +231,10 @@ def smart_adjust(
         model.Add(pred[-1] - right_kw <= step_kw)
         model.Add(right_kw - pred[-1] <= step_kw)
 
-    # 3.4 目标弃电量
+    # 3.4 目标弃电量约束
     model.Add(sum(surplus_v[i] for i, (idx, _, _) in enumerate(idx_info) if idx in window_set) == target_kw_gap)
 
-    # 3.5 目标函数：逼近缩放曲线
+    # 3.5 目标函数：最小化与缩放曲线的偏差
     dev = []
     for i, tgt in enumerate(scaled_adj):
         tgt_kw = int(round(tgt * 1000))
@@ -237,7 +254,7 @@ def smart_adjust(
 
     # ---------- 5. 写回结果 ----------
     for i, idx in enumerate(ext_idx):
-        new_val = solver.Value(pred[i]) / 1000
+        new_val = solver.Value(pred[i]) / 1000  # kW → MW
         power_list[idx]["adjustedPower"] = f"{new_val:.3f}"
         diff = new_val - float(power_list[idx]["predictPower"])
         power_list[idx]["delta"] = f"{diff:+.3f}"

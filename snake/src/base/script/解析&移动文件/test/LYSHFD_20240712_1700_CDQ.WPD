@@ -1,0 +1,27 @@
+// 2024-07-12_16:45:00
+<! Entity=LYSHFD type=CDQ time='2024-07-12_17:00' !>
+
+<RunningCapacity::LYSHFD>
+@id   实时开机容量
+#1    405.000
+</RunningCapacity::LYSHFD>
+
+<UltraShortTermForcast_V2P::LYSHFD>
+@id   超短期预测功率
+#1    31.120
+#2    33.581
+#3    36.202
+#4    38.822
+#5    41.442
+#6    44.367
+#7    47.596
+#8    50.825
+#9    54.054
+#10    56.202
+#11    57.269
+#12    58.336
+#13    59.403
+#14    60.402
+#15    61.333
+#16    62.264
+</UltraShortTermForcast_V2P::LYSHFD>

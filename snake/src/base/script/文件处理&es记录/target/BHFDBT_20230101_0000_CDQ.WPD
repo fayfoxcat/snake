@@ -1,0 +1,27 @@
+// 2022-12-31 23:42:54
+<! Entity=BHFDBT type=CDQ time='2023-01-01_00:00' !>
+
+<RunningCapacity::BHFDBT>
+@id 实时开机容量
+#1 444.2
+</RunningCapacity::BHFDBT>
+
+<UltraShortTermForcast_V2P::BHFDBT>
+@id 超短期预测功率
+#1 130.59
+#2 126.05
+#3 121.32
+#4 116.41
+#5 111.32
+#6 105.99
+#7 100.46
+#8 94.72
+#9 88.78
+#10 82.4
+#11 74.71
+#12 70.69
+#13 66.03
+#14 58.92
+#15 52.54
+#16 50
+</UltraShortTermForcast_V2P::BHFDBT>

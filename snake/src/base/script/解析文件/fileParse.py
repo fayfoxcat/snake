@@ -25,14 +25,19 @@ def extract_data_from_file(filepath, line_num, value_pos):
 
     pattern = re.compile(rf'^#{line_num}(?!\d)')  # 根据传入的数字定义一个正则表达式模式，匹配以#数字开头的行
     with open(filepath, 'r', encoding='ISO-8859-1') as file:
-        for line in reversed(file.readlines()):
+        skip_first:bool = True
+        for line in file.readlines():
             match = pattern.match(line.strip())  # 尝试匹配每一行
             if match:
-                values = line.strip().split()[1:]  # 获取行中以空格分隔的所有值，忽略第一个元素（即#数字部分）
-                if len(values) >= value_pos:  # 检查是否有足够的值
-                    return try_convert_to_number(values[value_pos - 1])  # 返回指定位置的值（索引从0开始，所以需要减1）
-                else:
-                    return None  # 如果指定位置的值不存在，则返回None
+                if skip_first:
+                    skip_first = False
+                    continue
+                if line.strip().__contains__('#'):
+                    values = line.strip().split()[1:]  # 获取行中以空格分隔的所有值，忽略第一个元素（即#数字部分）
+                    if len(values) >= value_pos:  # 检查是否有足够的值
+                        return try_convert_to_number(values[value_pos - 1])  # 返回指定位置的值（索引从0开始，所以需要减1）
+                    else:
+                        return None  # 如果指定位置的值不存在，则返回None
     return None
 
 

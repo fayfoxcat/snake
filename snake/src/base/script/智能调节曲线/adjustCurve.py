@@ -270,13 +270,15 @@ def smart_adjust(
 # ================ 入口函数 ================
 def main() -> None:
     capacity = 50.0  # 单位 MW
-    target_base = 5.5820  # 万 kWh
     start_time = "2025-04-16 07:00:00"
     end_time = "2025-04-16 17:00:00"
+
 
     data_path = Path(__file__).with_name("data.json")
     with data_path.open(encoding="utf-8") as fp:
         data: List[Dict[str, str]] = json.load(fp)
+        target_base = get_discharge(data, start_time, end_time)  # 万 kWh
+
 
     print("调整前弃电量:",
           f"{get_discharge(data, start_time, end_time):.4f} 万kWh")

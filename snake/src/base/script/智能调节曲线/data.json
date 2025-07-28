@@ -341,777 +341,777 @@
   },
   {
     "timePoint": "2025-04-16 05:40:00",
-    "measuredPower": "0.1780",
-    "predictPower": "0.1000"
+    "measuredPower": "0.0000",
+    "predictPower": "0.0000"
   },
   {
     "timePoint": "2025-04-16 05:45:00",
-    "measuredPower": "0.4230",
-    "predictPower": "0.3500"
+    "measuredPower": "0.0000",
+    "predictPower": "0.0000"
   },
   {
     "timePoint": "2025-04-16 05:50:00",
-    "measuredPower": "0.6660",
-    "predictPower": "0.6200"
+    "measuredPower": "0.0000",
+    "predictPower": "0.0000"
   },
   {
     "timePoint": "2025-04-16 05:55:00",
-    "measuredPower": "0.7920",
-    "predictPower": "0.7200"
+    "measuredPower": "0.6880",
+    "predictPower": "0.7000"
   },
   {
     "timePoint": "2025-04-16 06:00:00",
-    "measuredPower": "1.0910",
-    "predictPower": "0.9900"
+    "measuredPower": "0.8930",
+    "predictPower": "0.8200"
   },
   {
     "timePoint": "2025-04-16 06:05:00",
-    "measuredPower": "1.3900",
-    "predictPower": "1.3500"
+    "measuredPower": "0.9390",
+    "predictPower": "0.8200"
   },
   {
     "timePoint": "2025-04-16 06:10:00",
-    "measuredPower": "1.6050",
-    "predictPower": "1.5500"
+    "measuredPower": "1.2880",
+    "predictPower": "1.1800"
   },
   {
     "timePoint": "2025-04-16 06:15:00",
-    "measuredPower": "1.9420",
-    "predictPower": "1.8500"
+    "measuredPower": "1.5900",
+    "predictPower": "1.4200"
   },
   {
     "timePoint": "2025-04-16 06:20:00",
-    "measuredPower": "2.0270",
-    "predictPower": "1.9700"
+    "measuredPower": "2.1770",
+    "predictPower": "2.0200"
   },
   {
     "timePoint": "2025-04-16 06:25:00",
-    "measuredPower": "2.4700",
-    "predictPower": "2.4000"
+    "measuredPower": "2.5970",
+    "predictPower": "2.3800"
   },
   {
     "timePoint": "2025-04-16 06:30:00",
-    "measuredPower": "3.2950",
-    "predictPower": "3.1500"
+    "measuredPower": "3.0230",
+    "predictPower": "2.9900"
   },
   {
     "timePoint": "2025-04-16 06:35:00",
-    "measuredPower": "3.8680",
-    "predictPower": "3.8400"
+    "measuredPower": "3.9290",
+    "predictPower": "3.6000"
   },
   {
     "timePoint": "2025-04-16 06:40:00",
-    "measuredPower": "4.4550",
-    "predictPower": "4.3400"
+    "measuredPower": "3.9960",
+    "predictPower": "3.6000"
   },
   {
     "timePoint": "2025-04-16 06:45:00",
-    "measuredPower": "4.4400",
-    "predictPower": "4.4900"
+    "measuredPower": "5.0110",
+    "predictPower": "4.5600"
   },
   {
     "timePoint": "2025-04-16 06:50:00",
-    "measuredPower": "4.4710",
-    "predictPower": "4.4200"
+    "measuredPower": "4.5100",
+    "predictPower": "4.5600"
   },
   {
     "timePoint": "2025-04-16 06:55:00",
-    "measuredPower": "4.4310",
-    "predictPower": "4.4200"
+    "measuredPower": "4.5100",
+    "predictPower": "4.5600"
   },
   {
     "timePoint": "2025-04-16 07:00:00",
-    "measuredPower": "4.4730",
-    "predictPower": "4.5400"
+    "measuredPower": "4.5100",
+    "predictPower": "4.5600"
   },
   {
     "timePoint": "2025-04-16 07:05:00",
-    "measuredPower": "5.4410",
-    "predictPower": "5.3800"
+    "measuredPower": "7.8270",
+    "predictPower": "7.9500"
   },
   {
     "timePoint": "2025-04-16 07:10:00",
-    "measuredPower": "4.7840",
-    "predictPower": "4.8100"
+    "measuredPower": "8.0750",
+    "predictPower": "8.2000"
   },
   {
     "timePoint": "2025-04-16 07:15:00",
-    "measuredPower": "5.5090",
-    "predictPower": "5.1600"
+    "measuredPower": "7.4160",
+    "predictPower": "7.5300"
   },
   {
     "timePoint": "2025-04-16 07:20:00",
-    "measuredPower": "7.0420",
-    "predictPower": "6.2000"
+    "measuredPower": "7.7690",
+    "predictPower": "7.8900"
   },
   {
     "timePoint": "2025-04-16 07:25:00",
-    "measuredPower": "7.0960",
-    "predictPower": "7.0200"
+    "measuredPower": "7.7690",
+    "predictPower": "7.8900"
   },
   {
     "timePoint": "2025-04-16 07:30:00",
-    "measuredPower": "7.0280",
-    "predictPower": "10.1300"
+    "measuredPower": "7.5360",
+    "predictPower": "7.6500"
   },
   {
     "timePoint": "2025-04-16 07:35:00",
-    "measuredPower": "6.6820",
-    "predictPower": "8.5900"
+    "measuredPower": "8.1190",
+    "predictPower": "8.2400"
   },
   {
     "timePoint": "2025-04-16 07:40:00",
-    "measuredPower": "6.8180",
-    "predictPower": "7.0400"
+    "measuredPower": "6.8120",
+    "predictPower": "6.9100"
   },
   {
     "timePoint": "2025-04-16 07:45:00",
-    "measuredPower": "6.6550",
-    "predictPower": "9.1600"
+    "measuredPower": "6.8120",
+    "predictPower": "6.9100"
   },
   {
     "timePoint": "2025-04-16 07:50:00",
-    "measuredPower": "6.5880",
-    "predictPower": "6.5900"
+    "measuredPower": "7.1640",
+    "predictPower": "7.2700"
   },
   {
     "timePoint": "2025-04-16 07:55:00",
-    "measuredPower": "7.1150",
-    "predictPower": "11.8100"
+    "measuredPower": "7.1010",
+    "predictPower": "11.1500"
   },
   {
     "timePoint": "2025-04-16 08:00:00",
-    "measuredPower": "7.2410",
-    "predictPower": "11.3300"
+    "measuredPower": "7.1010",
+    "predictPower": "17.3100"
   },
   {
     "timePoint": "2025-04-16 08:05:00",
-    "measuredPower": "7.0700",
-    "predictPower": "14.5100"
+    "measuredPower": "6.7740",
+    "predictPower": "19.6000"
   },
   {
     "timePoint": "2025-04-16 08:10:00",
-    "measuredPower": "6.5910",
-    "predictPower": "17.8800"
+    "measuredPower": "6.4210",
+    "predictPower": "20.0200"
   },
   {
     "timePoint": "2025-04-16 08:15:00",
-    "measuredPower": "6.1300",
-    "predictPower": "13.7600"
+    "measuredPower": "6.4210",
+    "predictPower": "20.8900"
   },
   {
     "timePoint": "2025-04-16 08:20:00",
-    "measuredPower": "6.5160",
-    "predictPower": "13.6700"
+    "measuredPower": "6.4210",
+    "predictPower": "21.6000"
   },
   {
     "timePoint": "2025-04-16 08:25:00",
-    "measuredPower": "6.9000",
-    "predictPower": "17.2700"
+    "measuredPower": "6.7700",
+    "predictPower": "22.2700"
   },
   {
     "timePoint": "2025-04-16 08:30:00",
-    "measuredPower": "6.8480",
-    "predictPower": "17.5400"
+    "measuredPower": "6.7700",
+    "predictPower": "23.1000"
   },
   {
     "timePoint": "2025-04-16 08:35:00",
-    "measuredPower": "6.6570",
-    "predictPower": "11.6700"
+    "measuredPower": "6.7700",
+    "predictPower": "23.6800"
   },
   {
     "timePoint": "2025-04-16 08:40:00",
-    "measuredPower": "7.2110",
-    "predictPower": "15.2200"
+    "measuredPower": "7.1260",
+    "predictPower": "23.8900"
   },
   {
     "timePoint": "2025-04-16 08:45:00",
-    "measuredPower": "6.9860",
-    "predictPower": "13.0900"
+    "measuredPower": "7.1260",
+    "predictPower": "24.9700"
   },
   {
     "timePoint": "2025-04-16 08:50:00",
-    "measuredPower": "7.1240",
-    "predictPower": "14.6900"
-  },
-  {
-    "timePoint": "2025-04-16 08:55:00",
-    "measuredPower": "7.3430",
-    "predictPower": "15.7900"
-  },
-  {
-    "timePoint": "2025-04-16 09:00:00",
-    "measuredPower": "6.9920",
-    "predictPower": "13.7200"
-  },
-  {
-    "timePoint": "2025-04-16 09:05:00",
-    "measuredPower": "7.4150",
-    "predictPower": "12.3600"
-  },
-  {
-    "timePoint": "2025-04-16 09:10:00",
-    "measuredPower": "7.3230",
-    "predictPower": "11.9000"
-  },
-  {
-    "timePoint": "2025-04-16 09:15:00",
-    "measuredPower": "7.2840",
-    "predictPower": "12.1500"
-  },
-  {
-    "timePoint": "2025-04-16 09:20:00",
-    "measuredPower": "7.9190",
-    "predictPower": "15.9400"
-  },
-  {
-    "timePoint": "2025-04-16 09:25:00",
-    "measuredPower": "7.7880",
-    "predictPower": "18.0900"
-  },
-  {
-    "timePoint": "2025-04-16 09:30:00",
-    "measuredPower": "7.2310",
-    "predictPower": "14.7600"
-  },
-  {
-    "timePoint": "2025-04-16 09:35:00",
-    "measuredPower": "7.7630",
-    "predictPower": "20.4800"
-  },
-  {
-    "timePoint": "2025-04-16 09:40:00",
-    "measuredPower": "7.2720",
-    "predictPower": "21.9800"
-  },
-  {
-    "timePoint": "2025-04-16 09:45:00",
-    "measuredPower": "7.5170",
-    "predictPower": "20.0100"
-  },
-  {
-    "timePoint": "2025-04-16 09:50:00",
-    "measuredPower": "7.5630",
-    "predictPower": "28.2800"
-  },
-  {
-    "timePoint": "2025-04-16 09:55:00",
-    "measuredPower": "7.2390",
-    "predictPower": "24.3600"
-  },
-  {
-    "timePoint": "2025-04-16 10:00:00",
-    "measuredPower": "8.0660",
-    "predictPower": "31.6400"
-  },
-  {
-    "timePoint": "2025-04-16 10:05:00",
-    "measuredPower": "8.2930",
-    "predictPower": "18.1100"
-  },
-  {
-    "timePoint": "2025-04-16 10:10:00",
-    "measuredPower": "8.2470",
-    "predictPower": "18.6700"
-  },
-  {
-    "timePoint": "2025-04-16 10:15:00",
-    "measuredPower": "8.2540",
-    "predictPower": "19.7800"
-  },
-  {
-    "timePoint": "2025-04-16 10:20:00",
-    "measuredPower": "8.5590",
-    "predictPower": "25.7300"
-  },
-  {
-    "timePoint": "2025-04-16 10:25:00",
-    "measuredPower": "8.2950",
-    "predictPower": "26.2000"
-  },
-  {
-    "timePoint": "2025-04-16 10:30:00",
-    "measuredPower": "8.0060",
-    "predictPower": "15.6300"
-  },
-  {
-    "timePoint": "2025-04-16 10:35:00",
-    "measuredPower": "8.4930",
-    "predictPower": "15.5600"
-  },
-  {
-    "timePoint": "2025-04-16 10:40:00",
-    "measuredPower": "8.1950",
-    "predictPower": "18.2100"
-  },
-  {
-    "timePoint": "2025-04-16 10:45:00",
-    "measuredPower": "7.7430",
-    "predictPower": "23.0600"
-  },
-  {
-    "timePoint": "2025-04-16 10:50:00",
-    "measuredPower": "8.1220",
-    "predictPower": "31.9800"
-  },
-  {
-    "timePoint": "2025-04-16 10:55:00",
-    "measuredPower": "8.3860",
-    "predictPower": "33.1900"
-  },
-  {
-    "timePoint": "2025-04-16 11:00:00",
-    "measuredPower": "8.2110",
-    "predictPower": "32.5500"
-  },
-  {
-    "timePoint": "2025-04-16 11:05:00",
-    "measuredPower": "8.2050",
-    "predictPower": "32.9100"
-  },
-  {
-    "timePoint": "2025-04-16 11:10:00",
-    "measuredPower": "8.2420",
-    "predictPower": "24.4400"
-  },
-  {
-    "timePoint": "2025-04-16 11:15:00",
-    "measuredPower": "8.8480",
-    "predictPower": "32.5400"
-  },
-  {
-    "timePoint": "2025-04-16 11:20:00",
-    "measuredPower": "8.8720",
-    "predictPower": "32.8100"
-  },
-  {
-    "timePoint": "2025-04-16 11:25:00",
-    "measuredPower": "8.7820",
-    "predictPower": "32.1400"
-  },
-  {
-    "timePoint": "2025-04-16 11:30:00",
-    "measuredPower": "8.7650",
-    "predictPower": "31.8200"
-  },
-  {
-    "timePoint": "2025-04-16 11:35:00",
-    "measuredPower": "8.6350",
-    "predictPower": "31.6100"
-  },
-  {
-    "timePoint": "2025-04-16 11:40:00",
-    "measuredPower": "10.4140",
-    "predictPower": "33.2300"
-  },
-  {
-    "timePoint": "2025-04-16 11:45:00",
-    "measuredPower": "10.3080",
-    "predictPower": "30.6600"
-  },
-  {
-    "timePoint": "2025-04-16 11:50:00",
-    "measuredPower": "10.4810",
-    "predictPower": "33.0100"
-  },
-  {
-    "timePoint": "2025-04-16 11:55:00",
-    "measuredPower": "10.3520",
-    "predictPower": "32.7400"
-  },
-  {
-    "timePoint": "2025-04-16 12:00:00",
-    "measuredPower": "10.4300",
-    "predictPower": "32.8500"
-  },
-  {
-    "timePoint": "2025-04-16 12:05:00",
-    "measuredPower": "10.9820",
-    "predictPower": "32.9100"
-  },
-  {
-    "timePoint": "2025-04-16 12:10:00",
-    "measuredPower": "10.7570",
-    "predictPower": "31.3400"
-  },
-  {
-    "timePoint": "2025-04-16 12:15:00",
-    "measuredPower": "11.0780",
-    "predictPower": "30.5400"
-  },
-  {
-    "timePoint": "2025-04-16 12:20:00",
-    "measuredPower": "11.4800",
-    "predictPower": "31.8400"
-  },
-  {
-    "timePoint": "2025-04-16 12:25:00",
-    "measuredPower": "11.1730",
-    "predictPower": "26.4300"
-  },
-  {
-    "timePoint": "2025-04-16 12:30:00",
-    "measuredPower": "11.1140",
-    "predictPower": "33.7200"
-  },
-  {
-    "timePoint": "2025-04-16 12:35:00",
-    "measuredPower": "11.5560",
-    "predictPower": "32.8800"
-  },
-  {
-    "timePoint": "2025-04-16 12:40:00",
-    "measuredPower": "11.2790",
-    "predictPower": "33.1000"
-  },
-  {
-    "timePoint": "2025-04-16 12:45:00",
-    "measuredPower": "11.2790",
-    "predictPower": "27.4600"
-  },
-  {
-    "timePoint": "2025-04-16 12:50:00",
-    "measuredPower": "11.4590",
-    "predictPower": "32.8000"
-  },
-  {
-    "timePoint": "2025-04-16 12:55:00",
-    "measuredPower": "11.2240",
-    "predictPower": "33.5100"
-  },
-  {
-    "timePoint": "2025-04-16 13:00:00",
-    "measuredPower": "11.6120",
-    "predictPower": "31.7500"
-  },
-  {
-    "timePoint": "2025-04-16 13:05:00",
-    "measuredPower": "6.9850",
-    "predictPower": "32.4400"
-  },
-  {
-    "timePoint": "2025-04-16 13:10:00",
-    "measuredPower": "6.7820",
-    "predictPower": "26.1600"
-  },
-  {
-    "timePoint": "2025-04-16 13:15:00",
-    "measuredPower": "6.7010",
-    "predictPower": "30.2100"
-  },
-  {
-    "timePoint": "2025-04-16 13:20:00",
-    "measuredPower": "6.6590",
+    "measuredPower": "6.8410",
     "predictPower": "25.6000"
   },
   {
+    "timePoint": "2025-04-16 08:55:00",
+    "measuredPower": "6.8410",
+    "predictPower": "26.3000"
+  },
+  {
+    "timePoint": "2025-04-16 09:00:00",
+    "measuredPower": "6.8410",
+    "predictPower": "27.0500"
+  },
+  {
+    "timePoint": "2025-04-16 09:05:00",
+    "measuredPower": "7.3800",
+    "predictPower": "27.5500"
+  },
+  {
+    "timePoint": "2025-04-16 09:10:00",
+    "measuredPower": "7.3800",
+    "predictPower": "28.2200"
+  },
+  {
+    "timePoint": "2025-04-16 09:15:00",
+    "measuredPower": "7.7300",
+    "predictPower": "28.8400"
+  },
+  {
+    "timePoint": "2025-04-16 09:20:00",
+    "measuredPower": "7.7300",
+    "predictPower": "29.5100"
+  },
+  {
+    "timePoint": "2025-04-16 09:25:00",
+    "measuredPower": "7.3460",
+    "predictPower": "30.0100"
+  },
+  {
+    "timePoint": "2025-04-16 09:30:00",
+    "measuredPower": "7.3460",
+    "predictPower": "30.6300"
+  },
+  {
+    "timePoint": "2025-04-16 09:35:00",
+    "measuredPower": "7.3460",
+    "predictPower": "31.2100"
+  },
+  {
+    "timePoint": "2025-04-16 09:40:00",
+    "measuredPower": "7.6980",
+    "predictPower": "31.8000"
+  },
+  {
+    "timePoint": "2025-04-16 09:45:00",
+    "measuredPower": "7.6980",
+    "predictPower": "32.3000"
+  },
+  {
+    "timePoint": "2025-04-16 09:50:00",
+    "measuredPower": "7.6980",
+    "predictPower": "32.8800"
+  },
+  {
+    "timePoint": "2025-04-16 09:55:00",
+    "measuredPower": "7.6980",
+    "predictPower": "33.2100"
+  },
+  {
+    "timePoint": "2025-04-16 10:00:00",
+    "measuredPower": "7.6980",
+    "predictPower": "33.7100"
+  },
+  {
+    "timePoint": "2025-04-16 10:05:00",
+    "measuredPower": "7.4090",
+    "predictPower": "34.0900"
+  },
+  {
+    "timePoint": "2025-04-16 10:10:00",
+    "measuredPower": "8.4780",
+    "predictPower": "34.5400"
+  },
+  {
+    "timePoint": "2025-04-16 10:15:00",
+    "measuredPower": "8.4780",
+    "predictPower": "34.9600"
+  },
+  {
+    "timePoint": "2025-04-16 10:20:00",
+    "measuredPower": "8.4450",
+    "predictPower": "35.2900"
+  },
+  {
+    "timePoint": "2025-04-16 10:25:00",
+    "measuredPower": "8.4450",
+    "predictPower": "35.5800"
+  },
+  {
+    "timePoint": "2025-04-16 10:30:00",
+    "measuredPower": "8.4450",
+    "predictPower": "35.7500"
+  },
+  {
+    "timePoint": "2025-04-16 10:35:00",
+    "measuredPower": "8.2030",
+    "predictPower": "35.9600"
+  },
+  {
+    "timePoint": "2025-04-16 10:40:00",
+    "measuredPower": "8.2030",
+    "predictPower": "36.2500"
+  },
+  {
+    "timePoint": "2025-04-16 10:45:00",
+    "measuredPower": "8.2030",
+    "predictPower": "36.5800"
+  },
+  {
+    "timePoint": "2025-04-16 10:50:00",
+    "measuredPower": "8.2030",
+    "predictPower": "36.7900"
+  },
+  {
+    "timePoint": "2025-04-16 10:55:00",
+    "measuredPower": "8.2030",
+    "predictPower": "37.0400"
+  },
+  {
+    "timePoint": "2025-04-16 11:00:00",
+    "measuredPower": "8.2030",
+    "predictPower": "37.1700"
+  },
+  {
+    "timePoint": "2025-04-16 11:05:00",
+    "measuredPower": "8.2030",
+    "predictPower": "37.5000"
+  },
+  {
+    "timePoint": "2025-04-16 11:10:00",
+    "measuredPower": "8.2030",
+    "predictPower": "37.5400"
+  },
+  {
+    "timePoint": "2025-04-16 11:15:00",
+    "measuredPower": "8.8050",
+    "predictPower": "37.7500"
+  },
+  {
+    "timePoint": "2025-04-16 11:20:00",
+    "measuredPower": "10.0260",
+    "predictPower": "37.7900"
+  },
+  {
+    "timePoint": "2025-04-16 11:25:00",
+    "measuredPower": "10.2590",
+    "predictPower": "38.0000"
+  },
+  {
+    "timePoint": "2025-04-16 11:30:00",
+    "measuredPower": "13.3870",
+    "predictPower": "38.0400"
+  },
+  {
+    "timePoint": "2025-04-16 11:35:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.2900"
+  },
+  {
+    "timePoint": "2025-04-16 11:40:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.3700"
+  },
+  {
+    "timePoint": "2025-04-16 11:45:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.3700"
+  },
+  {
+    "timePoint": "2025-04-16 11:50:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.6200"
+  },
+  {
+    "timePoint": "2025-04-16 11:55:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.7500"
+  },
+  {
+    "timePoint": "2025-04-16 12:00:00",
+    "measuredPower": "15.2440",
+    "predictPower": "38.8300"
+  },
+  {
+    "timePoint": "2025-04-16 12:05:00",
+    "measuredPower": "16.1510",
+    "predictPower": "38.8700"
+  },
+  {
+    "timePoint": "2025-04-16 12:10:00",
+    "measuredPower": "16.1690",
+    "predictPower": "38.9100"
+  },
+  {
+    "timePoint": "2025-04-16 12:15:00",
+    "measuredPower": "16.1610",
+    "predictPower": "38.9500"
+  },
+  {
+    "timePoint": "2025-04-16 12:20:00",
+    "measuredPower": "16.1610",
+    "predictPower": "38.8300"
+  },
+  {
+    "timePoint": "2025-04-16 12:25:00",
+    "measuredPower": "16.1480",
+    "predictPower": "38.8300"
+  },
+  {
+    "timePoint": "2025-04-16 12:30:00",
+    "measuredPower": "16.1560",
+    "predictPower": "38.8700"
+  },
+  {
+    "timePoint": "2025-04-16 12:35:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.6600"
+  },
+  {
+    "timePoint": "2025-04-16 12:40:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.7100"
+  },
+  {
+    "timePoint": "2025-04-16 12:45:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.6200"
+  },
+  {
+    "timePoint": "2025-04-16 12:50:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.6200"
+  },
+  {
+    "timePoint": "2025-04-16 12:55:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.5400"
+  },
+  {
+    "timePoint": "2025-04-16 13:00:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.5000"
+  },
+  {
+    "timePoint": "2025-04-16 13:05:00",
+    "measuredPower": "16.3940",
+    "predictPower": "38.3300"
+  },
+  {
+    "timePoint": "2025-04-16 13:10:00",
+    "measuredPower": "11.5120",
+    "predictPower": "38.0400"
+  },
+  {
+    "timePoint": "2025-04-16 13:15:00",
+    "measuredPower": "11.9310",
+    "predictPower": "37.8300"
+  },
+  {
+    "timePoint": "2025-04-16 13:20:00",
+    "measuredPower": "11.6670",
+    "predictPower": "37.7500"
+  },
+  {
     "timePoint": "2025-04-16 13:25:00",
-    "measuredPower": "6.3080",
-    "predictPower": "31.3000"
+    "measuredPower": "11.9010",
+    "predictPower": "37.8700"
   },
   {
     "timePoint": "2025-04-16 13:30:00",
-    "measuredPower": "6.5950",
-    "predictPower": "31.2400"
+    "measuredPower": "11.9010",
+    "predictPower": "37.6600"
   },
   {
     "timePoint": "2025-04-16 13:35:00",
-    "measuredPower": "6.5250",
-    "predictPower": "28.1200"
+    "measuredPower": "8.5230",
+    "predictPower": "37.4200"
   },
   {
     "timePoint": "2025-04-16 13:40:00",
-    "measuredPower": "6.8780",
-    "predictPower": "30.5600"
+    "measuredPower": "7.2810",
+    "predictPower": "37.2100"
   },
   {
     "timePoint": "2025-04-16 13:45:00",
-    "measuredPower": "6.7320",
-    "predictPower": "27.9000"
+    "measuredPower": "7.2810",
+    "predictPower": "36.9200"
   },
   {
     "timePoint": "2025-04-16 13:50:00",
-    "measuredPower": "6.8050",
-    "predictPower": "27.6700"
+    "measuredPower": "7.2810",
+    "predictPower": "36.3700"
   },
   {
     "timePoint": "2025-04-16 13:55:00",
-    "measuredPower": "7.2760",
-    "predictPower": "26.1000"
+    "measuredPower": "6.9280",
+    "predictPower": "36.0400"
   },
   {
     "timePoint": "2025-04-16 14:00:00",
-    "measuredPower": "6.9540",
-    "predictPower": "27.5200"
+    "measuredPower": "6.9280",
+    "predictPower": "35.7500"
   },
   {
     "timePoint": "2025-04-16 14:05:00",
-    "measuredPower": "8.0520",
-    "predictPower": "23.8300"
+    "measuredPower": "8.1210",
+    "predictPower": "35.3300"
   },
   {
     "timePoint": "2025-04-16 14:10:00",
-    "measuredPower": "7.9940",
-    "predictPower": "30.5400"
+    "measuredPower": "8.1210",
+    "predictPower": "34.7900"
   },
   {
     "timePoint": "2025-04-16 14:15:00",
-    "measuredPower": "7.6720",
-    "predictPower": "23.5900"
+    "measuredPower": "8.1210",
+    "predictPower": "34.3800"
   },
   {
     "timePoint": "2025-04-16 14:20:00",
-    "measuredPower": "7.8920",
-    "predictPower": "19.7000"
+    "measuredPower": "7.7620",
+    "predictPower": "34.0900"
   },
   {
     "timePoint": "2025-04-16 14:25:00",
-    "measuredPower": "8.4440",
-    "predictPower": "22.3700"
+    "measuredPower": "7.7620",
+    "predictPower": "33.3800"
   },
   {
     "timePoint": "2025-04-16 14:30:00",
-    "measuredPower": "8.0140",
-    "predictPower": "14.7200"
+    "measuredPower": "7.7620",
+    "predictPower": "33.0900"
   },
   {
     "timePoint": "2025-04-16 14:35:00",
-    "measuredPower": "8.6410",
-    "predictPower": "22.2400"
+    "measuredPower": "8.4020",
+    "predictPower": "32.5500"
   },
   {
     "timePoint": "2025-04-16 14:40:00",
-    "measuredPower": "8.8590",
-    "predictPower": "25.6700"
+    "measuredPower": "8.4020",
+    "predictPower": "32.0900"
   },
   {
     "timePoint": "2025-04-16 14:45:00",
-    "measuredPower": "8.5520",
-    "predictPower": "22.0900"
+    "measuredPower": "8.4020",
+    "predictPower": "31.4200"
   },
   {
     "timePoint": "2025-04-16 14:50:00",
-    "measuredPower": "8.8160",
-    "predictPower": "26.1300"
+    "measuredPower": "8.4020",
+    "predictPower": "30.5100"
   },
   {
     "timePoint": "2025-04-16 14:55:00",
-    "measuredPower": "8.7210",
-    "predictPower": "25.1100"
+    "measuredPower": "8.4020",
+    "predictPower": "29.8400"
   },
   {
     "timePoint": "2025-04-16 15:00:00",
-    "measuredPower": "9.0260",
-    "predictPower": "21.0500"
+    "measuredPower": "8.4020",
+    "predictPower": "29.0100"
   },
   {
     "timePoint": "2025-04-16 15:05:00",
-    "measuredPower": "8.7710",
-    "predictPower": "22.2200"
+    "measuredPower": "9.4510",
+    "predictPower": "28.4300"
   },
   {
     "timePoint": "2025-04-16 15:10:00",
-    "measuredPower": "9.3230",
-    "predictPower": "20.4200"
+    "measuredPower": "9.4510",
+    "predictPower": "27.5500"
   },
   {
     "timePoint": "2025-04-16 15:15:00",
-    "measuredPower": "9.6700",
-    "predictPower": "17.0700"
+    "measuredPower": "9.4510",
+    "predictPower": "26.7200"
   },
   {
     "timePoint": "2025-04-16 15:20:00",
-    "measuredPower": "9.6020",
-    "predictPower": "19.2800"
+    "measuredPower": "9.4510",
+    "predictPower": "25.5500"
   },
   {
     "timePoint": "2025-04-16 15:25:00",
-    "measuredPower": "9.1360",
-    "predictPower": "14.8600"
+    "measuredPower": "9.4560",
+    "predictPower": "24.7600"
   },
   {
     "timePoint": "2025-04-16 15:30:00",
-    "measuredPower": "9.7390",
-    "predictPower": "20.9700"
+    "measuredPower": "9.7130",
+    "predictPower": "23.2600"
   },
   {
     "timePoint": "2025-04-16 15:35:00",
-    "measuredPower": "9.5460",
-    "predictPower": "14.4000"
+    "measuredPower": "9.7150",
+    "predictPower": "22.4300"
   },
   {
     "timePoint": "2025-04-16 15:40:00",
-    "measuredPower": "9.6390",
-    "predictPower": "19.2900"
+    "measuredPower": "9.7150",
+    "predictPower": "21.4300"
   },
   {
     "timePoint": "2025-04-16 15:45:00",
-    "measuredPower": "9.0820",
-    "predictPower": "17.1300"
+    "measuredPower": "9.7150",
+    "predictPower": "21.0600"
   },
   {
     "timePoint": "2025-04-16 15:50:00",
-    "measuredPower": "9.4630",
-    "predictPower": "12.7200"
+    "measuredPower": "9.7150",
+    "predictPower": "19.7700"
   },
   {
     "timePoint": "2025-04-16 15:55:00",
-    "measuredPower": "9.5100",
-    "predictPower": "20.4100"
+    "measuredPower": "9.2660",
+    "predictPower": "18.9800"
   },
   {
     "timePoint": "2025-04-16 16:00:00",
-    "measuredPower": "9.5570",
-    "predictPower": "17.0400"
+    "measuredPower": "9.6840",
+    "predictPower": "18.1500"
   },
   {
     "timePoint": "2025-04-16 16:05:00",
-    "measuredPower": "9.5010",
-    "predictPower": "13.4000"
+    "measuredPower": "9.6840",
+    "predictPower": "17.5600"
   },
   {
     "timePoint": "2025-04-16 16:10:00",
-    "measuredPower": "9.8880",
-    "predictPower": "17.6700"
+    "measuredPower": "9.3060",
+    "predictPower": "16.8100"
   },
   {
     "timePoint": "2025-04-16 16:15:00",
-    "measuredPower": "9.3180",
-    "predictPower": "9.1700"
+    "measuredPower": "9.3060",
+    "predictPower": "16.0200"
   },
   {
     "timePoint": "2025-04-16 16:20:00",
-    "measuredPower": "9.5110",
-    "predictPower": "13.1700"
+    "measuredPower": "9.3060",
+    "predictPower": "15.1500"
   },
   {
     "timePoint": "2025-04-16 16:25:00",
-    "measuredPower": "9.5710",
-    "predictPower": "14.5600"
+    "measuredPower": "9.9140",
+    "predictPower": "14.3200"
   },
   {
     "timePoint": "2025-04-16 16:30:00",
-    "measuredPower": "9.1130",
-    "predictPower": "9.2900"
+    "measuredPower": "9.1740",
+    "predictPower": "12.7900"
   },
   {
     "timePoint": "2025-04-16 16:35:00",
-    "measuredPower": "9.5330",
-    "predictPower": "8.0500"
+    "measuredPower": "9.8630",
+    "predictPower": "10.0200"
   },
   {
     "timePoint": "2025-04-16 16:40:00",
-    "measuredPower": "9.6420",
-    "predictPower": "9.7900"
+    "measuredPower": "9.8630",
+    "predictPower": "10.0200"
   },
   {
     "timePoint": "2025-04-16 16:45:00",
-    "measuredPower": "10.1680",
-    "predictPower": "10.1500"
+    "measuredPower": "9.8630",
+    "predictPower": "10.0200"
   },
   {
     "timePoint": "2025-04-16 16:50:00",
-    "measuredPower": "9.9080",
-    "predictPower": "10.0100"
+    "measuredPower": "9.8630",
+    "predictPower": "10.0200"
   },
   {
     "timePoint": "2025-04-16 16:55:00",
-    "measuredPower": "9.6040",
-    "predictPower": "9.6800"
+    "measuredPower": "9.8630",
+    "predictPower": "10.0200"
   },
   {
     "timePoint": "2025-04-16 17:00:00",
-    "measuredPower": "6.8170",
-    "predictPower": "6.6300"
+    "measuredPower": "9.1620",
+    "predictPower": "9.3100"
   },
   {
     "timePoint": "2025-04-16 17:05:00",
-    "measuredPower": "5.9900",
-    "predictPower": "5.9600"
+    "measuredPower": "8.4870",
+    "predictPower": "8.6200"
   },
   {
     "timePoint": "2025-04-16 17:10:00",
-    "measuredPower": "4.8500",
-    "predictPower": "5.1800"
+    "measuredPower": "5.8300",
+    "predictPower": "5.9500"
   },
   {
     "timePoint": "2025-04-16 17:15:00",
-    "measuredPower": "3.9590",
-    "predictPower": "3.6500"
+    "measuredPower": "5.8300",
+    "predictPower": "5.9500"
   },
   {
     "timePoint": "2025-04-16 17:20:00",
-    "measuredPower": "4.2650",
-    "predictPower": "4.1300"
+    "measuredPower": "5.8300",
+    "predictPower": "5.9500"
   },
   {
     "timePoint": "2025-04-16 17:25:00",
-    "measuredPower": "3.7080",
-    "predictPower": "3.7500"
+    "measuredPower": "5.5910",
+    "predictPower": "5.7000"
   },
   {
     "timePoint": "2025-04-16 17:30:00",
-    "measuredPower": "3.2380",
-    "predictPower": "3.1100"
+    "measuredPower": "4.5710",
+    "predictPower": "4.6600"
   },
   {
     "timePoint": "2025-04-16 17:35:00",
-    "measuredPower": "2.3680",
-    "predictPower": "2.3600"
+    "measuredPower": "5.0820",
+    "predictPower": "4.6600"
   },
   {
     "timePoint": "2025-04-16 17:40:00",
-    "measuredPower": "1.9870",
-    "predictPower": "1.9600"
+    "measuredPower": "4.6190",
+    "predictPower": "4.2600"
   },
   {
     "timePoint": "2025-04-16 17:45:00",
-    "measuredPower": "2.3980",
-    "predictPower": "3.0100"
+    "measuredPower": "3.9770",
+    "predictPower": "3.6100"
   },
   {
     "timePoint": "2025-04-16 17:50:00",
-    "measuredPower": "2.6350",
-    "predictPower": "2.5800"
+    "measuredPower": "3.5280",
+    "predictPower": "3.2300"
   },
   {
     "timePoint": "2025-04-16 17:55:00",
-    "measuredPower": "2.6180",
-    "predictPower": "2.5800"
+    "measuredPower": "2.8580",
+    "predictPower": "2.6200"
   },
   {
     "timePoint": "2025-04-16 18:00:00",
-    "measuredPower": "2.0780",
-    "predictPower": "2.2200"
+    "measuredPower": "2.6070",
+    "predictPower": "2.3600"
   },
   {
     "timePoint": "2025-04-16 18:05:00",
-    "measuredPower": "1.6640",
-    "predictPower": "1.6000"
+    "measuredPower": "2.1830",
+    "predictPower": "2.0000"
   },
   {
     "timePoint": "2025-04-16 18:10:00",
-    "measuredPower": "1.1460",
-    "predictPower": "1.2200"
+    "measuredPower": "1.1150",
+    "predictPower": "0.9800"
   },
   {
     "timePoint": "2025-04-16 18:15:00",
-    "measuredPower": "0.8940",
-    "predictPower": "0.9000"
+    "measuredPower": "1.1150",
+    "predictPower": "0.9800"
   },
   {
     "timePoint": "2025-04-16 18:20:00",
-    "measuredPower": "0.6870",
-    "predictPower": "0.6400"
+    "measuredPower": "1.0450",
+    "predictPower": "0.9800"
   },
   {
     "timePoint": "2025-04-16 18:25:00",
-    "measuredPower": "0.2810",
-    "predictPower": "0.2900"
+    "measuredPower": "0.6960",
+    "predictPower": "0.6200"
   },
   {
     "timePoint": "2025-04-16 18:30:00",
-    "measuredPower": "0.0400",
+    "measuredPower": "0.0000",
     "predictPower": "0.0000"
   },
   {
@@ -1433,5 +1433,10 @@
     "timePoint": "2025-04-16 23:50:00",
     "measuredPower": "0.0000",
     "predictPower": "0.0000"
+  },
+  {
+    "timePoint": "2025-04-16 23:55:00",
+    "measuredPower": "0.0000",
+    "predictPower": "0.00"
   }
 ]

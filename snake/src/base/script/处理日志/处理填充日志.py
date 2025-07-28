@@ -25,7 +25,7 @@ def process_log_file(file_path):
         value, param_type = param.rsplit("(", 1)
         value = value.strip()
         param_type = param_type.rstrip(")")
-        if param_type in ["String", "Timestamp", "LocalDateTime"]:
+        if param_type in ["String", "Timestamp","LocalDate", "LocalDateTime"]:
             parsed_parameters.append(f"'{value}'")
         elif param_type in ["Long", "BigDecimal", "Integer"]:
             parsed_parameters.append(value)

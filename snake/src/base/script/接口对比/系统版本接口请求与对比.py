@@ -4,17 +4,21 @@ import requests
 from datetime import datetime, timedelta
 from collections import defaultdict
 import shutil
+import threading
+import queue
+from concurrent.futures import ThreadPoolExecutor
 
 # 配置信息
 CONFIG = {
-    "system1_url": "http://172.18.37.248:30003/elss-web/api/analyze/distribution-overview",
+    "system1_url": "http://172.18.31.3:8096/elss-web/api/analyze/distribution-overview",
     "system2_url": "http://172.18.37.248:30004/elss-web/api/analyze/distribution-overview",
     "access_token": "ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SjFjMlZ5U1dRaU9qRXNJblZ6WlhKdVlXMWxJam9pWVdSdGFXNGlmUS40YW45TjhNWmRaZEdrYm5CdlY5MjRZdmNONm5EVHRCX2t4S3MzQlV2NmFF",
     "output_dir1": "旧版本",
     "output_dir2": "新版本",
-    "diff_dir": "差异文件",  # 新增差异文件目录
-    "start_date": "2025-02-01",
-    "end_date": "2025-04-01",
+    "diff_dir": "差异文件",
+    "start_date": "2025-01-01",
+    "end_date": "2025-05-30",
+    "max_workers": 4,  # 线程池大小
     "request_payload": {
         "startDate": "2025-04-08",
         "endDate": "2025-04-08",
@@ -60,7 +64,6 @@ CONFIG = {
                        "200000050", "200000051", "200000052", "200000053", "200000054", "200000055", "200000056",
                        "200000057"
                        ],
-        # 简化的stationIds，实际使用时替换为完整列表
         "dischargeTypes": [
             "DISCHARGE_SPECIAL_TYPE",
             "DISCHARGE_MANUAL_SPECIAL_TYPE"
@@ -75,12 +78,19 @@ CONFIG = {
     }
 }
 
+# 全局队列用于存储待比较的文件对
+file_pair_queue = queue.Queue()
+# 用于存储比较结果
+comparison_results = []
+# 用于同步文件写入
+file_write_lock = threading.Lock()
+
 
 def setup_directories():
     """创建输出目录"""
     os.makedirs(CONFIG["output_dir1"], exist_ok=True)
     os.makedirs(CONFIG["output_dir2"], exist_ok=True)
-    os.makedirs(CONFIG["diff_dir"], exist_ok=True)  # 创建差异文件目录
+    os.makedirs(CONFIG["diff_dir"], exist_ok=True)
 
 
 def make_request(url, payload, access_token):
@@ -101,39 +111,69 @@ def make_request(url, payload, access_token):
 def save_response(data, directory, date):
     """保存响应到文件"""
     filename = os.path.join(directory, f"response_{date}.json")
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    with file_write_lock:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
     print(f"已保存: {filename}")
+    return filename
+
+
+def fetch_single_date(date_str, payload):
+    """获取单个日期的数据"""
+    print(f"\n处理日期: {date_str}")
+
+    # 更新请求payload中的日期
+    current_payload = payload.copy()
+    current_payload["startDate"] = date_str
+    current_payload["endDate"] = date_str
+
+    # 并行请求两个系统
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        future1 = executor.submit(make_request, CONFIG["system1_url"], current_payload, CONFIG["access_token"])
+        future2 = executor.submit(make_request, CONFIG["system2_url"], current_payload, CONFIG["access_token"])
+
+        response1 = future1.result()
+        response2 = future2.result()
+
+    # 保存响应并放入队列
+    if response1 and response2:
+        file1 = save_response(response1, CONFIG["output_dir1"], date_str)
+        file2 = save_response(response2, CONFIG["output_dir2"], date_str)
+        file_pair_queue.put((file1, file2, date_str))
 
 
 def fetch_data_for_dates():
-    """按日期范围获取数据"""
+    """按日期范围获取数据，使用线程池"""
     start_date = datetime.strptime(CONFIG["start_date"], "%Y-%m-%d")
     end_date = datetime.strptime(CONFIG["end_date"], "%Y-%m-%d")
 
+    dates = []
     current_date = start_date
     while current_date <= end_date:
-        date_str = current_date.strftime("%Y-%m-%d")
-        print(f"\n处理日期: {date_str}")
-
-        # 更新请求payload中的日期
-        payload = CONFIG["request_payload"].copy()
-        payload["startDate"] = date_str
-        payload["endDate"] = date_str
-
-        # 请求系统1
-        print("请求系统1...")
-        response1 = make_request(CONFIG["system1_url"], payload, CONFIG["access_token"])
-        if response1:
-            save_response(response1, CONFIG["output_dir1"], date_str)
-
-        # 请求系统2
-        print("请求系统2...")
-        response2 = make_request(CONFIG["system2_url"], payload, CONFIG["access_token"])
-        if response2:
-            save_response(response2, CONFIG["output_dir2"], date_str)
-
+        dates.append(current_date.strftime("%Y-%m-%d"))
         current_date += timedelta(days=1)
+
+    # 使用线程池并行处理日期
+    with ThreadPoolExecutor(max_workers=CONFIG["max_workers"]) as executor:
+        for date_str in dates:
+            executor.submit(fetch_single_date, date_str, CONFIG["request_payload"])
+
+
+def compare_files_worker():
+    """工作线程，从队列中获取文件对进行比较"""
+    while True:
+        try:
+            file1, file2, date_str = file_pair_queue.get(timeout=10)  # 10秒超时
+
+            match, summary, details = compare_files(file1, file2)
+            if not match:
+                comparison_results.append((date_str, summary, details))
+                print(f"差异发现于: {date_str}")
+                copy_diff_files(file1, file2, f"response_{date_str}.json")
+
+            file_pair_queue.task_done()
+        except queue.Empty:
+            break
 
 
 def compare_files(file1, file2):
@@ -179,56 +219,40 @@ def copy_diff_files(file1, file2, filename):
     print(f"已复制差异文件到: {diff_dir1} 和 {diff_dir2}")
 
 
-def compare_directories():
-    """比较两个目录中的所有文件"""
-    files1 = sorted(os.listdir(CONFIG["output_dir1"]))
-    files2 = sorted(os.listdir(CONFIG["output_dir2"]))
-
-    if files1 != files2:
-        print("警告: 两个目录中的文件不匹配")
-
-    all_match = True
-    summary_report = {}
-    detailed_report = {}
-
-    for file in files1:
-        if file in files2:
-            file1_path = os.path.join(CONFIG["output_dir1"], file)
-            file2_path = os.path.join(CONFIG["output_dir2"], file)
-
-            match, summary, details = compare_files(file1_path, file2_path)
-            if not match:
-                all_match = False
-                summary_report[file] = summary
-                detailed_report[file] = details
-                print(f"差异发现于: {file}")
-                # 将有差异的文件复制到差异目录
-                copy_diff_files(file1_path, file2_path, file)
-
-    if all_match:
+def generate_reports():
+    """生成比较结果报告"""
+    if not comparison_results:
         print("所有文件内容一致")
-    else:
-        # 保存摘要报告
-        summary_file = os.path.join(CONFIG["diff_dir"], "diff_summary.json")
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            json.dump(summary_report, f, ensure_ascii=False, indent=2)
-        print(f"\n差异摘要已保存到: {summary_file}")
+        return
 
-        # 打印摘要报告
-        print("\n=== 差异摘要 ===")
-        for file, summary in summary_report.items():
-            print(f"\n文件: {file}")
-            for diff_type, count in summary.items():
-                print(f"{diff_type}: {count}处")
+    # 按日期排序结果
+    comparison_results.sort(key=lambda x: x[0])
 
-        # 保存详细报告
-        detailed_file = os.path.join(CONFIG["diff_dir"], "diff_details.json")
-        with open(detailed_file, 'w', encoding='utf-8') as f:
-            json.dump(detailed_report, f, ensure_ascii=False, indent=2)
-        print(f"\n详细差异已保存到: {detailed_file}")
+    # 准备报告数据
+    summary_report = {result[0]: result[1] for result in comparison_results}
+    detailed_report = {result[0]: result[2] for result in comparison_results}
 
-        # 生成建议
-        generate_suggestions(summary_report, detailed_report)
+    # 保存摘要报告
+    summary_file = os.path.join(CONFIG["diff_dir"], "diff_summary.json")
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        json.dump(summary_report, f, ensure_ascii=False, indent=2)
+    print(f"\n差异摘要已保存到: {summary_file}")
+
+    # 打印摘要报告
+    print("\n=== 差异摘要 ===")
+    for date_str, summary in summary_report.items():
+        print(f"\n日期: {date_str}")
+        for diff_type, count in summary.items():
+            print(f"{diff_type}: {count}处")
+
+    # 保存详细报告
+    detailed_file = os.path.join(CONFIG["diff_dir"], "diff_details.json")
+    with open(detailed_file, 'w', encoding='utf-8') as f:
+        json.dump(detailed_report, f, ensure_ascii=False, indent=2)
+    print(f"\n详细差异已保存到: {detailed_file}")
+
+    # 生成建议
+    generate_suggestions(summary_report, detailed_report)
 
 
 def generate_suggestions(summary_report, detailed_report):
@@ -241,12 +265,12 @@ def generate_suggestions(summary_report, detailed_report):
     print(f"\n共发现 {total_files} 个文件存在差异，总计 {total_diffs} 处不同")
 
     # 按文件给出建议
-    for file, summary in summary_report.items():
-        print(f"\n文件: {file}")
+    for date_str, summary in summary_report.items():
+        print(f"\n日期: {date_str}")
         print(f"差异类型统计: {json.dumps(summary, indent=2, ensure_ascii=False)}")
 
         # 获取前3个差异字段作为示例
-        sample_diffs = list(detailed_report[file].items())[:3]
+        sample_diffs = list(detailed_report[date_str].items())[:3]
         print("\n示例差异:")
         for field, diff in sample_diffs:
             print(f"字段: {field}")
@@ -266,8 +290,26 @@ def generate_suggestions(summary_report, detailed_report):
 def main():
     print("开始执行系统差异比较...")
     setup_directories()
+
+    # 启动比较线程
+    compare_threads = []
+    for _ in range(CONFIG["max_workers"]):
+        t = threading.Thread(target=compare_files_worker)
+        t.start()
+        compare_threads.append(t)
+
+    # 获取数据，会自动将文件对放入队列
     fetch_data_for_dates()
-    compare_directories()
+
+    # 等待所有文件比较完成
+    file_pair_queue.join()
+
+    # 停止比较线程
+    for t in compare_threads:
+        t.join()
+
+    # 生成报告
+    generate_reports()
     print("执行完成")
 
 
